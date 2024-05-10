@@ -4,11 +4,12 @@ const AppContext = createContext();
 
 export function ContextProvider({ children }) {
   const [currentPage, setCurrentPage] = useState('home');
-  const [pageCount, setPageCount] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
     <AppContext.Provider value={{ 
         currentPage, setCurrentPage,
+        isLoggedIn, setIsLoggedIn
          }}>
       {children}
     </AppContext.Provider>

@@ -1,8 +1,8 @@
-export function ItemRef() {
+export function ReferenceView() {
 
     return (
-        <div>
-            <h1>Item Reference</h1>
+        <div className="reference-container">
+            <h1>Reference</h1>
         </div>
     );
 }

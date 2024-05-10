@@ -1,9 +1,4 @@
-export function MenuBar({children}) {
+import { useAppContext } from './Context.jsx';
+import { MenuWizard } from './CreateNewWizard.jsx';
 
-    return (
-        <>
-            <div className="menu-bar">Menu Bar</div>
-            {children}
-        </>
-    );
-}
+

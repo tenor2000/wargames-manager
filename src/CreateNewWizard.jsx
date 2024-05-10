@@ -1,5 +1,4 @@
 export function CreateNewWizard () {
-
   return (
     <div className="new-wizard-container">
         <h1>Create New Wizard</h1>
@@ -10,5 +9,13 @@ export function CreateNewWizard () {
           </section>
         </form>
     </div>
+  );
+}
+
+export function MenuWizard() {
+  return (
+    <>
+      <h1>Wizard/Apprentice</h1>
+    </>
   );
 }

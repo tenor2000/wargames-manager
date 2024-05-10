@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { ContextProvider } from './Context.jsx';
-import { NavigationSideBar } from './navigation.jsx';
+import { MenuBar, SideBar } from './Navigate.jsx';
 import { ContentArea } from './ContentArea.jsx';
-import './App.css';
+import './styles/App.css';
+
 
 
 function App() {
   return (
     <ContextProvider>
-      <NavigationSideBar />
+      <MenuBar />
+      <SideBar />
       <ContentArea />
     </ContextProvider>
   );
