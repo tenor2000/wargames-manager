@@ -1,4 +1,4 @@
-export function CampaignView() {
+export function DashboardView() {
     return (
         <div className="campaigns-container">
             <h1>Campaigns View</h1>
@@ -6,7 +6,7 @@ export function CampaignView() {
     );
 }
 
-export function CampaignSideBar() {
+export function DashboardSideBar() {
 
     return (
         <div>

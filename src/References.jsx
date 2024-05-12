@@ -7,11 +7,11 @@ export function ReferenceView() {
     );
 }
 
-export function SoldierRef() {
+export function ReferenceSideBar() {
 
     return (
         <div>
-            <h1>Soldier Reference</h1>
+            <h1>Reference SideBar</h1>
         </div>
     );
 }

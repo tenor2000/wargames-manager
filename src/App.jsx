@@ -1,18 +1,24 @@
 import { useState } from 'react';
-import { ContextProvider } from './Context.jsx';
-import { MenuBar, SideBar } from './Navigate.jsx';
-import { ContentArea } from './ContentArea.jsx';
+import { AuthProvider } from './AuthContext.jsx';
+import { ContextProvider } from './AppContext.jsx';
+import { MenuBar, SideBar, ContentArea } from './ContentLayout.jsx';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './styles/App.css';
 
 
 
 function App() {
   return (
-    <ContextProvider>
-      <MenuBar />
-      <SideBar />
-      <ContentArea />
-    </ContextProvider>
+      
+      <Router>
+        {/* <AuthProvider> */}
+        <ContextProvider>
+          <MenuBar />
+          <SideBar />
+          <ContentArea />
+        </ContextProvider>
+        {/* </AuthProvider> */}
+      </Router>
   );
 }
 

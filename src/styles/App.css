@@ -23,7 +23,7 @@ nav ul {
   gap: 20px;
 }
 
-nav ul li {
+ul li {
   cursor: pointer;
 }
 
