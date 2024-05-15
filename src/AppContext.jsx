@@ -1,21 +1,25 @@
 import { createContext, useState, useContext } from 'react';
-import testData from './database';
+import referenceData from './database';
+import { set } from 'firebase/database';
 
 const AppContext = createContext();
 
 export function ContextProvider({ children }) {
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [schoolId, setSchoolId] = useState(0);
-    const [spellList, setSpellList] = useState(testData.spells);
+    const [schoolTypeId, setSchoolTypeId] = useState(0);
+    const [spellList, setSpellList] = useState(referenceData.spells);
+    const [currentWizard, setCurrentWizard] = useState(null);
+    const [themeMode, setThemeMode] = useState('light');
+    const [refData, setRefData] = useState(referenceData);
 
     const value = {
-        isLoggedIn,
-        setIsLoggedIn,
-        schoolId,
-        setSchoolId,
-        spellList,
-        setSpellList
+        isLoggedIn, setIsLoggedIn,
+        themeMode, setThemeMode,
+        schoolTypeId, setSchoolTypeId,
+        spellList, setSpellList,
+        currentWizard, setCurrentWizard,
+        refData, setRefData
     };
 
     return (

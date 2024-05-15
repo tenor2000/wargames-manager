@@ -11,13 +11,13 @@ function App() {
   return (
       
       <Router>
-        {/* <AuthProvider> */}
-        <ContextProvider>
-          <MenuBar />
-          <SideBar />
-          <ContentArea />
-        </ContextProvider>
-        {/* </AuthProvider> */}
+        <AuthProvider>
+          <ContextProvider>
+            <MenuBar />
+            <SideBar />
+            <ContentArea />
+          </ContextProvider>
+        </AuthProvider>
       </Router>
   );
 }
