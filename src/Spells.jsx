@@ -1,21 +1,20 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from './AppContext.jsx';
-import testData from './database.js';
-import { ExpandBox } from './BasicComponents.jsx';
+import referenceData from './database.js';
+import { ExpandBox, getSchoolName } from './BasicComponents.jsx';
 // import './styles/Spells.css';
+
+const schoolTypesRef = referenceData.schoolTypes;
+const spellListRef = referenceData.spells;
 
 
 export function SpellView() {
-    // const [userData, setUserData] = useAuthContext();
-    const { schoolId, setSchoolId } = useAppContext();
+    const { schoolTypeId, setSchoolTypeId } = useAppContext();
     const { spellList, setSpellList } = useAppContext();
 
     const spellsBySchool = () => {
         // must figure way to show spells by alphabetical order when All is used.
-        if (schoolId === 0) {
-            const newSpellList = [...spellList];
-        }
 
         return spellList.map(spell => (
             <ExpandBox key={spell.id} title={spell.name}>
@@ -29,12 +28,11 @@ export function SpellView() {
             </ExpandBox>
         ))
     }
-
-    const schoolname = testData.schools[schoolId].name;
+    const schoolType = schoolTypesRef[schoolTypeId].name;
 
     return (
         <>
-            <h2>{schoolname} Spells</h2>
+            <h2>{schoolType} Spells</h2>
             <ul>
                 {spellsBySchool()}
             </ul>
@@ -43,23 +41,19 @@ export function SpellView() {
 }
 
 export function SpellSideBar() {
-    // const [userData, setUserData] = useAuthContext();
-    const { spellList, setSpellList, schoolId, setSchoolId } = useAppContext();
+    const { setSpellList, setSchoolTypeId } = useAppContext();
 
-    const spellSchools = testData.schools.map(school => (
-        <li key={school.id} onClick={() => handleClick(school.name)}>{school.name}</li>
-    ))
-    function handleClick(schoolname) {
-        let newSpellList = testData.spells.filter(
-            spell => spell.school === schoolname);
-
-        if (schoolname === 'All') {
-            newSpellList = testData.spells
-        }
-        setSchoolId(testData.schools.findIndex(school => school.name === schoolname))
-        setSpellList(newSpellList)
-        console.log(schoolname)
+    function handleSchoolChange(selectedSchoolName) {
+        const filteredSpells = spellListRef.filter(spell => spell.school === selectedSchoolName);
+        const newSchoolId = schoolTypesRef.findIndex(school => school.name === selectedSchoolName);
+        const newSpellList = selectedSchoolName === 'All' ? spellListRef : filteredSpells;
+        setSchoolTypeId(newSchoolId);
+        setSpellList(newSpellList);
     }
+
+    const spellSchools = schoolTypesRef.map(school => (
+        <li key={school.id} onClick={() => handleSchoolChange(school.name)}>{school.name}</li>
+    ))
 
     return (
         <div className="sidebar-view">
