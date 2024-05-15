@@ -1,4 +1,48 @@
-ul {
+.sidebar-view ul {
     display: block;
     list-style: none;
+    padding: 5px;
+    font-size: medium;
+}
+
+.warband-view {
+    display: flex;
+    flex-direction: column;
+    margin: 2vw;
+}
+
+.warband-view ul {
+    display: block;
+    list-style: none;
+    padding: 5px;
+    font-size: medium;
+    margin: 10px;
+}
+
+.sidebar-item {
+    cursor: pointer;
+    font-size: smamediumll;
+    padding: 5px;
+}
+
+.center {
+    text-align: center;
+}
+
+.stat-block-table {
+    padding: 8px;
+    border-collapse: collapse;
+    border: white 1px solid;
+}
+
+.stat-block-table td,
+.stat-block-table th {
+    border: white 1px solid;
+    padding: 8px;
+}
+
+.spellbook-container {
+    display: block;
+    margin: 0 auto;
+    width: 80%
 }
