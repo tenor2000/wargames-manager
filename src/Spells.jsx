@@ -1,38 +1,28 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAppContext } from './AppContext.jsx';
-import referenceData from './database.js';
-import { ExpandBox, getSchoolName } from './BasicComponents.jsx';
+import { BasicSpellCard, ExpandBox, getSchoolFromId} from './BasicComponents.jsx';
 // import './styles/Spells.css';
 
-const schoolTypesRef = referenceData.schoolTypes;
-const spellListRef = referenceData.spells;
-
-
 export function SpellView() {
-    const { schoolTypeId, setSchoolTypeId } = useAppContext();
-    const { spellList, setSpellList } = useAppContext();
+    const { schoolFilterId, spellViewList} = useAppContext();
 
     const spellsBySchool = () => {
-        // must figure way to show spells by alphabetical order when All is used.
+        let sortedSpells = spellViewList;
 
-        return spellList.map(spell => (
+        if (schoolFilterId === 0) {
+            sortedSpells = spellViewList.slice().sort((a,b) => a.name.localeCompare(b.name));
+        }
+
+        return sortedSpells.map(spell => (
             <ExpandBox key={spell.id} title={spell.name}>
-                <div>
-                    <p>Target Number: {spell.base_cast}</p>
-                    <p>Category: {spell.category}</p>
-                </div>
-                <div>
-                    Description: {spell.description}
-                </div>
+                <BasicSpellCard spellId={spell.id} />
             </ExpandBox>
         ))
     }
-    const schoolType = schoolTypesRef[schoolTypeId].name;
+    const schoolname = getSchoolFromId(schoolFilterId).name;
 
     return (
         <>
-            <h2>{schoolType} Spells</h2>
+            <h2>{schoolname} Spells</h2>
             <ul>
                 {spellsBySchool()}
             </ul>
@@ -41,18 +31,27 @@ export function SpellView() {
 }
 
 export function SpellSideBar() {
-    const { setSpellList, setSchoolTypeId } = useAppContext();
+    const { refData, spellViewList, setSpellViewList, setSchoolFilterId } = useAppContext();
 
-    function handleSchoolChange(selectedSchoolName) {
-        const filteredSpells = spellListRef.filter(spell => spell.school === selectedSchoolName);
-        const newSchoolId = schoolTypesRef.findIndex(school => school.name === selectedSchoolName);
-        const newSpellList = selectedSchoolName === 'All' ? spellListRef : filteredSpells;
-        setSchoolTypeId(newSchoolId);
-        setSpellList(newSpellList);
+    const spellList = refData.spells;
+    const magicSchools = refData.schoolsOfMagic;
+
+    function handleSchoolClick(selectedSchoolName) {
+        const filteredSpells = spellList.filter(spell => spell.school === selectedSchoolName);
+        const newSchoolId = magicSchools.find(school => school.name === selectedSchoolName).id;
+        const newSpellList = selectedSchoolName === 'All' ? spellList : filteredSpells;
+        setSchoolFilterId(newSchoolId);
+        setSpellViewList(newSpellList);
     }
 
-    const spellSchools = schoolTypesRef.map(school => (
-        <li key={school.id} onClick={() => handleSchoolChange(school.name)}>{school.name}</li>
+    function handleSearchFilter(text) {
+        const filteredSpells = spellList.filter(spell => spell.name.toLowerCase().includes(text.toLowerCase()));
+        setSchoolFilterId(0);
+        setSpellViewList(filteredSpells);
+    }
+
+    const spellSchools = magicSchools.map(school => (
+        <li key={school.id} onClick={() => handleSchoolClick(school.name)}>{school.name}</li>
     ))
 
     return (
@@ -61,14 +60,7 @@ export function SpellSideBar() {
             <ul>
                 {spellSchools}
             </ul>
-        </div>
-    );
-}
-
-function SpellInfo() {
-    return (
-        <div>
-            <h1>Spell Info</h1>
+            <input type="text" onChange={(e) => handleSearchFilter(e.target.value)} placeholder={'search'}/>
         </div>
     );
 }
