@@ -1,5 +1,5 @@
 import { createContext, useState, useContext } from 'react';
-import referenceData from './database';
+import { referenceData } from './database';
 import { set } from 'firebase/database';
 
 const AppContext = createContext();
@@ -7,8 +7,8 @@ const AppContext = createContext();
 export function ContextProvider({ children }) {
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [schoolTypeId, setSchoolTypeId] = useState(0);
-    const [spellList, setSpellList] = useState(referenceData.spells);
+    const [schoolFilterId, setSchoolFilterId] = useState(0);
+    const [spellViewList, setSpellViewList] = useState(referenceData.spells);
     const [currentWizard, setCurrentWizard] = useState(null);
     const [themeMode, setThemeMode] = useState('light');
     const [refData, setRefData] = useState(referenceData);
@@ -16,8 +16,8 @@ export function ContextProvider({ children }) {
     const value = {
         isLoggedIn, setIsLoggedIn,
         themeMode, setThemeMode,
-        schoolTypeId, setSchoolTypeId,
-        spellList, setSpellList,
+        schoolFilterId, setSchoolFilterId,
+        spellViewList, setSpellViewList,
         currentWizard, setCurrentWizard,
         refData, setRefData
     };

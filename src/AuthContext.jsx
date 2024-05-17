@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 // import { auth, db } from './firebase'; // Assuming you have Firebase initialized
-import referenceData from './database.js';
+import { referenceData, userInfoData } from './database.js';
 
 const AuthContext = createContext();
 
@@ -10,7 +10,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
-  const [userData, setUserData] = useState(referenceData); //temp data
+  const [userData, setUserData] = useState(userInfoData); //temp data
   const [loading, setLoading] = useState(true);
 
   // const signUp = (email, password) => {

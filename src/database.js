@@ -1,92 +1,4 @@
-const referenceData = {
-    myWizards: [
-        {
-            id: 1,
-            name: 'Ivan the Illusionator',
-            stats: {
-                classId: 4,
-                level: 8,
-                health: 14,
-                currentHealth: 14,
-                move: 6,
-                fight: 2,
-                shoot: 2,
-                armor: 10,
-                will: 4,
-                cost: 0
-            },
-            gold: 400,
-            apprentice: 'Jim',
-            primarySpellIds: [401, 402, 403],
-            alignedSpellIds: [601, 701, 901],
-            neutralSpellIds: [101, 301],
-            opposedSpellIds: [],
-            spellModifiers: {
-                401: -1
-            },
-            soldiers: [1,2,3,4,5,6],
-            soldierItems: [],
-            soldiersLost: 0,
-            xpGained: 0,
-            xpSpent: 0,
-        },
-        {
-            id: 2,
-            name: 'David the Enchanter',
-            stats: {
-                classId: 3,
-                level: 8,
-                health: 14,
-                currentHealth: 14,
-                move: 6,
-                fight: 2,
-                shoot: 2,
-                armor: 10,
-                will: 4,
-                cost: 0
-            },
-            gold: 400,
-            apprentice: 'Ted',
-            primarySpellIds: ['Fool\'s Gold', 'Illusionary Soldier', 'Transpose'],
-            alignedSpellIds: ['Push', 'Heal', 'Wizard Eye'],
-            neutralSpellIds: ['Raise Zombie', 'Leap'],
-            opposedSpellIds: ['Fireball', 'Firestorm', 'Fire Wall'],
-            spellModifiers: {
-     
-            },
-            soldiersLost: 0,
-            xpGained: 400,
-            xpSpent: 200,
-        },
-        {
-            id: 3,
-            name: 'Homer the Idiot',
-            stats: {
-                classId: 9,
-                level: 8,
-                health: 14,
-                currentHealth: 14,
-                move: 6,
-                fight: 2,
-                shoot: 2,
-                armor: 10,
-                will: 4,
-                cost: 0
-            },
-            gold: 400,
-            apprentice: 'Ned',
-            primarySpellIds: [401, 402, 403],
-            alignedSpellIds: ['Push', 'Heal', 'Wizard Eye'],
-            neutralSpellIds: ['Raise Zombie', 'Leap'],
-            opposedSpellIds: ['Fireball', 'Firestorm', 'Fire Wall'],
-            spellModifiers: {
-                401: -1
-            },
-            soldiersLost: 0,
-            xpGained: 0,
-            xpSpent: 0,
-        }
-    ],
+export const referenceData = {
     spells: [
         {
             id: 101,
@@ -154,6 +66,14 @@ const referenceData = {
             description: 'If successfully cast, the target construct must make an immediate Will roll versus the casting roll. If the roll fails, the spellcaster gains control of the construct for the rest of the game. A spellcaster may only control one construct at a time.'
         },
         {
+            id: 303,
+            name: 'Embed Enchantment',
+            school: 'Enchanter',
+            base_cast: 14,
+            category: 'Out of Game',
+            description: 'This spell causes any one Enchant Armor or Enchant Weapon spell that is still active at the end of a game to become permanent, and the weapon or armor in question to become a magic weapon or armor. The newly created magic weapon or armor takes up an item slot as normal.'
+        },
+        {
             id: 401,
             name: 'Beauty',
             school: 'Illusionist',
@@ -178,10 +98,18 @@ const referenceData = {
             description: 'This spell may only be cast on a figure carrying a treasure token. That figure must make an immediate Will Roll with a Target Number equal to the Casting Roll. If it fails, the spellcaster may take the treasure token from the figure and move it up to 4" in any direction, provided the final spot is within line of sight of the spellcaster.'
         },
         {
+            id: 501,
+            name: 'Animate Skull',
+            school: 'Necromancer',
+            base_cast: 8,
+            category: 'Line of Sight',
+            description: 'The spellcaster fills a skull with magic malice and throws it at an opponent. Place one animated skull (page 190) within 6" of the spellcaster. It can be placed directly into combat. This skull is an uncontrolled creature. The spellcaster may not cast this spell again until this creature is removed from the table, but may spend an action to cancel the spell, in which case the animated skull is immediately removed from the table.'
+        },
+        {
             id: 502,
             name: 'Bone Dart',
             school: 'Necromancer',
-            base_cast: 8,
+            base_cast: 10,
             category: 'Line of Sight',
             description: 'This spell fires a small, sharp shard of bone. The spellcaster makes a +5 shooting attack against any figure within line of sight and 12". This does not count as a magic attack.'
         },
@@ -274,7 +202,7 @@ const referenceData = {
             description: 'The spellcaster creates one Lesser Potion of their choice (page 86) that may be sold, stored in the wizard\'s vault, or given to a member of the warband. A wizard (and only a wizard) may use this spell to create a Greater Potion (page 87). First, they must declare what potion they are attempting to brew and pay the listed ingredients cost. The wizard should then roll to cast Brew Potion with a -4 to the Casting Roll. If successful, the potion is created and can be immediately assigned to a figure in the warband, sold, or stored in the wizard\'s vault. If unsuccessful, the potion is not created and the money spent on ingredients is lost.'
         },
     ],
-    schoolTypes: [
+    schoolsOfMagic: [
         {
             id: 0,
             name: 'All',
@@ -465,7 +393,175 @@ const referenceData = {
                 notes: 'Bow, Dagger, Leather Armor',
             },
         },
-    ]
+    ],
+    templates: {
+        wizard: {
+            id: null,
+            name: 'A man with no name',
+            stats: {
+                classId: null,
+                level: 0,
+                health: 14,
+                currentHealth: 14,
+                move: 6,
+                fight: 2,
+                shoot: 0,
+                armor: 10,
+                will: 4,
+                cost: 0
+            },
+            gold: 400,
+            apprentice: null,
+            primarySpellIds: [],
+            alignedSpellIds: [],
+            neutralSpellIds: [],
+            opposedSpellIds: [],
+            spellModifiers: {},
+            soldiers: {
+
+            },
+            soldierItems: [],
+            soldiersLost: 0,
+            xpGained: 0,
+            xpSpent: 0,
+        },
+        soldier: {
+            id: null,
+            type: 'Standard',
+            source: 'base',
+            stats: {
+                class: 'Man-at-Arms',
+                move: 6,
+                fight: 3,
+                shoot: 0,
+                armor: 12,
+                will: 1,
+                health: 12,
+                cost: 75,
+                notes: 'Hand Weapon, Shield, Leather Armor',
+            },
+        }
+    },
 }
 
-export default referenceData
+// Eventually will be server side database
+// This is just for local testing
+// userData from useAuth()
+export const userInfoData = {
+    myWizards: [
+        {
+            id: 1,
+            name: 'Ivan the Illusionator',
+            stats: {
+                classId: 4,
+                level: 0,
+                health: 14,
+                currentHealth: 14,
+                move: 6,
+                fight: 2,
+                shoot: 0,
+                armor: 10,
+                will: 4,
+                cost: 0
+            },
+            gold: 400,
+            apprentice: 'Jim',
+            primarySpellIds: [401, 402, 403],
+            alignedSpellIds: [601, 701, 901],
+            neutralSpellIds: [101, 301],
+            opposedSpellIds: [],
+            spellModifiers: {
+                401: -1,
+                402: 1,
+            },
+            soldiers: {
+                'Julius': 1,
+                'Adam': 1,
+                'Roger':2,
+                'Todd': 2,
+                'Jeff': 3,
+                'Hank':4,
+                'George':5,
+                'Clyde':6
+            },
+            soldierItems: [],
+            soldiersLost: 0,
+            xpGained: 0,
+            xpSpent: 0,
+        },
+        {
+            id: 2,
+            name: 'David the Enchanter',
+            stats: {
+                classId: 3,
+                level: 8,
+                health: 14,
+                currentHealth: 14,
+                move: 6,
+                fight: 2,
+                shoot: 2,
+                armor: 10,
+                will: 4,
+                cost: 0
+            },
+            gold: 400,
+            apprentice: 'Ted',
+            primarySpellIds: [301, 302, 303],
+            alignedSpellIds: [1001, 601, 201],
+            neutralSpellIds: [501, 901],
+            opposedSpellIds: [],
+            spellModifiers: {
+                301: -1
+            },
+            soldiers: {
+                'Fred':1,
+                'Sally':1, 
+                'Jimmy':2, 
+                'Ned':2,
+                'Sue':3,
+                'Bill':4, 
+                'Joe':7, 
+                'Jack':6
+            },
+            soldiersLost: 0,
+            xpGained: 400,
+            xpSpent: 200,
+        },
+        {
+            id: 3,
+            name: 'Homer the Idiot',
+            stats: {
+                classId: 9,
+                level: 8,
+                health: 14,
+                currentHealth: 14,
+                move: 6,
+                fight: 2,
+                shoot: 2,
+                armor: 10,
+                will: 4,
+                cost: 0
+            },
+            gold: 400,
+            apprentice: 'Ned',
+            primarySpellIds: [401, 402, 403],
+            alignedSpellIds: ['Push', 'Heal', 'Wizard Eye'],
+            neutralSpellIds: ['Raise Zombie', 'Leap'],
+            opposedSpellIds: ['Fireball', 'Firestorm', 'Fire Wall'],
+            spellModifiers: {
+                401: -1
+            },
+            soldiersLost: 0,
+            xpGained: 0,
+            xpSpent: 0,
+        }
+    ],
+    myRecord: {
+        wins: 0,
+        losses: 0,
+
+    },
+    myPreferences: {
+        theme: 'light',
+    }
+}

@@ -8,7 +8,7 @@ import { ReferenceView, ReferenceSideBar } from './References.jsx';
 import { SpellView, SpellSideBar } from './Spells.jsx';
 import { WarbandView, WarbandSideBar } from './Warbands.jsx';
 import { CampaignView, CampaignSideBar } from './Campaigns.jsx';
-import { CreateNewWizard } from './CreateNewWizard.jsx';
+import { CreateNewWizard, NewWizardSideBar } from './CreateNewWizard.jsx';
 import './styles/ContentArea.css';
 
 
@@ -44,6 +44,7 @@ export function SideBar() {
             <Route path="/warbands" element={<WarbandSideBar />} />
             <Route path="/campaigns" element={<CampaignSideBar />} />
             <Route path="/reference" element={<ReferenceSideBar />} />
+            <Route path="/new-wizard" element={<NewWizardSideBar />} />
             {/* Add routes for other sidebar items */}
         </Routes>
     </div>
@@ -63,6 +64,7 @@ export function ContentArea() {
         <Route path="/campaigns" element={<CampaignView />} />
         <Route path="/new-wizard" element={<CreateNewWizard />} />
         <Route path="/warband-view" element={<WarbandSideBar />} />
+        <Route path="/new-wizard" element={<CreateNewWizard />} />
         {/* Add routes for other pages */}
       </Routes>
     </div>

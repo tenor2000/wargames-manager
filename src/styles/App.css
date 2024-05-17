@@ -1,7 +1,7 @@
 * {
   margin: 0;
-  padding: 0;
   box-sizing: border-box;
+  font-family: 'Lato', sans-serif;
 }
 
 nav {
@@ -15,6 +15,9 @@ nav {
   color: white;
   font-size: 1.5rem;
   font-weight: bold;
+  border: white 1px solid;
+  border-radius: 8px;
+  
 }
 
 nav ul {
@@ -28,8 +31,13 @@ ul li {
   cursor: pointer;
 }
 
-nav ul li:hover {
-  color: red;
+ul li {
+  transition: color 1s ease;
+}
+
+ul li:hover {
+  color: blue;
+  transition: color 0.5s ease
 }
 
 .main-container {
@@ -38,18 +46,39 @@ nav ul li:hover {
   align-items: center;
 }
 
-body {
-  background-image: url('https://cdna.artstation.com/p/assets/images/images/060/360/826/large/caterina-bufalari-icy-fortress-artstation-first-thumb.jpg?1678383442');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-}
 
 .content-container {
   display: flex;
   flex-direction: column;
-  background-color: rgb(60, 112, 217, 0.7);
+  background-color: rgba(5, 15, 37, 0.8);
   color: white;
   padding: 20px;
   overflow: auto;
+  border: white 1px solid;
+  border-radius: 8px;;
+}
+
+.expandable-container {
+  overflow: hidden;
+  max-height: 100px;
+  transition: max-height 1.3s ease;
+}
+
+.expanded {
+  overflow: scroll;
+  max-height: 1000px;
+}
+
+.sidebar {
+  background-color: rgba(26, 67, 149, 0.8);
+  border: white 1px solid;
+  border-radius: 8px;;
+  padding: 10px;
+}
+
+.stat-icon {
+  width: 25px;
+  height: 25px;
+  margin-right: 5px;
+  vertical-align: middle;
 }
