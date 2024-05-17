@@ -1,3 +1,7 @@
+ul li {
+    list-style: none;
+}
+
 .sidebar-view ul {
     display: block;
     list-style: none;
@@ -9,19 +13,18 @@
     display: flex;
     flex-direction: column;
     margin: 2vw;
+    gap: 1vw;
 }
 
-.warband-view ul {
-    display: block;
-    list-style: none;
+.warband-view .expandable-container {
+    border: white 1px solid;
+    border-radius: 8px;;
     padding: 5px;
-    font-size: medium;
-    margin: 10px;
 }
 
 .sidebar-item {
     cursor: pointer;
-    font-size: smamediumll;
+    font-size: medium;
     padding: 5px;
 }
 
@@ -33,10 +36,20 @@
     padding: 8px;
     border-collapse: collapse;
     border: white 1px solid;
+    width: 100%;
+    background-color: black;
+    height: 250px;
 }
 
-.stat-block-table td,
-.stat-block-table th {
+.stat-block-table tr {
+    border: white 1px solid;
+    padding: 8px;
+    width: 100%;
+}
+
+.stat-block-table td {
+    width: calc(100% / 3);
+    text-align: left;
     border: white 1px solid;
     padding: 8px;
 }
@@ -44,5 +57,53 @@
 .spellbook-container {
     display: block;
     margin: 0 auto;
-    width: 80%
+    width: 95%;
+    gap: 10px;
+}
+
+.spellbutton-container {
+    display: flex;
+    gap: 10px;
+    margin: 10px;
+    align-items: center;
+}
+
+.spellbutton-container > div {
+    display: flex;
+    gap: 10px;
+}
+
+.stat-card {
+    margin: 0 auto;
+    width: 250px;
+}   
+
+.stat-card-container {
+    display: flex;
+}
+
+.hired-soldiers-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.spellbook-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: white 1px solid;
+    padding: 5px;
+    background-color: black;
+}
+
+.spellbook-description {
+    text-align: left;
+    height: 175px;
+    overflow-y: scroll;
+}
+
+.spellbook-table td {
+    width: calc(100% / 3);
+    border: white 1px solid;
+    padding: 5px;
 }

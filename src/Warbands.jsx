@@ -1,19 +1,17 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ExpandBox , BasicStatBlock, BasicSpellBlock, getSchoolName } from './BasicComponents.jsx';
+import { ExpandBox , BasicStatCard, getSchoolFromId, getSpellFromId, getSoldierFromId } from './BasicComponents.jsx';
 import { useAuth } from './AuthContext.jsx';
 import { useAppContext } from './AppContext.jsx';
-import referenceData from './database.js';
 import './styles/Warbands.css';
-import { TfiControlShuffle } from 'react-icons/tfi';
 
 
 
 export function WarbandView() {
-    
     const { currentWizard, setCurrentWarzard } = useAppContext();
+
     return (
-        <div className="warband-view">
+        <div className="warband-view center">
             {!currentWizard && <WarbandDash />}
             {currentWizard && <WarbandDetails />}
         </div>
@@ -22,11 +20,7 @@ export function WarbandView() {
 
 export function WarbandSideBar() {
     const { userData } = useAuth();
-    const { refData } = useAppContext();
     const { currentWizard, setCurrentWizard } = useAppContext();
-
-    const wizSchoolId = currentWizard ? currentWizard.stats.classId : null;
-    const wizSchool = wizSchoolId ? refData.schoolTypes.find(schoolType => schoolType.id === wizSchoolId).name : null;
     
     function handleWarbandDashClick(text) {
         setCurrentWizard(null)
@@ -39,7 +33,7 @@ export function WarbandSideBar() {
     const wizardsList = userData.myWizards.map(wizard => (
         <ExpandBox key={wizard.id} title={wizard.name} >
             <div className="sidebar-item" onClick={() => handleWizardClick(wizard)}>
-                {`${getSchoolName(wizard.stats.classId, 'wizard')} - Level ${wizard.stats.level}`}
+                {`${getSchoolFromId(wizard.stats.classId).name} - Level ${wizard.stats.level}`}
             </div>
         </ExpandBox>
     ))
@@ -65,9 +59,14 @@ export function WarbandSideBar() {
 
 function WarbandDash() {
     const { userData } = useAuth();
-    const {currentWarband, setCurrentWarband} = useAppContext();
+    const navigate = useNavigate();
 
     const userWizards = userData.myWizards;
+
+    function handleNewWizardClick() {
+        navigate('/new-wizard');
+
+    }
     
     return (
         <div className ='center'>
@@ -77,15 +76,13 @@ function WarbandDash() {
             <div>
                 <p>Here you can monitor your warband during gameplay.</p>
                 <p>Here are some warband stats:</p>
-                <ul>
-                    <li>Total Wizards: {userWizards.length}</li>
-                    <li>Total Level Gained: {userWizards.reduce((total, wizard) => total + wizard.stats.level, 0)}</li>
-                    <li>Total XP Gained: {userWizards.reduce((total, wizard) => total + wizard.xpGained, 0)}</li>
-                    <li>Total Soldiers Lost: {userWizards.reduce((total, wizard) => total + wizard.soldiersLost, 0)}</li>
-                </ul>
+                <p>Total Wizards: {userWizards.length}</p>
+                <p>Total Level Gained: {userWizards.reduce((total, wizard) => total + wizard.stats.level, 0)}</p>
+                <p>Total XP Gained: {userWizards.reduce((total, wizard) => total + wizard.xpGained, 0)}</p>
+                <p>Total Soldiers Lost: {userWizards.reduce((total, wizard) => total + wizard.soldiersLost, 0)}</p>
             </div>
             <div className="button-container center">
-                <button>Start New Wizard</button>
+                <button onClick={handleNewWizardClick}>Start New Wizard</button>
             </div>
         </div>
     );
@@ -98,121 +95,175 @@ function WarbandDetails() {
     const apprenticeStats = {}
     
     for (const key in wizardStats) {
-        if (key === 'move' || key === 'armor' || key === 'costs') {
+        if (key === 'move' || key === 'costs' || key === 'shoot') {
             apprenticeStats[key] = wizardStats[key];
+        } else if (key === 'armor') {
+            apprenticeStats[key] = 10; // + modifiers to be implemented
         } else {
             apprenticeStats[key] = wizardStats[key] - 2;
         }
     }
 
+    wizardStats['class'] = getSchoolFromId(wizardStats.classId).name;
+    apprenticeStats['class'] = 'Apprentice';
+    apprenticeStats['costs'] = 100;
+
     return (
-        <div className="center">
+        <>
             <div>
                 <h2>{currentWizard.name}</h2>
             </div>
-            <ExpandBox title={`Wizard: ${currentWizard.name}`}>
-                    <BasicStatBlock stats = {wizardStats}/>
+            <ExpandBox title={`Wizard`}>
+                    <BasicStatCard name={currentWizard.name} stats = {wizardStats}/>
             </ExpandBox>
-            <ExpandBox title={`Apprentice: ${currentWizard.apprentice}`} >
-                <BasicStatBlock stats = {apprenticeStats}/>
+            <ExpandBox title={`Apprentice`} >
+                <BasicStatCard name={currentWizard.apprentice} stats = {apprenticeStats}/>
             </ExpandBox>
-            <ExpandBox title={`Spellbook`} >
+            <ExpandBox title={`Spellbook`} className="spellbook">
                 <SpellBookBlock/>
             </ExpandBox>
-            <ExpandBox title="Hired Soldiers">
-                <HiredSoldiers/>
+            <ExpandBox title="Hired Soldiers" className="hired-soldiers">
+                <HiredSoldiersBlock/>
             </ExpandBox>
             <ExpandBox title="Vault">
-                <p>{currentWizard.name}</p>
+                <p>The Vault is where all treasure is stored</p>
+                <p>Gold: {currentWizard.gold}</p>
             </ExpandBox>
             <ExpandBox title="Base of Operations">
-                <p>{currentWizard.name}</p>
+                <p>Base of Operations Description</p>
             </ExpandBox>
-        </div>
+        </>
 
     );
 }
 
 function SpellBookBlock() {
-    const { currentWizard, refData } = useAppContext();
+    const { currentWizard } = useAppContext();
+    const [ spellViewObj, setSpellViewObj ] = useState('null')
+
     const primarySpellArr = currentWizard.primarySpellIds
     const alignedSpellArr = currentWizard.alignedSpellIds
     const neutralSpellArr = currentWizard.neutralSpellIds
     const opposedSpellArr = currentWizard.opposedSpellIds
 
-    return (
-        <div className="spellbook-container">
-            {primarySpellArr.map((spellId) => (
-                <CharSpellBlock key={spellId} spellId={spellId} />
-            ))}
-            {alignedSpellArr.map((spellId) => (
-                <CharSpellBlock key={spellId} spellId={spellId} schoolModifier={2} />
-            ))}
-            {neutralSpellArr.map((spellId) => (
-                <CharSpellBlock key={spellId} spellId={spellId} schoolModifier={4}/>
-            ))}
-            {opposedSpellArr.map((spellId) => (
-                <CharSpellBlock key={spellId} spellId={spellId} schoolModifier={6}/>
-            ))}
-
-        </div>
-    )
-}
-
-function CharSpellBlock({ spellId , schoolModifier = 0}) {
-    const { refData } = useAppContext();
-    const { currentWizard } = useAppContext();
-    const spellRef = refData.spells
-    const spellEntry = spellRef.find(spell => spell.id === spellId)
     
-    let castNum = spellEntry.base_cast + schoolModifier;
-    spellId in currentWizard.spellModifiers ? castNum += currentWizard.spellModifiers[spellId] : null;
+
+    function SpellViewCard() {
+        const spellMod = currentWizard.spellModifiers[spellViewObj.id]
+
+        const varCast = spellMod ? <b style={{ color: 'green' }}>{spellViewObj.base_cast + spellMod}</b> : spellViewObj.base_cast;
+
+        return (
+            <div>
+                <table className="spellbook-table">
+                    <tbody>
+                        <tr colSpan="3">
+                            <th colSpan="3">
+                                <h2>{spellViewObj.name ? spellViewObj.name : '--'}</h2>
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>{spellViewObj.school}</td>
+                            <td>Cast: {varCast}</td>
+                            <td>{spellViewObj.category}</td>
+                        </tr>
+                        <tr className='spellbook-description'>
+                            <td colSpan="3">{spellViewObj.description}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        )
+    }
+
+    function MySpellButton({ spellId , schoolModifier = 0}) {
+        const { currentWizard } = useAppContext();
+        const spellEntry = getSpellFromId(spellId)
+        
+        if (!spellEntry) {
+            return null
+        }
+    
+        function handleSpellViewChange(spellEntry) {
+            setSpellViewObj(spellEntry)
+        }
+    
+        let castNum = spellEntry.base_cast + schoolModifier;
+        spellId in currentWizard.spellModifiers ? castNum += currentWizard.spellModifiers[spellId] : null;
+        if (castNum < spellEntry.base_cast + schoolModifier) {
+            castNum = <b style={{ color: 'green' }}>{castNum}</b>
+        } else if (castNum > spellEntry.base_cast + schoolModifier) {
+            castNum = <b style={{ color: 'red' }}>{castNum}</b>
+        }
+
+        return (
+    
+            <button onClick={() => handleSpellViewChange(spellEntry)} >
+                {spellEntry.name} - {castNum}
+            </button>
+        )
+    }
 
     return (
-        <ExpandBox title={`${spellEntry.name} - (Cast: ${castNum})`} >
-            <p> School: {getSchoolName(spellEntry.id, 'spell')} </p>
-            <p> School Modifier: {schoolModifier} </p>
-            <p> {spellEntry.description} </p>
-        </ExpandBox>
+        <>
+            <SpellViewCard spell={spellViewObj}/>
+            <div className='spellbutton-container'>
+                <h3>Primary: </h3>
+                <div>
+                    {primarySpellArr.map((spellId) => (
+                        <MySpellButton key={spellId} spellId={spellId} />
+                    ))}
+                </div>
+            </div>
+            <div className="spellbutton-container">
+                <h3>Aligned: </h3> 
+                <div>
+                    {alignedSpellArr.map((spellId) => (
+                        <MySpellButton key={spellId} spellId={spellId} schoolModifier={2} />
+                    ))}
+                </div>
+            </div>
+            <div className="spellbutton-container">
+                <h3>Neutral: </h3> 
+                <div>
+                    {neutralSpellArr.map((spellId) => (
+                        <MySpellButton key={spellId} spellId={spellId} schoolModifier={4}/>
+                    ))}
+                </div>
+            </div>
+            <div className="spellbutton-container">
+                {currentWizard.opposedSpellIds.length > 0 ? <h3>Opposed: </h3> : null}
+                <div>
+                    {opposedSpellArr.map((spellId) => (
+                        <MySpellButton key={spellId} spellId={spellId} schoolModifier={6}/>
+                    ))}
+                </div>
+            </div>
+        </>
     )
 }
 
-function HiredSoldiers() {
-    const { currentWizard } = useAppContext();
-
-    const soldierIds = currentWizard.soldiers;
-    const soldierRef = referenceData.soldiers;
-
-    const getSoldierStats = (soldierIds, soldierRef) => {
-        return soldierIds.map(id => {
-            const soldier = soldierRef.find(soldier => soldier.id === id);
-            return soldier ? soldier.stats : null;
-        });
-    };
-
-    const soldierStats = getSoldierStats(soldierIds, soldierRef);
-
-    return (
-        <div>
-            {soldierStats.map((stats, index) => (
-                <BasicStatBlock key={index} stats={stats} costs={true} />
-            ))}
-        </div>
-    );
-}
-
-
-function CreateNewWizard() {
-    //WIP
+function HiredSoldiersBlock() {
     const { currentWizard, refData } = useAppContext();
 
-    const wizardSchoolId = currentWizard.stats.classId;
-    const alignedSchoolsIds = refData.schoolTypes.find(school => school.id === wizardSchoolId).aligned;
-    const neutralSchoolsIds = refData.schoolTypes.find(school => school.id === wizardSchoolId).neutral;
-    const opposedSchoolsIds = refData.schoolTypes.find(school => school.id === wizardSchoolId).opposed;
+    const  soldierBlockList = () => {
+        const mySoldiersList = currentWizard.soldiers;
+        let soldierList = [];
+        
+        for (const soldierName in mySoldiersList) {
+            const soldierId = mySoldiersList[soldierName];
+            const soldierEntry = getSoldierFromId(soldierId);
+            const soldierStats = soldierEntry.stats
+            soldierList.push({name: soldierName, stats: soldierStats})
+        }
+        return soldierList
+    }
+
     return (
-        <div>
-            <h2>Create New Wizard</h2>
-        </div>
+        <>
+            {soldierBlockList().map((soldier, index) => (
+                    <BasicStatCard key={soldier.name} name={soldier.name} stats={soldier.stats} costs={true} />
+                ))}
+        </>
     );
 }
