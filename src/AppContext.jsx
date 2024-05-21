@@ -10,6 +10,7 @@ export function ContextProvider({ children }) {
     const [schoolFilterId, setSchoolFilterId] = useState(0);
     const [spellViewList, setSpellViewList] = useState(referenceData.spells);
     const [currentWizard, setCurrentWizard] = useState(null);
+    const [ newWizard, setNewWizard ] = useState(referenceData.templates.wizard);
     const [themeMode, setThemeMode] = useState('light');
     const [refData, setRefData] = useState(referenceData);
 
@@ -19,6 +20,7 @@ export function ContextProvider({ children }) {
         schoolFilterId, setSchoolFilterId,
         spellViewList, setSpellViewList,
         currentWizard, setCurrentWizard,
+        newWizard, setNewWizard,
         refData, setRefData
     };
 

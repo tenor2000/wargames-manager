@@ -1,8 +1,52 @@
+import { TfiControlShuffle } from 'react-icons/tfi';
 import { useAppContext } from './AppContext.jsx';
 import { useAuth } from './AuthContext.jsx'
 import { useState } from 'react';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 
+export function getSpellFromId(spellId) {
+  const { refData } = useAppContext();
+ 
+  return refData.spells.find(spell => spell.id === spellId)
+}
+
+export function getSoldierFromId(soldierId) {
+  const { refData } = useAppContext();
+ 
+  return refData.soldiers.find(soldier => soldier.id === soldierId)
+}
+
+export function getSchoolFromId(schoolId) {
+  const { refData } = useAppContext();
+
+  try {
+    schoolId = parseInt(schoolId);
+  } catch (error) {
+    console.error("Error parsing schoolId:", error);
+    return null;
+  }
+
+  return refData.schoolsOfMagic.find(school => school.id === schoolId)
+}
+
+export function getMyWizardFromId(wizardId) {
+  const { userData } = useAuth()
+
+  return userData.myWizards.find(wizard => wizard.id === wizardId)
+}
+
+export function getSchoolFromSpellId(spellId) {
+  const { refData } = useAppContext();
+
+  const schoolId = Math.floor(spellId / 100)
+  console.schoolId
+
+  return refData.schoolsOfMagic.find(school => school.id === schoolId)
+}
+
+export const getRandomName = (nameList) => {
+  return nameList[Math.floor(Math.random() * nameList.length)];
+}
 
 export function ExpandBox({title, children, className=''}) {
   const [expanded, setExpanded] = useState(false);
@@ -35,66 +79,28 @@ export function ExpandBox({title, children, className=''}) {
   );
 }
 
-export function BasicStatBlock( {stats, costs=false} ) {
-  return (
-    <table className="stat-block-table">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Move</th>
-          <th>Fight</th>
-          <th>Shoot</th>
-          <th>Will</th>
-          <th>Armor</th>
-          <th>Health</th>
-          {costs && <th>Cost</th>}
-          <th>Notes</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>{stats.class}</td>
-          <td>{stats.move}</td>
-          <td>{stats.fight}</td>
-          <td>{stats.shoot}</td>
-          <td>{stats.will}</td>
-          <td>{stats.armor}</td>
-          <td>{stats.health}</td>
-          {costs && <td>{stats.cost}</td>}
-          <td>{stats.notes}</td>
-        </tr>
-      </tbody>
-    </table>
-  )
 
+export function deriveApprenticeStats(wizStats, apprentice) {
+  return {
+    name: apprentice.name,
+    class: apprentice.class,
+    move: wizStats.move,
+    fight: wizStats.fight - 2,
+    shoot: wizStats.shoot,
+    armor: apprentice.armor,
+    will: wizStats.will - 2,
+    health: wizStats.health - 2,
+    status: apprentice.status,
+    itemSlots: apprentice.itemSlots,
+    statMods: apprentice.statMods,
+    cost: apprentice.cost,
+}
 }
 
-export function getSpellFromId(spellId) {
-  const { refData } = useAppContext();
- 
-  return refData.spells.find(spell => spell.id === spellId)
-}
-
-export function getSoldierFromId(soldierId) {
-  const { refData } = useAppContext();
- 
-  return refData.soldiers.find(soldier => soldier.id === soldierId)
-}
-
-export function getSchoolFromId(schoolId) {
-  const { refData } = useAppContext();
-
-  return refData.schoolsOfMagic.find(school => school.id === schoolId)
-}
-
-export function getMyWizardFromId(wizardId) {
-  const { userData } = useAuth()
-
-  return userData.myWizards.find(wizard => wizard.id === wizardId)
-}
-
-
-export function BasicStatCard({ name, stats, costs=false }) {
+export function BasicStatCard({ name, stats, show_costs=false }) {
+  console.log(name)
+  console.log(stats)
+  
   const modSign = (stat) => {
     return stat >= 0 ? `+${stat}` : stat;
   }
@@ -104,13 +110,13 @@ export function BasicStatCard({ name, stats, costs=false }) {
       <table className="stat-block-table">
         <thead>
           <tr>
-            <th colspan="3"><h3>{name}</h3></th>
+            <th colSpan="3"><h3>{name} {stats.status !== 'active' ? `(${stats.status})` : ''}</h3></th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td colspan="2">{stats.class}</td>
-            <td>{costs && `${stats.cost > 0 ? `${stats.cost} gp` : 'Free'}`}</td>
+            <td colSpan="2">{stats.class}</td>
+            <td>{show_costs && `${stats.cost > 0 ? `${stats.cost} gc` : 'Free'}`}</td>
           </tr>
           <tr>
             <td><img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move Icon'/>{stats.move}</td>
@@ -123,7 +129,11 @@ export function BasicStatCard({ name, stats, costs=false }) {
             <td><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Fight Icon'/>{stats.health}</td>
           </tr>
           <tr>
-            <td colSpan="3">Item: {stats.item ? stats.item : '--'}</td>
+            <td colSpan="3">
+              {stats.itemSlots.map((slot, index) => (
+                <p key= {'Item' + index}>Item {index+1}: {slot !== 'none' ? slot : '--'}</p>
+              ))}
+            </td>
           </tr>
           <tr>
             <td colSpan="3">{stats.notes}</td>
