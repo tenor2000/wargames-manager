@@ -40,6 +40,30 @@ export const referenceData = {
             description: 'The target figure must make an immediate Will Roll with a Target Number equal to the Casting Roll. If it fails, it receives no actions in its next activation. Furthermore, the figure suffers -3 Fight (to a minimum of +0) and may not have Leap cast upon it until after it makes its next move action. Large creatures receive +8 to their Will Roll to resist this spell.'
         },
         {
+            id: 106,
+            name: 'Slow',
+            school: 'Chronomancer',
+            base_cast: 12,
+            category: 'Line of Sight',
+            description: 'The target is reduced to a maximum of one action per activation (which can be any action, it does not have to be movement). It may make an Will Roll verses the Casting Roll at the end of each of its activations. If successful the spell is cancelled.'
+        },
+        {
+            id: 107,
+            name: 'Time Store',
+            school: 'Chronomancer',
+            base_cast: 14,
+            category: 'Self Only',
+            description: 'The spellcaster captures a fragment of their own present to save for future use. To cast this spell, the spellcaster must be able to take two actions during their activation. They must spend the first action casting Time Store. If successful, the second action is lost. This spellcaster is now considered to have a stored \'extra action\' that they may use in a future turn. This action can only be used during the spellcaster\'s activation and can give the spellcaster three actions in one activation.'
+        },
+        {
+            id: 108,
+            name: 'Time Walk',
+            school: 'Chronomancer',
+            base_cast: 14,
+            category: 'Self Only',
+            description: 'Wizard only. The wizard will activate again in the Apprentice phase and the Soldier phase. This is in addition to the figures that can normally activate in those phases. The wizard may not activate any additional soldiers or be part of a group activation in these phases. The wizard may perform one action in each of these two phases and may take any action - they are not limited to movement. If the wizard moved at all in a previous activation during the turn, any additional move actions are at half rate. If a wizard casts this spell in consecutive turns, they immediately suffer 8 points of damage.'
+        },
+        {
             id: 201,
             name: 'Call Storm',
             school: 'Elementalist',
@@ -78,6 +102,30 @@ export const referenceData = {
             base_cast: 10,
             category: 'Line of Sight',
             description: 'This spell is cast upon a weapon. The next time the figure wielding this weapon wins a round of combat and does at least 1 point of damage, this weapon inflicts an additional 5 points of elemental magic damage. If cast on a normal weapon, which is then used against a creature that is Immune to Normal Weapons, this weapon will only deal the 5 points of elemental magic damage. If cast on a bow or crossbow the spell only applies to the next attack.'
+        },
+        {
+            id: 206,
+            name: 'Elemental Shield',
+            school: 'Elementalist',
+            base_cast: 10,
+            category: 'Self Only',
+            description: 'The spellcaster forms a floating shield that absorbs the next 3 points of damage the spellcaster would normally suffer in combat or from a shooting attack. Once 3 points have been absorbed the spell is cancelled. A spellcaster may only have one Elemental Shield active at any time.'
+        },
+        {
+            id: 207,
+            name: 'Scattershot',
+            school: 'Elementalist',
+            base_cast: 12,
+            category: 'Area Effect',
+            description: 'The spellcaster makes a +0 elemental magic shooting attack against every enemy figure (either from an opposing warband or uncontrolled creature) within 12” and line of sight. This may include enemy figures in combat, although the normal rules for shooting into combat are followed in this case.'
+        },
+        {
+            id: 208,
+            name: 'Wall',
+            school: 'Elementalist',
+            base_cast: 10,
+            category: 'Line of Sight',
+            description: 'This spell creates a 6”-long, 3”-high wall, part of which must be within 10” and line of sight of the spellcaster. This wall can be climbed as normal. At the end of each turn, after the turn in which the spell was cast, roll a die, on a 1–4 the wall vanishes.'
         },
         {
             id: 301,
@@ -120,6 +168,30 @@ export const referenceData = {
             description: 'This spell targets a weapon of the spellcaster\'s choosing. If cast on a melee weapon, this weapon counts as a magic weapon with +1 Fight. Bows and crossbows count as magic weapons with +1 Shoot, but the attacks made with them do not count as magic attacks. This spell may be cast on a single arrow or crossbow bolt, in which case that ammunition gives +1 Shoot and its attack counts as magic, but for the next shooting attack only. This spell may only be cast once on each weapon. When using both a magic missile weapon and magic ammunition, the shooter may choose to apply the bonus of one or the other, but not both.'
         },
         {
+            id: 306,
+            name: 'Grenade',
+            school: 'Enchanter',
+            base_cast: 10,
+            category: 'Line of Sight',
+            description: 'The spellcaster takes an object, commonly a simple rock, imbues it with magic energy and throws it at their target, whereupon it explodes into hundreds of fragments. The spellcaster picks a target point within 14". Every figure, including allies, within 1.5" of that point immediately suffers a +3 magic shooting attack. Use the target point as the origin of the attack for working out line of sight and cover.'
+        },
+        {
+            id: 307,
+            name: 'Strength',
+            school: 'Enchanter',
+            base_cast: 10,
+            category: 'Line of Sight',
+            description: 'The target receives +2 Fight for the rest of the game. Multiple Strength spells on the same target have no effect.'
+        },
+        {
+            id: 308,
+            name: 'Telekinesis',
+            school: 'Enchanter',
+            base_cast: 10,
+            category: 'Line of Sight',
+            description: 'The spellcaster may move any treasure token within 16" by up to 6" in any direction, so long as it remains in line of sight the entire time. If the treasure moves out of line of sight, it immediately falls straight to the ground. This spell has no effect on a treasure token that has any special requirements for how and when it can be picked up, nor on one being carried by a figure. This spell may not target the central treasure, until after that treasure has been picked up for the first time.'
+        },
+        {
             id: 401,
             name: 'Beauty',
             school: 'Illusionist',
@@ -158,6 +230,30 @@ export const referenceData = {
             base_cast: 12,
             category: 'Out of Game (B) OR Touch',
             description: 'An illusionary soldier becomes a temporary member of the warband for the next battle (if cast Out of Game) or until the end of the game (if cast during a battle). This soldier can be of any type found on the Soldier Tables (pages 30 and 31) except an apothecary. This soldier cannot pick up treasure, nor can it deal damage, but will otherwise count as a regular soldier for all other the purposes – it may engage in combat, albeit dealing no damage if it wins (it would still have the option to push back its opponent, however), lend support to other figures in combat, etc. If the illusionary soldier ever suffers damage of any type, it is removed. A warband may only have one illusionary soldier at any given time. The player must reveal which member of their warband is the illusionary soldier.'
+        },
+        {
+            id: 406,
+            name: 'Invisibility',
+            school: 'Illusionist',
+            base_cast: 12,
+            category: 'Touch',
+            description: 'The target figure becomes invisible. No figure may move into combat with the invisible figure, nor target it with any attack or spell (although it may still be affected by area effects, such as the blast radius of a Grenade spell). If the invisible figure moves into combat, casts a spell, or picks up a treasure token, the Invisibility spell is cancelled. This spell may be cast on a figure already carrying treasure, rendering both invisible. In this case, if the figure drops the treasure, the spell is cancelled.'
+        },
+        {
+            id: 407,
+            name: 'Teleport',
+            school: 'Illusionist',
+            base_cast: 10,
+            category: 'Self Only',
+            description: 'The spellcaster immediately moves to any location within line of sight, but may take no other actions this turn after casting this spell. This spell may not be used to enter combat or to move off the table.'
+        },
+        {
+            id: 408,
+            name: 'Transpose',
+            school: 'Illusionist',
+            base_cast: 12,
+            category: 'Line of Sight',
+            description: 'This spell switches the position of two figures on the table. The two figures being transposed must both be within line of sight of the spellcaster and within 12" of one another. The spellcaster may cast Transpose to switch themselves with another figure. Members of opposing warbands are eligible targets for being transposed but may make a Will Roll with a Target Number equal to the Casting Roll to attempt to resist the spell. If successful, the spell is cancelled and no figures are moved. Friendly figures and uncontrolled creatures will not make such Will Rolls.'
         },
         {
             id: 501,
@@ -200,6 +296,30 @@ export const referenceData = {
             description: 'The target undead creature must make an immediate Will Roll with a Target Number equal to the Casting Roll. If the roll fails, the undead creature becomes a temporary member of the spellcaster\'s warband. This control lasts for the rest of the game or until the spell is cancelled. The spellcaster may spend an action to cancel this spell. A spellcaster may only control one undead creature at a time.'
         },
         {
+            id: 506,
+            name: 'Spell Eater',
+            school: 'Necromancer',
+            base_cast: 12,
+            category: 'Line of Sight',
+            description: 'Casting this spell causes the spellcaster to immediately take 1 point of damage. When this spell is cast, it cancels the effects of a single casting of any one spell currently in play. This spell cannot unsummon a creature, but it can cancel the control of a creature.'
+        },
+        {
+            id: 507,
+            name: 'Steal Health',
+            school: 'Necromancer',
+            base_cast: 10,
+            category: 'Line of Sight',
+            description: 'The target must make an immediate Will Roll with a Target Number equal to the Casting Roll. If failed, the target immediately loses 3 Health and the spellcaster regains 3 Health. The spellcaster gains 3 Health, even if the target had less Health than that remaining. This may not take the spellcaster above their starting Health. This spell has no effect on undead or constructs. A spellcaster may target a member of their own warband - if they do, however, the target immediately (and permanently) leaves the warband and is treated as an uncontrolled creature for the rest of the game.'
+        },
+        {
+            id: 508,
+            name: 'Strike Dead',
+            school: 'Necromancer',
+            base_cast: 18,
+            category: 'Line of Sight',
+            description: 'This spell targets a figure within 8". The target must make a Will Roll with a Target Number equal to the Casting Roll or be immediately reduced to 0 Health. All figures may empower their Will Roll to resist this spell, even non-spellcasters. The spellcaster immediately loses 1 Health upon attempting this spell (even if it is cast successfully), in addition to any loss incurred by failure or empowerment. This spell has no effect on undead or constructs.'
+        },
+        {
             id: 601,
             name: 'Absorb Knowledge',
             school: 'Sigilist',
@@ -238,6 +358,30 @@ export const referenceData = {
             base_cast: 10,
             category: 'Line of Sight',
             description: 'The target is attacked by a sharp animated quill. Although the quill does no damage, it is highly irritating and extremely distracting. While under attack, the target suffers -1 Move, -2 Fight, -4 Shoot, and -2 to all Casting Rolls. Whenever the target is activated, it may make a Will Roll with a Target Number equal to the Casting Roll - if successful, the quill is caught and destroyed. Multiple castings of Furious Quill against the same target have no effect.'
+        },
+        {
+            id: 606,
+            name: 'Power Word',
+            school: 'Sigilist',
+            base_cast: 14,
+            category: 'Area Effect',
+            description: 'This spell draws a bright rune of power in the sky. The spellcaster may pick one spell for the Power Word to affect. All rolls to cast that particular spell are at +3 for every spellcaster for the rest of the game. A spellcaster may only have one Power Word spell in effect at a time. Only one Power Word can be active for each specific target spell at one time.'
+        },
+        {
+            id: 607,
+            name: 'Push',
+            school: 'Sigilist',
+            base_cast: 8,
+            category: 'Line of Sight',
+            description: 'The target suffers an immediate +10 attack. Instead of taking damage from this attack, the target is moved 1" directly away from the spellcaster for every point of damage they would have taken. If this pushes the target into the edge of the table or a piece of terrain over 1/2" high, they stop immediately. Other figures do not stop (or get hit by) a pushed figure - they are assumed to step out of the way. If this spell is cast from beneath a figure it will push them up. If the target is pushed up or off a height, it suffers falling damage as normal. This spell can push a figure out of combat, and as it is not a shooting attack, the target is not randomized.'
+        },
+        {
+            id: 608,
+            name: 'Write Scoll',
+            school: 'Sigilist',
+            base_cast: 12,
+            category: 'Out of Game (A)',
+            description: 'This spell creates one scroll. The scroll must be of a spell that the spellcaster either knows or a spell for which they own the grimoire. The scroll may be sold, given to a figure, or stored in the wizard\'s vault.'
         },
         {
             id: 701,
@@ -280,6 +424,30 @@ export const referenceData = {
             description: 'This spell imparts knowledge on some lost treasure. Every successful casting of this spell before a game allows the player to make two rolls for a single treasure token (other than the central treasure, which is unaffected by this spell) after the game and choose which one to take.'
         },
         {
+            id: 706,
+            name: 'Suggestion',
+            school: 'Soothsayer',
+            base_cast: 12,
+            category: 'Line of Sight',
+            description: 'The target of this spell immediately drops any treasure tokens it is carrying. The spellcaster may move the figure up to 3" in any direction provided this does not move the figure into combat or cause it any immediate damage (e.g. falling more than 3"). The target of this spell may make a Will Roll with a Target Number equal to the Casting Roll. If successful, the spell has no effect.'
+        },
+        {
+            id: 707,
+            name: 'True Sight',
+            school: 'Soothsayer',
+            base_cast: 10,
+            category: 'Self Only',
+            description: 'The spellcaster, and all friendly figures within 6" of the spellcaster, can see invisible figures and are immune to the effects of the Beauty spell. Furthermore, if an invisible figure is within 6" of the spellcaster, the Invisibility spell is cancelled. If an Illusionary Soldier is within 6" of the spellcaster, it is immediately removed from the table.'
+        },
+        {
+            id: 708,
+            name: 'Wizard Eye',
+            school: 'Soothsayer',
+            base_cast: 8,
+            category: 'Line of Sight',
+            description: 'This spell may be cast on any terrain feature within 12" that has a flat side, such as most ruins. Place a token on or next to the terrain feature to represent the Wizard Eye. For the rest of the game, the caster may choose to draw line of sight from the Wizard Eye instead of from the figure when casting spells. The Wizard Eye has 180-degree field of vision. A spellcaster may only maintain one Wizard Eye at a time. If the terrain piece on which the Wizard Eye is placed is damaged or destroyed (such as by a Crumble spell) the spell is cancelled. The spellcaster may cancel this spell at the end of any turn.'
+        },
+        {
             id: 801,
             name: 'Control Demon',
             school: 'Summoner',
@@ -318,6 +486,30 @@ export const referenceData = {
             base_cast: 12,
             category: 'Line of Sight',
             description: 'The spellcaster creates a small tear in the fabric of the universe. This rift is painful to humans and creatures, but lethal to demons. The spellcaster selects a target point. All figures within 2" of that point must make a Will Roll with a Target Number equal to the Casting Roll or suffer 2 points of damage. Demons that fail the Will Roll take damage equal to the Casting Roll.'
+        },
+        {
+            id: 806,
+            name: 'Plane Walk',
+            school: 'Summoner',
+            base_cast: 10,
+            category: 'Self Only',
+            description: 'Although the spellcaster remains in the same physical location, they move briefly between planes of existence. For the rest of this turn, they can ignore all terrain when moving, thus walking through walls or across chasms. They may not be the target of any shooting attacks or spells. The spellcaster will never be considered in combat during the turn, nor can they be attacked by any figure. They may not, however, pick up treasure or in any way affect other figures or terrain on the table. If they are carrying treasure, they drop it. It is incredibly draining to move between planes of existence, so if a spellcaster attempts to cast this spell in a second consecutive turn, they suffer a -5 modifier to their Casting Roll, -10 if they attempt it three turns in a row, and -15 on the fourth turn and beyond.'
+        },
+        {
+            id: 807,
+            name: 'Possess',
+            school: 'Summoner',
+            base_cast: 12,
+            category: 'Line of Sight',
+            description: 'This spell may only be cast on a permanent or temporary member of the spellcaster\'s own warband, except the wizard, apprentice, or demons. The target is possessed by a demon and gains +2 Fight, +1 Armor, and -2 Will and counts as a demon (i.e. it will be affected by Banish, Control Demon, Circle of Protection, etc.). This figure may not be part of a group activation. If removed from the game for any reason (such as being hit by a Banish spell), check for the character\'s survival as normal. A spellcaster may only have one Possess spell active at a time.'
+        },
+        {
+            id: 808,
+            name: 'Summon Demon',
+            school: 'Summoner',
+            base_cast: 12,
+            category: 'Touch',
+            description: 'Immediately place a demon on the table within 1" of the spellcaster. It may not be placed straight into combat. This demon is considered to be under the effects of a Control Demon spell by the same spellcaster, and thus this spell may not be cast if the spellcaster is already controlling a demon. The type of demon summoned depends on the amount by which the spellcaster succeeded on their Casting Roll: 0-5 imp, 6-12 minor demon, 13+ major demon. If a spellcaster rolls a 1 while attempting to cast this spell, they summon an uncontrolled demon and must place this demon in combat with the spellcaster. Roll a die to determine the type of demon 1-10 imp, 11-17 minor demon, 18+ major demon. A spellcaster cannot empower a roll of 1 when casting this spell but there is otherwise no limit on empowering this spell. It may be empowered above 18.'
         },
         {
             id: 901,
@@ -360,6 +552,30 @@ export const referenceData = {
             description: 'Immediately cancels the ongoing effect of any one casting of any one spell. It cannot unsummon a creature, but it can cancel the control of a creature that is a temporary member of a warband.'
         },
         {
+            id: 906,
+            name: 'Heal',
+            school: 'Thaumaturge',
+            base_cast: 8,
+            category: 'Line of Sight',
+            description: 'This spell restores up to 5 points of lost Health to a target figure within 6". This spell cannot take a model above its starting Health. This spell has no effect on undead or constructs.'
+        },
+        {
+            id: 907,
+            name: 'Miraculous Cure',
+            school: 'Thaumaturge',
+            base_cast: 16,
+            category: 'Out of Game (A)',
+            description: 'Wizard only. This spell may be used in several different ways. A successful casting of this spell will remove all permanent injuries from one figure. For example, a wizard suffering from Lost Fingers regrows all their missing digits, regardless of how many times they have suffered that particular injury. Or, it may be cast on a Badly Wounded figure - if successful, the soldier is healed and may participate in the next game with no penalty. Finally, it may be used to attempt to bring a figure back from the dead. The figure must have died in the game just played, and using the spell in this fashion incurs a -4 penalty to the Casting Roll. If successful, the figure is restored to life, and may participate in the next game with no penalty. If Miraculous Cure is cast using a scroll, it cannot be used to resurrect the dead.'
+        },
+        {
+            id: 908,
+            name: 'Shield',
+            school: 'Thaumaturge',
+            base_cast: 10,
+            category: 'Line of Sight',
+            description: 'The target receives +2 Armor for the rest of the game. The maximum armor rule (see, p.36) still applies. Multiple castings of Shield on the same target have no effect.'
+        },
+        {
             id: 1001,
             name: 'Animal Companion',
             school: 'Witch',
@@ -399,6 +615,30 @@ export const referenceData = {
             category: 'Out of Game (B)',
             description: 'The spellcaster gains a familiar, which can take the form of any small creature. It is not depicted on the table, unless the player wants to include it on the spellcaster figure. A spellcaster with a familiar gains +2 Health (write as a split stat). If the spellcaster is ever reduced to 1 Health or less, the familiar is destroyed. At the start of the next game, the spellcaster reverts to their normal Health, unless another Familiar spell is successfully cast'
         },
+        {
+            id: 1006,
+            name: 'Fog',
+            school: 'Witch',
+            base_cast: 8,
+            category: 'Line of Sight',
+            description: 'Place a line of fog, 6" long, 3" high, and 1" thick anywhere on the table as long as some part of it is within line of sight of the spellcaster and all of it is within 24". Figures can move through the fog with no penalty, but line of sight may not be drawn through it. At the start of each new turn, roll a die. On a result of 1-4 the fog dissipates and is removed from the table.'
+        },
+        {
+            id: 1007,
+            name: 'Mud',
+            school: 'Witch',
+            base_cast: 10,
+            category: 'Line of Sight',
+            description: 'All ground within 3" of a target point becomes rough ground.'
+        },
+        {
+            id: 1008,
+            name: 'Poison Dart',
+            school: 'Witch',
+            base_cast: 10,
+            category: 'Line of Sight',
+            description: 'Make an immediate plus +3 poisoned shooting attack against the target figure. This is a non-magic attack.'
+        },
     ],
     schoolsOfMagic: [
         {
@@ -409,6 +649,7 @@ export const referenceData = {
         {
             id: 1,
             name: 'Chronomancer',
+            nicknames: ['Timerider', 'Chronomage', 'Timekeeper'],
             aligned: [2,5,7],
             neutral: [4,6,8,9,10],
             opposed: [3]
@@ -416,6 +657,7 @@ export const referenceData = {
         {
             id: 2,
             name: 'Elementalist',
+            nicknames: ['Fire Starter', 'Water Weaver', 'Wind Breaker', 'Earth Mover'],
             aligned: [1,3,8],
             neutral: [5,6,7,9,10],
             opposed: [4]
@@ -423,6 +665,7 @@ export const referenceData = {
         {
             id: 3,
             name: 'Enchanter',
+            nicknames: ['Transmuter', 'Imbuer', 'Mesmerizer'],
             aligned: [2,6,10],
             neutral: [4,5,7,8,9],
             opposed: [1]
@@ -430,6 +673,7 @@ export const referenceData = {
         {
             id: 4,
             name: 'Illusionist',
+            nicknames: ['Conjuror', 'Prestidigitator', 'Magician'],
             aligned: [6,7,9],
             neutral: [1,3,5,8,10],
             opposed: [2]
@@ -437,6 +681,7 @@ export const referenceData = {
         {
             id: 5,
             name: 'Necromancer',
+            nicknames: ['Death Mage', 'Soul Reaper', 'Dead Lover'],
             aligned: [1,8,10],
             neutral: [2,3,4,6,7],
             opposed: [9]
@@ -444,6 +689,7 @@ export const referenceData = {
         {
             id: 6,
             name: 'Sigilist',
+            nicknames: ['Rune Reader', 'Scribe', 'Sigil Maker'],
             aligned: [3,4,9],
             neutral: [1,2,5,7,10],
             opposed: [8]
@@ -451,6 +697,7 @@ export const referenceData = {
         {
             id: 7,
             name: 'Soothsayer',
+            nicknames: ['Seer', 'Fortune Teller', 'Prognosticator'],
             aligned: [1,4,9],
             neutral: [2,3,5,6,8],
             opposed: [10]
@@ -458,6 +705,7 @@ export const referenceData = {
         {
             id: 8,
             name: 'Summoner',
+            nicknames: ['Diabolist', 'Demonologist', 'Sorcerer'],
             aligned: [2,5,10],
             neutral: [1,3,4,7,9],
             opposed: [6]
@@ -465,6 +713,7 @@ export const referenceData = {
         {
             id: 9,
             name: 'Thaumaturge',
+            nicknames: ['Invoker', 'Wonder Worker', 'Diviner'],
             aligned: [4,6,7],
             neutral: [1,2,3,8,10],
             opposed: [5]
@@ -472,6 +721,7 @@ export const referenceData = {
         {
             id: 10,
             name: 'Witch',
+            nicknames: ['Warlock', 'Hedge Wizard', 'Witch Doctor'],
             aligned: [3,5,8],
             neutral: [1,2,4,6,9],
             opposed: [7]
@@ -591,6 +841,134 @@ export const referenceData = {
                 notes: 'Bow, Dagger, Leather Armor',
             },
         },
+        {
+            id: 8,
+            type: 'Specialist',
+            source: 'base',
+            stats: {
+                class: 'Crossbowman',
+                move: 6,
+                fight: 1,
+                shoot: 2,
+                armor: 11,
+                will: 0,
+                health: 10,
+                cost: 75,
+                notes: 'Crossbow, Dagger, Leather Armor',
+            },
+        },
+        {
+            id: 9,
+            type: 'Specialist',
+            source: 'base',
+            stats: {
+                class: 'Treasure Hunter',
+                move: 7,
+                fight: 3,
+                shoot: 0,
+                armor: 11,
+                will: 2,
+                health: 12,
+                cost: 100,
+                notes: 'Hand Weapon, Dagger, Leather Armor',
+            },
+        },
+        {
+            id: 10,
+            type: 'Specialist',
+            source: 'base',
+            stats: {
+                class: 'Tracker',
+                move: 7,
+                fight: 1,
+                shoot: 2,
+                armor: 11,
+                will: 1,
+                health: 12,
+                cost: 100,
+                notes: 'Staff, Bow, Leather Armor',
+            },
+        },
+        {
+            id: 11,
+            type: 'Specialist',
+            source: 'base',
+            stats: {
+                class: 'Knight',
+                move: 5,
+                fight: 4,
+                shoot: 0,
+                armor: 13,
+                will: 1,
+                health: 12,
+                cost: 125,
+                notes: 'Hand Weapon, Shield, Mail Armor',
+            },
+        },
+        {
+            id: 12,
+            type: 'Specialist',
+            source: 'base',
+            stats: {
+                class: 'Templar',
+                move: 5,
+                fight: 4,
+                shoot: 0,
+                armor: 12,
+                will: 1,
+                health: 12,
+                cost: 125,
+                notes: 'Two-Handed Weapon, Mail Armor',
+            },
+        },
+        {
+            id: 13,
+            type: 'Specialist',
+            source: 'base',
+            stats: {
+                class: 'Ranger',
+                move: 7,
+                fight: 2,
+                shoot: 2,
+                armor: 11,
+                will: 2,
+                health: 12,
+                cost: 125,
+                notes: 'Bow, Hand Weapon, Leather Armor',
+            },
+        },
+        {
+            id: 14,
+            type: 'Specialist',
+            source: 'base',
+            stats: {
+                class: 'Barbarian',
+                move: 6,
+                fight: 4,
+                shoot: 0,
+                armor: 10,
+                will: 3,
+                health: 14,
+                cost: 125,
+                notes: 'Two-Handed Weapon',
+            },
+        },
+        {
+            id: 15,
+            type: 'Specialist',
+            source: 'base',
+            stats: {
+                class: 'Marksman',
+                move: 5,
+                fight: 2,
+                shoot: 2,
+                armor: 12,
+                will: 1,
+                health: 12,
+                cost: 125,
+                notes: 'Crossbow, Hand Weapon, Mail Armor',
+            },
+        },
     ],
     templates: {
         wizard: {
@@ -606,10 +984,21 @@ export const referenceData = {
                 shoot: 0,
                 armor: 10,
                 will: 4,
-                cost: 0
+                cost: 0,
+                status: 'active',
+                itemSlots: ['none', 'none', 'none', 'none', 'none'],
+                statMods: [],
             },
             gold: 400,
-            apprentice: null,
+            apprentice: {
+                name: '',
+                class: 'Apprentice',
+                status: 'vacant',
+                armor: 10,
+                itemSlots: ['none', 'none', 'none', 'none'],
+                statMods: [],
+                cost: 100,
+            },
             primarySpellIds: [],
             alignedSpellIds: [],
             neutralSpellIds: [],
@@ -618,10 +1007,10 @@ export const referenceData = {
             soldiers: {
 
             },
-            soldierItems: [],
             soldiersLost: 0,
             xpGained: 0,
             xpSpent: 0,
+            base: 'none'
         },
         soldier: {
             id: null,
@@ -639,6 +1028,77 @@ export const referenceData = {
                 notes: 'Hand Weapon, Shield, Leather Armor',
             },
         }
+    },
+    nameGenerator: {
+        wizard: [
+            'Merida',
+            'Gandofino',
+            'Splendiferous',
+            'Saruman',
+            'Gargamel',
+            'Morgana',
+            'Mystique',
+            'Rasputin',
+            'Gwydion',
+            'Edwin',
+            'Glorfindel',
+            'Cerberus',
+            'Sebastian',
+        ],
+        apprentice: [
+            'Tim',
+            'Sam',
+            'Ben',
+            'Jake',
+            'Matt',
+            'Max',
+            'Alex',
+            'Jeff',
+            'Ella',
+            'Zoe',
+            'Luke',
+            'Sara',
+            'Dave',
+            'Nate',
+            'Adam',
+            'Steve',
+            'Joe',
+            'Pete',
+        ],
+        soldier: [
+            'Brutus',
+            'Rex',
+            'Tank',
+            'Blade',
+            'Sarge',
+            'Ranger',
+            'Bruiser',
+            'Viper',
+            'Grunt',
+            'Thor',
+            'Bob',
+            'Frank',
+            'Samantha',
+            'Charlie',
+            'Hank',
+            'Bart',
+            'Matthew',
+            'Dennis',
+            'Timothy',
+            'Michael',
+            'Jeffrey',
+        ],
+        animal: [
+            'Sandy',
+            'Daisy',
+            'Coco',
+            'Pika',
+            'Jub-Jub',
+            'Dogmeat',
+            'Dogbert',
+            'Scooby',
+            'Snoopy',
+        ],
     },
 }
 
@@ -750,33 +1210,48 @@ export const userInfoData = {
             base: 'none'
         },
         {
-            id: 3,
-            name: 'Homer the Idiot',
+            id: 1,
+            name: 'Homer the Warlock',
             stats: {
-                classId: 9,
-                level: 8,
+                classId: 10,
+                level: 0,
                 health: 14,
                 currentHealth: 14,
                 move: 6,
                 fight: 2,
-                shoot: 2,
+                shoot: 0,
                 armor: 10,
                 will: 4,
-                cost: 0
+                cost: 0,
+                status: 'active',
+                itemSlots: ['dagger', 'none', 'none', 'none', 'none'],
+                statMods: [],
             },
             gold: 400,
-            apprentice: 'Ned',
-            primarySpellIds: [401, 402, 403],
-            alignedSpellIds: ['Push', 'Heal', 'Wizard Eye'],
-            neutralSpellIds: ['Raise Zombie', 'Leap'],
-            opposedSpellIds: ['Fireball', 'Firestorm', 'Fire Wall'],
+            apprentice: {
+                name: "",
+                class: 'Apprentice',
+                status: 'vacant',
+                armor: 10,
+                itemSlots: ['none', 'none', 'none', 'none'],
+                statMods: [],
+                cost: 100,
+            },
+            primarySpellIds: [1001, 1002, 1003],
+            alignedSpellIds: [301, 501, 802],
+            neutralSpellIds: [101, 201],
+            opposedSpellIds: [],
             spellModifiers: {
-                401: -1
+
+            },
+            soldiers: {
+
             },
             soldiersLost: 0,
             xpGained: 0,
             xpSpent: 0,
-        }
+            base: 'none',
+        },
     ],
     myRecord: {
         wins: 0,
