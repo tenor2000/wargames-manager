@@ -970,10 +970,18 @@ export const referenceData = {
             },
         },
     ],
+    statuses: {
+        0: 'Dead',
+        1: 'Active',
+        2: 'Badly Injured',
+        7: 'Hired',
+        8: 'For Hire',
+        9: 'Vacant',
+    },
     templates: {
         wizard: {
             id: null,
-            name: 'A man with no name',
+            name: 'Timmy',
             stats: {
                 classId: 0,
                 level: 0,
@@ -985,7 +993,7 @@ export const referenceData = {
                 armor: 10,
                 will: 4,
                 cost: 0,
-                status: 'active',
+                status: 1,
                 itemSlots: ['none', 'none', 'none', 'none', 'none'],
                 statMods: [],
             },
@@ -993,7 +1001,7 @@ export const referenceData = {
             apprentice: {
                 name: '',
                 class: 'Apprentice',
-                status: 'vacant',
+                status: 9,
                 armor: 10,
                 itemSlots: ['none', 'none', 'none', 'none'],
                 statMods: [],
@@ -1010,6 +1018,7 @@ export const referenceData = {
             soldiersLost: 0,
             xpGained: 0,
             xpSpent: 0,
+            vault: [],
             base: 'none'
         },
         soldier: {
@@ -1064,6 +1073,11 @@ export const referenceData = {
             'Steve',
             'Joe',
             'Pete',
+            'Mike',
+            'Keith',
+            'Toby',
+            'Mark',
+            'Jefferson'
         ],
         soldier: [
             'Brutus',
@@ -1074,6 +1088,8 @@ export const referenceData = {
             'Ranger',
             'Bruiser',
             'Viper',
+            'Scout',
+            'Shank',
             'Grunt',
             'Thor',
             'Bob',
@@ -1087,6 +1103,11 @@ export const referenceData = {
             'Timothy',
             'Michael',
             'Jeffrey',
+            'George',
+            'Thomas',
+            'Henry',
+            'Joseph',
+            'Edward',
         ],
         animal: [
             'Sandy',
@@ -1121,7 +1142,7 @@ export const userInfoData = {
                 armor: 10,
                 will: 4,
                 cost: 0,
-                status: 'active',
+                status: 1,
                 itemSlots: ['dagger', 'none', 'none', 'none', 'none'],
                 statMods: [],
             },
@@ -1129,7 +1150,7 @@ export const userInfoData = {
             apprentice: {
                 name: "Jim",
                 class: 'Apprentice',
-                status: 'active',
+                status: 1,
                 armor: 10,
                 itemSlots: ['one-handed weapon', 'none', 'none', 'none'],
                 statMods: [],
@@ -1143,19 +1164,20 @@ export const userInfoData = {
                 401: -1,
                 402: 1,
             },
-            soldiers: {
-                'Julius': {status: 'active', classId: 1, itemSlots: ['none']},
-                'Adam': {status: 'Dead', classId: 1, itemSlots: ['none']},
-                'Roger': {status: 'active', classId: 2, itemSlots: ['none']},
-                'Todd': {status: 'Badly Injured', classId: 2, itemSlots: ['none']},
-                'Jeff': {status: 'active', classId: 4, itemSlots: ['none']},
-                'Hank': {status: 'active', classId: 7, itemSlots: ['none']},
-                'George': {status: 'active', classId: 5, itemSlots: ['none']},
-                'Clyde': {status: 'active', classId: 6, itemSlots: ['none']},
-            },
+            soldiers: [
+                {name: 'Julius', status: 1, classId: 1, itemSlots: ['none']},
+                {name: 'Adam', status: 0, classId: 1, itemSlots: ['none']},
+                {name: 'Roger', status: 1, classId: 2, itemSlots: ['none']},
+                {name: 'Todd', status: 2, classId: 2, itemSlots: ['none']},
+                {name: 'Jeff', status: 1, classId: 4, itemSlots: ['none']},
+                {name: 'Hank', status: 1, classId: 7, itemSlots: ['none']},
+                {name: 'George', status: 1, classId: 5, itemSlots: ['none']},
+                {name: 'Clyde', status: 1, classId: 6, itemSlots: ['none']},
+            ],
             soldiersLost: 0,
             xpGained: 0,
             xpSpent: 0,
+            vault: [],
             base: 'none',
         },
         {
@@ -1173,7 +1195,7 @@ export const userInfoData = {
                 armor: 10,
                 will: 4,
                 cost: 0,
-                status: 'active',
+                status: 1,
                 itemSlots: ['dagger', 'none', 'none', 'none', 'none'],
                 statMods: [],
             },
@@ -1181,7 +1203,7 @@ export const userInfoData = {
             apprentice: {
                 name: "Ted",
                 class: 'Apprentice',
-                status: 'active',
+                status: 1,
                 armor: 10,
                 itemSlots: ['dagger', 'none', 'none', 'none'],
                 statMods: [],
@@ -1194,23 +1216,24 @@ export const userInfoData = {
             spellModifiers: {
                 301: -1
             },
-            soldiers: {
-                'Fred': {status: 'active', classId: 1, itemSlots: ['none']},
-                'Sally': {status: 'Dead', classId: 1, itemSlots: ['none']},
-                'Jimmy': {status: 'active', classId: 2, itemSlots: ['none']},
-                'Ned': {status: 'Badly Injured', classId: 2, itemSlots: ['none']},
-                'Sue': {status: 'active', classId: 3, itemSlots: ['none']},
-                'Bill': {status: 'active', classId: 4, itemSlots: ['none']},
-                'Joe': {status: 'active', classId: 7, itemSlots: ['none']},
-                'Jack': {status: 'active', classId: 6, itemSlots: ['none']},
-            },
+            soldiers: [
+                {name: 'Fred', status: 1, classId: 1, itemSlots: ['none']},
+                {name: 'Sally', status: 0, classId: 1, itemSlots: ['none']},
+                {name: 'Jimmy', status: 1, classId: 2, itemSlots: ['none']},
+                {name: 'Ned', status: 2, classId: 2, itemSlots: ['none']},
+                {name: 'Sue', status: 1, classId: 3, itemSlots: ['none']},
+                {name: 'Bill', status: 1, classId: 4, itemSlots: ['none']},
+                {name: 'Joe', status: 1, classId: 7, itemSlots: ['none']},
+                {name: 'Jack', status: 1, classId: 6, itemSlots: ['none']},
+            ],
             soldiersLost: 0,
             xpGained: 400,
             xpSpent: 200,
+            vault: [],
             base: 'none'
         },
         {
-            id: 1,
+            id: 3,
             name: 'Homer the Warlock',
             stats: {
                 classId: 10,
@@ -1223,7 +1246,7 @@ export const userInfoData = {
                 armor: 10,
                 will: 4,
                 cost: 0,
-                status: 'active',
+                status: 1,
                 itemSlots: ['dagger', 'none', 'none', 'none', 'none'],
                 statMods: [],
             },
@@ -1231,7 +1254,7 @@ export const userInfoData = {
             apprentice: {
                 name: "",
                 class: 'Apprentice',
-                status: 'vacant',
+                status: 9,
                 armor: 10,
                 itemSlots: ['none', 'none', 'none', 'none'],
                 statMods: [],
@@ -1244,12 +1267,13 @@ export const userInfoData = {
             spellModifiers: {
 
             },
-            soldiers: {
+            soldiers: [
 
-            },
+            ],
             soldiersLost: 0,
             xpGained: 0,
             xpSpent: 0,
+            vault: [],
             base: 'none',
         },
     ],

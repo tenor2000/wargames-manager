@@ -9,7 +9,8 @@ import { SpellView, SpellSideBar } from './Spells.jsx';
 import { WarbandView, WarbandSideBar } from './Warbands.jsx';
 import { CampaignView, CampaignSideBar } from './Campaigns.jsx';
 import { CreateNewWizard, NewWizardSideBar } from './CreateNewWizard.jsx';
-import './styles/ContentArea.css';
+import Clock from './lessons.jsx';
+
 
 
 export function MenuBar() {
@@ -45,6 +46,7 @@ export function SideBar() {
             <Route path="/campaigns" element={<CampaignSideBar />} />
             <Route path="/reference" element={<ReferenceSideBar />} />
             <Route path="/new-wizard" element={<NewWizardSideBar />} />
+            <Route path="/lessons" element={<NewWizardSideBar />} />
             {/* Add routes for other sidebar items */}
         </Routes>
     </div>
@@ -62,9 +64,9 @@ export function ContentArea() {
         <Route path="/spells" element={<SpellView />} />
         <Route path="/warbands" element={<WarbandView />} />
         <Route path="/campaigns" element={<CampaignView />} />
-        <Route path="/new-wizard" element={<CreateNewWizard />} />
         <Route path="/warband-view" element={<WarbandSideBar />} />
         <Route path="/new-wizard" element={<CreateNewWizard />} />
+        <Route path="/lessons" element={<Clock />} />
         {/* Add routes for other pages */}
       </Routes>
     </div>

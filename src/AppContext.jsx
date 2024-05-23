@@ -13,6 +13,13 @@ export function ContextProvider({ children }) {
     const [ newWizard, setNewWizard ] = useState(referenceData.templates.wizard);
     const [themeMode, setThemeMode] = useState('light');
     const [refData, setRefData] = useState(referenceData);
+    const [ editMode, setEditMode ] = useState({'wizard': false, 
+                                                'apprentice': false, 
+                                                'spells': false, 
+                                                'soldiers': false,
+                                                'vault': false,
+                                                'base': false
+                                                });
 
     const value = {
         isLoggedIn, setIsLoggedIn,
@@ -21,7 +28,8 @@ export function ContextProvider({ children }) {
         spellViewList, setSpellViewList,
         currentWizard, setCurrentWizard,
         newWizard, setNewWizard,
-        refData, setRefData
+        refData, setRefData,
+        editMode, setEditMode,
     };
 
     return (

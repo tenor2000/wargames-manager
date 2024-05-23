@@ -67,7 +67,7 @@ button:focus-visible {
   width: 100vw;
   height: 100vh;
   max-width: 1400px;
-  margin: 25px;
+  margin: 8px;
   gap: 8px
 }
 
