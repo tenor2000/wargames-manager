@@ -1,5 +1,6 @@
 import { useAppContext } from './AppContext.jsx';
-import { BasicSpellCard, ExpandBox, getSchoolFromId} from './BasicComponents.jsx';
+import { BasicSpellCard, ExpandBox } from './BasicComponents.jsx';
+import { getSchoolFromId } from './HelperFunctions.js';
 // import './styles/Spells.css';
 
 export function SpellView() {
