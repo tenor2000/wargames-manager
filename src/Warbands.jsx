@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ExpandBox , 
-    BasicStatCard, 
-    getSchoolFromId, 
-    deriveApprenticeStats, 
-    getRandomName } from './BasicComponents.jsx';
+import { ExpandBox, BasicStatCard  } from './BasicComponents.jsx';
+import { getSchoolFromId, deriveApprenticeStats, getRandomName } from './HelperFunctions.js';
 import { useAuth } from './AuthContext.jsx';
 import { useAppContext } from './AppContext.jsx';
 import { SpellBookBlock } from './WarbandSpellbook.jsx';
-import { HiredSoldiersBlock, EditSoldiers, NoSoldierMenu } from './WarbandSoldiers.jsx';
+import { HiredSoldiersBlock, EditSoldiersView, NoSoldierMenu } from './WarbandSoldiers.jsx';
 import { ShowPotentialApprentices, EditApprentice } from './WarbandApprentice.jsx';
 import './styles/Warbands.css';
 
@@ -27,13 +24,14 @@ export function WarbandView() {
 export function WarbandSideBar() {
     const { userData } = useAuth();
     const navigate = useNavigate();
-    const { currentWizard, setCurrentWizard, setNewWizard, refData } = useAppContext();
+    const { currentWizard, setCurrentWizard, setNewWizard, refData, setEditMode } = useAppContext();
     
     function handleWarbandDashClick() {
         setCurrentWizard(null)
     }
 
     function handleWizardClick(wizard) {
+        setEditMode({wizards: false, apprentice: false, spellbook: false, soldier: false, vault: false, base: false});
         setCurrentWizard(wizard)
     }
 
@@ -105,14 +103,7 @@ function WarbandDash() {
 }
 
 function WarbandDetails() {
-    const { currentWizard } = useAppContext();
-    const [ editMode, setEditMode ] = useState({'wizard': false, 
-                                                'apprentice': false, 
-                                                'spells': false, 
-                                                'soldiers': false,
-                                                'vault': false,
-                                                'base': false
-                                                });
+    const { currentWizard, editMode, setEditMode } = useAppContext();
 
     const wizardStats = currentWizard.stats;
     const apprenticeStats = deriveApprenticeStats(wizardStats, currentWizard.apprentice);
@@ -134,20 +125,20 @@ function WarbandDetails() {
                 <BasicStatCard name={currentWizard.name} stats = {wizardStats}/>
             </ExpandBox>
             <ExpandBox title={`Apprentice`} className='apprentice'>
-                {apprenticeStats.status !== 'vacant' && editMode !== 'apprentice' &&
+                {apprenticeStats.status !== 9 && editMode !== 'apprentice' &&
                 <BasicStatCard name={apprenticeStats.name} stats = {apprenticeStats} />
                 }
-                {apprenticeStats.status === 'vacant' && <ShowPotentialApprentices/>}
-                {editMode.apprentice && <EditApprentice editMode={editMode} setEditMode={setEditMode}/>}
-                {!editMode.apprentice && apprenticeStats.status !== 'vacant' && <button onClick={() => handleEditClick('apprentice')}>Edit Apprentice</button>}
+                {apprenticeStats.status === 9 && <ShowPotentialApprentices/>}
+                {editMode.apprentice && <EditApprentice />}
+                {!editMode.apprentice && apprenticeStats.status !== 9 && <button onClick={() => handleEditClick('apprentice')}>Edit Apprentice</button>}
             </ExpandBox>
             <ExpandBox title={`Spellbook`} className="spellbook">
                 <SpellBookBlock/>
             </ExpandBox>
             <ExpandBox title="Hired Soldiers" className="hired-soldiers">
-                {Object.keys(currentWizard.soldiers).length > 0 && editMode !== 'soldiers' && <HiredSoldiersBlock/>}
+                {Object.keys(currentWizard.soldiers).length > 0 && !editMode.soldiers && <HiredSoldiersBlock/>}
                 {Object.keys(currentWizard.soldiers).length === 0 && <NoSoldierMenu/>}
-                {editMode.soldiers && <EditSoldiers editMode={editMode} setEditMode={setEditMode}/>}
+                {editMode.soldiers && <EditSoldiersView />}
                 {!editMode.soldiers && <button onClick={() => handleEditClick('soldiers')}>Edit Roster</button>}
             </ExpandBox>
             <ExpandBox title="Vault">

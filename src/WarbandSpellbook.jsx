@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAppContext } from './AppContext.jsx';
-import { getSpellFromId } from './BasicComponents';
+import { getSpellFromId } from './HelperFunctions.js';
 
 export function SpellBookBlock() {
     const { currentWizard } = useAppContext();

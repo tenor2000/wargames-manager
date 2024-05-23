@@ -84,6 +84,12 @@ ul li {
 
 .hired-soldiers-container {
     display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.soldier-card-view {
+    display: flex;
     flex-wrap: wrap;
     gap: 10px;
 }
@@ -120,4 +126,17 @@ ul li {
     display: flex;
     justify-content: center;
     margin-top: 20px;
+}
+
+.edit-soldier-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: white 1px solid;
+    padding: 5px;
+    background-color: black;
+}
+
+.edit-soldier-table th, .edit-soldier-table td {
+    border: white 1px solid;
+    padding: 5px;
 }

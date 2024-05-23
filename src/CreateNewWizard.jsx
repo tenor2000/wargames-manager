@@ -1,10 +1,11 @@
 import { useAppContext } from './AppContext.jsx';
 import { useAuth } from './AuthContext.jsx';
-import { useState, useEffect, useNavigate } from 'react';
-import { getRandomName, getSchoolFromId, getSchoolFromSpellId } from './BasicComponents.jsx';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getRandomName, getSchoolFromId, getSchoolFromSpellId } from './HelperFunctions.js';
 import './styles/NewWizard.css';
 import { update } from 'firebase/database';
-import { SpellSideBar } from './Spells.jsx';
+
 
 
 export function NewWizardSideBar() {
@@ -19,6 +20,7 @@ export function NewWizardSideBar() {
 export function CreateNewWizard() {
   const { refData, newWizard, setNewWizard } = useAppContext();
   const { userData, setUserData } = useAuth();
+  const navigate = useNavigate();
 
   const schoolList = refData.schoolsOfMagic.slice(1).map(school => (
     <option key={school.id} value={school.id}>{school.name}</option>
@@ -27,6 +29,8 @@ export function CreateNewWizard() {
   function handleSubmit(event) {
     event.preventDefault();
     // TODO: add validation
+    // TODO: add error handling
+  
 
     const updatedWizard = { ...newWizard };
 
@@ -60,7 +64,7 @@ export function CreateNewWizard() {
     setUserData(updatedUserData);
 
     
-    const navigate = useNavigate();
+    
     navigate('/warbands');
   }
 

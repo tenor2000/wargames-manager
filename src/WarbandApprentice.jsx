@@ -1,5 +1,6 @@
 import { useAppContext } from './AppContext';
-import { BasicStatCard, getRandomName, deriveApprenticeStats } from './BasicComponents';
+import { getRandomName, deriveApprenticeStats } from './HelperFunctions';
+import { BasicStatCard } from './BasicComponents';
 
 export function ShowPotentialApprentices() {
     const { refData, currentWizard, setCurrentWizard } = useAppContext();
@@ -7,7 +8,7 @@ export function ShowPotentialApprentices() {
     const hireApprentice = (apprenticeName) => {
         const updatedWizard = {...currentWizard}
         updatedWizard.apprentice.name = apprenticeName;
-        updatedWizard.apprentice.status = 'active';
+        updatedWizard.apprentice.status = 1;
         setCurrentWizard(updatedWizard)
         console.log('Hired ' + apprenticeName)
     }
@@ -41,12 +42,20 @@ export function ShowPotentialApprentices() {
     )
 }   
 
-export function EditApprentice({ editMode, setEditMode }) {
-    const { currentWizard, setCurrentWizard } = useAppContext();
+export function EditApprentice() {
+    const { currentWizard, setCurrentWizard, editMode, setEditMode } = useAppContext();
 
     const handleCancel = () => {
         const newEditMode = {...editMode};
         newEditMode['apprentice'] = false;
+        setEditMode(newEditMode);
+    }
+
+    const handleSave = () => {
+        const newEditMode = {...editMode};
+        newEditMode['apprentice'] = false;
+        const updateWizard = {...currentWizard};
+        updateWizard.apprentice.status = 1;
         setEditMode(newEditMode);
     }
     return (
