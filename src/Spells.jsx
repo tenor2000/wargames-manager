@@ -1,10 +1,13 @@
 import { useAppContext } from './AppContext.jsx';
 import { BasicSpellCard, ExpandBox } from './BasicComponents.jsx';
 import { getSchoolFromId } from './HelperFunctions.js';
-// import './styles/Spells.css';
+import { Accordion, AccordionDetails, AccordionSummary, Button } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import './styles/Spells.css';
 
 export function SpellView() {
-    const { schoolFilterId, spellViewList} = useAppContext();
+    const { schoolFilterId, setSchoolFilterId, spellViewList, setSpellViewList, refData} = useAppContext();
+    
 
     const spellsBySchool = () => {
         let sortedSpells = spellViewList;
@@ -14,19 +17,34 @@ export function SpellView() {
         }
 
         return sortedSpells.map(spell => (
-            <ExpandBox key={spell.id} title={spell.name}>
-                <BasicSpellCard spellId={spell.id} />
-            </ExpandBox>
+            <Accordion key={spell.id} sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="spell-summary" aria-controls="spell-details">
+                    <h3>{spell.name}</h3>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <BasicSpellCard spellId={spell.id} />
+                </AccordionDetails>
+            </Accordion>
         ))
     }
+    function handleSearchFilter(text) {
+        const spellList = refData.spells;
+        const filteredSpells = spellList.filter(spell => spell.name.toLowerCase().includes(text.toLowerCase()));
+        setSchoolFilterId(0);
+        setSpellViewList(filteredSpells);
+    }
+
     const schoolname = getSchoolFromId(schoolFilterId).name;
 
     return (
         <>
-            <h2>{schoolname} Spells</h2>
-            <ul>
-                {spellsBySchool()}
-            </ul>
+            <div className='center'>
+                <h2>{schoolname} {schoolname==='All' ? 'Spells' : 'Spellbook'}</h2>
+            </div>
+            <input onChange={(e) => handleSearchFilter(e.target.value)} className="search-bar" placeholder="Search..."/>
+            <div>
+            {spellsBySchool()}
+            </div>
         </>
     );
 }
@@ -45,23 +63,20 @@ export function SpellSideBar() {
         setSpellViewList(newSpellList);
     }
 
-    function handleSearchFilter(text) {
-        const filteredSpells = spellList.filter(spell => spell.name.toLowerCase().includes(text.toLowerCase()));
-        setSchoolFilterId(0);
-        setSpellViewList(filteredSpells);
-    }
 
     const spellSchools = magicSchools.map(school => (
-        <li key={school.id} onClick={() => handleSchoolClick(school.name)}>{school.name}</li>
+        <Button key={school.id} onClick={() => handleSchoolClick(school.name)}>{school.name}</Button>
     ))
 
     return (
-        <div className="sidebar-view">
+        <div className="spells-sidebar-view">
             <h3>Schools of Magic</h3>
-            <ul>
+            
+            <div className="spells-sidebar-item">
                 {spellSchools}
-            </ul>
-            <input type="text" onChange={(e) => handleSearchFilter(e.target.value)} placeholder={'search'}/>
+            </div>
+
+
         </div>
     );
 }

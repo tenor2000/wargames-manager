@@ -1,9 +1,9 @@
 import { useAppContext } from "./AppContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BasicStatCard } from "./BasicComponents";
 import { getRandomName, getSoldierFromId, getStatusFromId } from "./HelperFunctions";
 
-import { Tooltip } from "@mui/material";
+import { Tooltip, TextField, Button, Snackbar } from "@mui/material";
 
 
 const formSoldierStats = (mySoldierArray) => {
@@ -19,6 +19,7 @@ const formSoldierStats = (mySoldierArray) => {
 }
 export function HiredSoldiersBlock() {
     const { currentWizard } = useAppContext();
+    console.log(currentWizard)
 
     return (
         <div className='soldier-card-view'>
@@ -31,8 +32,9 @@ export function HiredSoldiersBlock() {
 
 export function EditSoldiersView() {
     const { currentWizard, setCurrentWizard, editMode, setEditMode, refData} = useAppContext();
-    const [ editedWizard, setEditedWizard ] = useState(currentWizard);
     const [ totalEditedCost, setTotalEditedCost ] = useState(0);
+    const [ editedWizard, setEditedWizard ] = useState(currentWizard);
+    
 
     const modSign = (stat) => {
         return stat >= 0 ? `+${stat}` : stat;
@@ -41,37 +43,33 @@ export function EditSoldiersView() {
     const handleCancel = () => {
         const newEditMode = {...editMode};
         newEditMode['soldiers'] = false;
+        setEditedWizard({...currentWizard});
         setEditMode(newEditMode);
     }
 
     const handleSave = () => {
         const updateWizard = {...editedWizard};
         if (updateWizard.gold - totalEditedCost < 0) {
-            return alert('Not enough gold!')
+            return <alert>'Not enough gold'</alert>
         }
 
         updateWizard.gold -= totalEditedCost;
         updateWizard.soldiers.forEach((soldier) => {
-            if (soldier.status === 7) {
+            if (soldier.status === 7) { // 7 = 'Hired'
                 soldier.status = 1
             };
         })
         updateWizard.soldiers = updateWizard.soldiers.filter((soldier) => soldier.status !== 8); // 8 = 'For Hire'
         setCurrentWizard(updateWizard);
+        console.log('Updated ' + updateWizard.name)
         const newEditMode = {...editMode};
         newEditMode['soldiers'] = false;
         setEditMode(newEditMode);
     }
 
-    const handleNameChange = (soldier, newName) => {
+    const handleNameChange = (index, newName) => {
         const updateWizard = {...editedWizard};
-
-        updateWizard.soldiers = updateWizard.soldiers.map((mySoldier) => {
-            if (mySoldier.name === soldier.name) {
-                mySoldier.name = newName
-            }
-            return mySoldier
-        })
+        updateWizard.soldiers[index].name = newName
         setEditedWizard(updateWizard)
     }
 
@@ -112,7 +110,6 @@ export function EditSoldiersView() {
     }
 
     const ShowStatus = ({soldier}) => {
-
         if (soldier.stats.status === 0) {
             return <b style={{color: 'red'}}>Dead</b>
         } else if (soldier.stats.status === 2) {
@@ -120,25 +117,36 @@ export function EditSoldiersView() {
         } else if (soldier.stats.status === 8) {
             return <b style={{color: 'green'}}>For Hire</b>
         } else if (soldier.stats.status === 7) {
-            return <b style={{color: 'green'}}>Hired (${soldier.stats.cost})</b>
+            return <b style={{color: 'green'}}>Hired</b>
         } else {
             return <b style={{color: 'lightblue'}}>{getStatusFromId(soldier.stats.status)}</b>
         }
     }
 
-    const ShowButtonSelection = ({soldier}) => {
-        if (soldier.stats.status === 0) {
-            return <button onClick={() => handleRemove(soldier)}><b style={{color: 'red'}}>Dump</b></button>
+    const ShowCost = ({soldier}) => {
+        if (soldier.stats.status === 7) {
+            return <b style={{color: 'red'}}>{soldier.stats.cost === 0 ? 'Free' : `$${soldier.stats.cost}`}</b>
         } else if (soldier.stats.status === 8) {
-            return <button onClick={() => handleHire(soldier)}><b style={{color: 'green'}}>${soldier.stats.cost}</b></button>;
-        // } else if (soldier.stats.status === 7) {
-        //     return <button onClick={() => handleRemove(soldier)}><b style={{color: 'grey'}}>Undo</b></button>;
+            return <b style={{color: 'green'}}>{soldier.stats.cost === 0 ? 'Free' : `$${soldier.stats.cost}`}</b>
         } else {
-            return <button onClick={() => handleRemove(soldier)}><b style={{color: 'red'}}>Fire</b></button>;
+            return <b>--</b>
+        }
+    }
+
+    const ShowAction = ({soldier}) => {
+        if (soldier.stats.status === 0) {
+            return <Button onClick={() => handleRemove(soldier)}><b style={{color: 'red'}}>Dump</b></Button>
+        } else if (soldier.stats.status === 8) {
+            return <Button onClick={() => handleHire(soldier)}><b style={{color: 'green'}}>Hire</b></Button>;
+        } else if (soldier.stats.status === 7) {
+            return <Button onClick={() => handleRemove(soldier)}><b style={{color: 'grey'}}>Remove</b></Button>;
+        } else {
+            return <Button onClick={() => handleRemove(soldier)}><b style={{color: 'red'}}>Fire</b></Button>;
         }
     }
 
     function ShowClassSelections({soldier}) {
+        let age
         return (
             <>
                 <select 
@@ -148,9 +156,9 @@ export function EditSoldiersView() {
                     defaultValue={soldier.classId}
                     >
                     {
-                        refData.soldiers.map((soldierClass) => {
-                            return <option key={soldierClass.id} value={soldierClass.id}>{soldierClass.stats.class}</option>
-                        })
+                        refData.soldiers.map((soldierClass) => (
+                            <option key={soldierClass.id} value={soldierClass.id}>{soldierClass.stats.class}</option>
+                        ))
                     }
                 </select>
             </>
@@ -158,7 +166,6 @@ export function EditSoldiersView() {
     }
 
     function getRandomSoldierForHire() {
-        const { refData } = useAppContext();
         const soldier = {};
       
         soldier.status = 8; // 8 = 'For Hire'
@@ -169,13 +176,34 @@ export function EditSoldiersView() {
         return soldier
     }
 
-    // Fill slots with potential hires
-    for (let x = editedWizard.soldiers.length; x < 8; x++) {
-        editedWizard.soldiers.push(getRandomSoldierForHire());
+    function ResourceTally() {
+        const specialSoldierList = editedWizard.soldiers.filter(soldier => getSoldierFromId(soldier.classId).type === 'Specialist' && soldier.status !== 8);
+        const totalSpecialsRecruited = specialSoldierList.length;
+        
+        return (
+            <>
+                Cost / Current Gold: {totalEditedCost > currentWizard.gold ? <b style={{color: 'red'}}>{totalEditedCost}</b> : <b style={{color: 'green'}}>{totalEditedCost}</b>} / <b>{currentWizard.gold}</b>
+                <br />
+                Specialists Recruited: {totalSpecialsRecruited > 4 ? <b style={{color: 'red'}}>{totalSpecialsRecruited}</b> : <b style={{color: 'green'}}>{totalSpecialsRecruited}</b>} / 4 Allowed
+            </>
+        )
     }
 
+    // Fill slots with potential hires
+    useEffect(() => {
+        const fillSlotsWithPotentialHires = () => {
+            const updatedWizard = {...editedWizard };
+            while (updatedWizard.soldiers.length < 8) {
+                updatedWizard.soldiers.push(getRandomSoldierForHire());
+            }
+            setEditedWizard(updatedWizard);
+        };
+        fillSlotsWithPotentialHires();
+
+    } , [editedWizard]);
+
     return (
-        <div className='edit-soldiers-view'>
+        <form className='edit-soldiers-view'>
             <h3>Edit Roster</h3>
             <table className='edit-soldier-table'>
                 <thead>
@@ -190,13 +218,29 @@ export function EditSoldiersView() {
                         <th><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Fight Icon'/></th>
                         <th>Notes</th>
                         <th>Status</th>
+                        <th>Cost</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {formSoldierStats(editedWizard.soldiers).map((soldier, index) => (
+                    {formSoldierStats(editedWizard.soldiers).map((soldier, index) => {
+                        return (
                         <tr key={index}>
-                            <td><input type="text" value={soldier.name} onChange={(e) => handleNameChange(soldier, e.target.value)} /></td>
+                            {/* <td><input key = {index} type="text" value={soldier.name} onChange={(e) => handleNameChange(soldier, e.target.value)} /></td> */}
+                            <td>
+                                <TextField 
+                                    value={soldier.name} 
+                                    onChange={(e) => handleNameChange(index, e.target.value)}
+                                    variant='standard' 
+                                    sx={{
+                                        '& .MuiInputBase-input': {
+                                            color: 'white', // Text color
+                                            fontSize: '16px', // Text size
+                                            fontWeight: 'bold' // Text weight
+                                          }
+                                    }}
+                                    />
+                            </td>
                             <td>{soldier.stats.status === 8 ? <ShowClassSelections soldier={soldier}/> : soldier.stats.class}</td>
                             <td>{soldier.stats.move}</td>
                             <td>{modSign(soldier.stats.fight)}</td>
@@ -213,27 +257,25 @@ export function EditSoldiersView() {
                                     />
                                 </Tooltip>
                             </td>
-                            <td><ShowStatus soldier={soldier}/></td>
-                            <td><ShowButtonSelection soldier={soldier}/></td>
+                            <td><ShowStatus soldier={soldier} /></td>
+                            <td><ShowCost soldier={soldier} /></td>
+                            <td><ShowAction soldier={soldier} /></td>
                         </tr>
-                    ))}
+                        )}
+                    )}
                     <tr>
-                        <td colSpan="11">You have <b style={{color:'green'}}>{currentWizard.gold}</b> gold in your vault. This roster change will cost you <b style={{color: 'red'}}>{totalEditedCost}</b> gold.</td>
+                        <td colSpan="12"><ResourceTally/></td>
+                    </tr>
+                    <tr>
+                        <td colSpan="12">
+                            <Button onClick={handleCancel}>Cancel</Button>
+                            <Button onClick={handleSave}>Save</Button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
-            <button onClick={handleCancel}>Cancel</button>
-            <button onClick={handleSave}>Save</button>
-        </div>
-    )
-}
 
-
-
-export function NoSoldierMenu() {
-    return (
-        <div className='no-soldiers-container center'>
-            No Soldier Selected
-        </div>
+        </form>
+        
     )
 }
