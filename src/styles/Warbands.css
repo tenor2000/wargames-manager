@@ -17,7 +17,7 @@ ul li {
 }
 
 .warband-view .expandable-container {
-    border: white 1px solid;
+    border: var(--section-border);
     border-radius: 8px;;
     padding: 5px;
 }
@@ -35,14 +35,14 @@ ul li {
 .stat-block-table {
     padding: 8px;
     border-collapse: collapse;
-    border: white 1px solid;
+    border: var(--section-border);
     width: 100%;
     background-color: black;
     height: 250px;
 }
 
 .stat-block-table tr {
-    border: white 1px solid;
+    border: var(--section-border);
     padding: 8px;
     width: 100%;
 }
@@ -50,7 +50,7 @@ ul li {
 .stat-block-table td {
     width: calc(100% / 3);
     text-align: left;
-    border: white 1px solid;
+    border: var(--section-border);
     padding: 8px;
 }
 
@@ -97,7 +97,7 @@ ul li {
 .spellbook-table {
     width: 100%;
     border-collapse: collapse;
-    border: white 1px solid;
+    border: var(--section-border);
     padding: 5px;
     background-color: black;
 }
@@ -110,7 +110,7 @@ ul li {
 
 .spellbook-table td {
     width: calc(100% / 4);
-    border: white 1px solid;
+    border: var(--section-border);
     padding: 5px;
 }
 
@@ -131,12 +131,12 @@ ul li {
 .edit-soldier-table {
     width: 100%;
     border-collapse: collapse;
-    border: white 1px solid;
+    border:  var(--section-border);
     padding: 5px;
     background-color: black;
 }
 
 .edit-soldier-table th, .edit-soldier-table td {
-    border: white 1px solid;
+    border: var(--section-border);
     padding: 5px;
 }

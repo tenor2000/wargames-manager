@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { AuthProvider } from './AuthContext.jsx';
 import { ContextProvider } from './AppContext.jsx';
-import { MenuBar, SideBar, ContentArea } from './ContentLayout.jsx';
+import { MenuBar, ContentArea } from './ContentLayout.jsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './styles/App.css';
 
@@ -14,7 +14,6 @@ function App() {
         <AuthProvider>
           <ContextProvider>
             <MenuBar />
-            <SideBar />
             <ContentArea />
           </ContextProvider>
         </AuthProvider>
@@ -23,3 +22,4 @@ function App() {
 }
 
 export default App;
+

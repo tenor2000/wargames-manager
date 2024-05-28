@@ -1,0 +1,30 @@
+.login-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    gap: 10px;
+}
+
+.login-TextField .MuiInputLabel-root{
+    color: var(--font-color);
+}
+
+.login-TextField .MuiInputBase-input{
+    color: var(--font-color);
+}
+
+
+.login-TextField .MuiOutlinedInput-root {
+    &.Mui-focused .MuiOutlinedInput-notchedOutline {
+
+      border-color: blue; /* Border color when focused */
+    }
+    &:hover .MuiOutlinedInput-notchedOutline {
+      border-color: blue; /* Border color when hovered */
+    }
+    .MuiOutlinedInput-notchedOutline {
+      border-color: var(--border-color); /* Default border color */
+    }
+} 

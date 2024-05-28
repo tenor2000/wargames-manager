@@ -1012,9 +1012,7 @@ export const referenceData = {
             neutralSpellIds: [],
             opposedSpellIds: [],
             spellModifiers: {},
-            soldiers: {
-
-            },
+            soldiers: [],
             soldiersLost: 0,
             xpGained: 0,
             xpSpent: 0,

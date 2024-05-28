@@ -1,9 +1,10 @@
-import { TfiControlShuffle } from 'react-icons/tfi';
 import { useAppContext } from './AppContext.jsx';
 import { useAuth } from './AuthContext.jsx'
-import { useState } from 'react';
+import { useState, Fragment, IconButton } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
-import { getStatusFromId } from './HelperFunctions.js';
+import { getStatusFromId, getSpellFromId } from './HelperFunctions.js';
+import { Alert } from "@mui/material";
 
 
 export function ExpandBox({title, children, className=''}) {
@@ -38,7 +39,7 @@ export function ExpandBox({title, children, className=''}) {
 }
 
 
-export function BasicStatCard({ name, stats, show_costs=false, show_status=true }) {
+export function BasicStatCard({ name, stats, show_costs=false, show_status=true, editMode=false }) {
 
   const modSign = (stat) => {
     return stat >= 0 ? `+${stat}` : stat;
@@ -110,4 +111,49 @@ export function BasicSpellCard({spellId}) {
       </table>
     </div>
   )
+}
+
+export function SimpleSnackbar(message) {
+  const [open, setOpen] = useState(false);
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const action = (
+    <Fragment>
+      <Button color="secondary" size="small" onClick={handleClose}>
+        UNDO
+      </Button>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </Fragment>
+  );
+
+  return (
+    <div>
+      <Button onClick={handleClick}>Open Snackbar</Button>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={message}
+        action={action}
+      />
+    </div>
+  );
 }

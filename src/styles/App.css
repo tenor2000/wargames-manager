@@ -1,61 +1,83 @@
 * {
   margin: 0;
   box-sizing: border-box;
-  font-family: 'Lato', sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
-nav {
+/* nav {
   display: flex;
   grid-column: 1 / 3;
   justify-content: space-around;
   align-items: center;
   padding: 1rem;
-  background-color: #200b7a;
+  background-color: rgb(46, 45, 45);
   opacity: 0.8;
   color: white;
   font-size: 1.5rem;
   font-weight: bold;
-  border: white 1px solid;
+  border: var(--section-border);
   border-radius: 8px;
-  
 }
 
-nav ul {
+nav Button {
   display: flex;
   list-style: none;
   padding: 10px;
   gap: 20px;
+} */
+
+header {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  opacity: 0.8;
+  width: 100%;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: var(--section-border);
+  border-radius: 8px;
 }
 
-ul li {
-  cursor: pointer;
+header > div {
+  width: 100%;
+  list-style: none;
+  padding: 10px;
+  gap: 20px;
+  display: flex;
+  background-color: rgb(46, 45, 45);
+  border-radius: 8px;
 }
 
-ul li {
+
+Button {
   transition: color 1s ease;
 }
 
-ul li:hover {
-  color: blue;
+Button:hover {
+  color: white;
   transition: color 0.5s ease
 }
 
-.main-container {
+/* .main-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
+} */
 
 
 .content-container {
   display: flex;
   flex-direction: column;
   background-color: rgba(5, 15, 37, 0.8);
+  width: 100%;
+  height: 80vh;
   color: white;
   padding: 20px;
   overflow: auto;
-  border: white 1px solid;
-  border-radius: 8px;;
+  border: var(--section-border);
+  border-radius: 8px;
+  gap: 1rem;
 }
 
 .expandable-container {
@@ -71,7 +93,7 @@ ul li:hover {
 
 .sidebar {
   background-color: rgba(26, 67, 149, 0.8);
-  border: white 1px solid;
+  border: var(--section-border);
   border-radius: 8px;;
   padding: 10px;
 }
