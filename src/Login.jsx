@@ -28,7 +28,7 @@ export function Login() {
   );
 }
 
-export function LoginSideBar() {
+export function LoginSideDrawer() {
   return (
     <div>
       <h2>Login</h2>

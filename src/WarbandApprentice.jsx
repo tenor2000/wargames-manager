@@ -1,6 +1,7 @@
 import { useAppContext } from './AppContext';
 import { getRandomName, deriveApprenticeStats } from './HelperFunctions';
 import { BasicStatCard } from './BasicComponents';
+import { Accordion, AccordionDetails, AccordionSummary, Button } from '@mui/material';
 
 export function ShowPotentialApprentices() {
     const { refData, currentWizard, setCurrentWizard } = useAppContext();
@@ -34,7 +35,7 @@ export function ShowPotentialApprentices() {
             {apprenticeList(refData.nameGenerator.apprentice).map((apprenticeName) => 
                 <div key= {apprenticeName}>
                     <BasicStatCard name={apprenticeName} stats={apprenticeStats} show_costs={true} show_status={false}/>
-                    <button onClick={() => hireApprentice(apprenticeName)} >Hire {apprenticeName}</button>
+                    <Button onClick={() => hireApprentice(apprenticeName)} >Hire {apprenticeName}</Button>
                 </div>
             )}
             </div>

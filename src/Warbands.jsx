@@ -5,7 +5,7 @@ import { getSchoolFromId, deriveApprenticeStats, getRandomName } from './HelperF
 import { useAuth } from './AuthContext.jsx';
 import { useAppContext } from './AppContext.jsx';
 import { SpellBookBlock } from './WarbandSpellbook.jsx';
-import { HiredSoldiersBlock, EditSoldiersView } from './WarbandSoldiers.jsx';
+import { SoldierRosterBlock, EditSoldiersView } from './WarbandSoldiers.jsx';
 import { ShowPotentialApprentices, EditApprentice } from './WarbandApprentice.jsx';
 import { Accordion, AccordionDetails, AccordionSummary, Button } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -16,14 +16,14 @@ export function WarbandView() {
     const { currentWizard, setCurrentWarzard } = useAppContext();
 
     return (
-        <div className="warband-view center">
+        <div className="warband-view">
             {!currentWizard && <WarbandDash />}
             {currentWizard && <WarbandDetails />}
         </div>
     );
 }
 
-export function WarbandSideBar() {
+export function WarbandSideDrawer() {
     const { userData } = useAuth();
     const navigate = useNavigate();
     const { currentWizard, setCurrentWizard, setNewWizard, refData, setEditMode } = useAppContext();
@@ -44,26 +44,14 @@ export function WarbandSideBar() {
     }
 
     const wizardsList = userData.myWizards.map(wizard => (
-        // <ExpandBox key={wizard.id} title={wizard.name} >
-        //     <div className="sidebar-item" onClick={() => handleWizardClick(wizard)}>
-        //         {`${getSchoolFromId(wizard.stats.classId).name} - Level ${wizard.stats.level}`}
-        //     </div>
-        // </ExpandBox>
-
-        <Accordion key={wizard.id} sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="wizard-summary" aria-controls="wizard-details">
-                <h3>{wizard.name}</h3>
-            </AccordionSummary>
-            <AccordionDetails>
-                <div className="sidebar-item" onClick={() => handleWizardClick(wizard)}>
-                    {`${getSchoolFromId(wizard.stats.classId).name} - Level ${wizard.stats.level}`}
-                </div>
-            </AccordionDetails>
-        </Accordion>
+        <div key={wizard.id} className="sidedrawer-item" onClick={() => handleWizardClick(wizard)}>
+            {wizard.name} <br/> 
+            {getSchoolFromId(wizard.stats.classId).name} - Level {wizard.stats.level}
+        </div>
     ))
 
     return (
-        <div className="sidebar-view">
+        <div className="sidedrawer-view">
             <h3 onClick={() => handleWarbandDashClick()}
                 style = {{cursor: 'pointer'}}>
                     My Wizards
@@ -96,7 +84,7 @@ function WarbandDash() {
     }
     
     return (
-        <div className ='center'>
+        <div className ='center column'>
             <div>
                 <h2>Warband Manager</h2>
             </div>
@@ -134,32 +122,20 @@ function WarbandDetails() {
             <div>
                 <h2>{currentWizard.name}</h2>
             </div>
-            {/* <ExpandBox title={`Wizard`}>
-                <BasicStatCard name={currentWizard.name} stats = {wizardStats}/>
-            </ExpandBox> */}
             <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="wizard-stats" aria-controls="wizard-stats">
                 <h3>{'Wizard'}</h3>
             </AccordionSummary>
-            <AccordionDetails>
+            <AccordionDetails className='center column'>
                 <BasicStatCard name={currentWizard.name} stats = {wizardStats}/>
             </AccordionDetails>
             </Accordion>
-            
-            {/* <ExpandBox title={`Apprentice`} className='apprentice'>
-                {apprenticeStats.status !== 9 && editMode !== 'apprentice' &&
-                <BasicStatCard name={apprenticeStats.name} stats = {apprenticeStats} />
-                }
-                {apprenticeStats.status === 9 && <ShowPotentialApprentices/>}
-                {editMode.apprentice && <EditApprentice />}
-                {!editMode.apprentice && apprenticeStats.status !== 9 && <Button onClick={() => handleEditClick('apprentice')}>Edit Apprentice</Button>}
-            </ExpandBox> */}
 
             <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="apprentice-stats" aria-controls="apprentice-stats">
                     <h3>{'Apprentice'}</h3>
                 </AccordionSummary>
-                <AccordionDetails>
+                <AccordionDetails className='center column'>
                     {apprenticeStats.status !== 9 && editMode !== 'apprentice' &&
                         <BasicStatCard name={apprenticeStats.name} stats = {apprenticeStats} />
                     }
@@ -167,10 +143,6 @@ function WarbandDetails() {
                     {editMode.apprentice && <EditApprentice />}
                 </AccordionDetails>
             </Accordion>
-
-            {/* <ExpandBox title={`Spellbook`} className="spellbook">
-                <SpellBookBlock/>
-            </ExpandBox> */}
 
             <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="spell-book" aria-controls="spell-book-info">
@@ -181,50 +153,33 @@ function WarbandDetails() {
                 </AccordionDetails>
             </Accordion>
 
-            {/* <ExpandBox title="Hired Soldiers" className="hired-soldiers">
-                {Object.keys(currentWizard.soldiers).length > 0 && !editMode.soldiers && <HiredSoldiersBlock/>}
-                {Object.keys(currentWizard.soldiers).length === 0 && <NoSoldierMenu/>}
-                {editMode.soldiers && <EditSoldiersView />}
-                {!editMode.soldiers && <Button onClick={() => handleEditClick('soldiers')}>Edit Roster</Button>}
-            </ExpandBox> */}
-
             <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="hired-soldiers" aria-controls="hired-soldiers-info">
                     <h3>{'Hired Soldiers'}</h3>
                 </AccordionSummary>
-                <AccordionDetails>
-                    {Object.keys(currentWizard.soldiers).length > 0 && !editMode.soldiers && <HiredSoldiersBlock/>}
+                <AccordionDetails className='center column'>
+                    {Object.keys(currentWizard.soldiers).length > 0 && !editMode.soldiers && <SoldierRosterBlock/>}
                     {Object.keys(currentWizard.soldiers).length === 0 && <p>There are no soldiers in {currentWizard.name}'s roster.</p>}
                     {editMode.soldiers && <EditSoldiersView />}
                     {!editMode.soldiers && <Button onClick={() => handleEditClick('soldiers')}>Edit Roster</Button>}
                 </AccordionDetails>
             </Accordion>
 
-            {/* <ExpandBox title="Vault">
-                <p>The Vault is where all treasure is stored</p>
-                <p>Gold: {currentWizard.gold}</p>
-            </ExpandBox> */}
-
             <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="vault" aria-controls="vault-info">
                     <h3>{'Vault'}</h3>
                 </AccordionSummary>
-                <AccordionDetails>
+                <AccordionDetails className='center column'>
                     <p>The Vault is where all treasure is stored</p>
                     <p>Gold: {currentWizard.gold}</p>
                 </AccordionDetails>
             </Accordion>
 
-            {/* <ExpandBox title="Base of Operations">
-                <p>Base of Operations Description</p>
-            </ExpandBox> */}
-
-
             <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="base-of-operations" aria-controls="base-of-operations-info">
                     <h3>{'Base of Operations'}</h3>
                 </AccordionSummary>
-                <AccordionDetails>
+                <AccordionDetails className='center column'>
                     <p>Base of Operations Description</p>
                 </AccordionDetails>
             </Accordion>

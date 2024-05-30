@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAppContext } from './AppContext.jsx';
 import { getSpellFromId } from './HelperFunctions.js';
+import { Button } from '@mui/material';
 
 export function SpellBookBlock() {
     const { currentWizard } = useAppContext();
@@ -21,11 +22,18 @@ export function SpellBookBlock() {
 
         return (
             <div>
+                <Button 
+                    style={{ width: '100%' }} 
+                    onClick={() => setSpellViewObj('null')}
+                >
+                    Close Viewer
+                </Button>
                 <table className="spellbook-table">
                     <tbody>
                         <tr colSpan="4">
                             <th colSpan="4">
-                                <h2>{spellViewObj.name ? spellViewObj.name : '--'}</h2>
+                                <h2>{spellViewObj.name}</h2>
+                                
                             </th>
                         </tr>
                         <tr>
@@ -66,9 +74,9 @@ export function SpellBookBlock() {
 
         return (
     
-            <button onClick={() => handleSpellViewChange(spellEntry)} >
-                {spellEntry.name} - {castNum}
-            </button>
+            <Button onClick={() => handleSpellViewChange(spellEntry)} style={{display: 'inline-block'}}>
+                {spellEntry.name} ({castNum})
+            </Button>
         )
     }
 

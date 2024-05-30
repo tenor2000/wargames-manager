@@ -50,17 +50,6 @@ Button:hover {
   gap: 1rem;
 }
 
-/* .expandable-container {
-  overflow: hidden;
-  max-height: 100px;
-  transition: max-height 1.3s ease;
-} */
-
-/* .expanded {
-  overflow: scroll;
-  max-height: 1000px;
-} */
-
 .sidebar {
   background-color: rgba(26, 67, 149, 0.8);
   border: var(--section-border);

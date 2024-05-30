@@ -9,7 +9,7 @@ export function HomePage() {
     );
 };
 
-export function HomeSideBar() {
+export function HomeSideDrawer() {
     return (
         <div>
             <h1>Home SideBar</h1>

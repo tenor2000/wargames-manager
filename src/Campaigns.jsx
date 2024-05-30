@@ -6,7 +6,7 @@ export function CampaignView() {
     );
 }
 
-export function CampaignSideBar() {
+export function CampaignSideDrawer() {
 
     return (
         <div>

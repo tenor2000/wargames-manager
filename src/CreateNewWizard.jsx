@@ -5,10 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { getRandomName, getSchoolFromId, getSchoolFromSpellId } from './HelperFunctions.js';
 import './styles/NewWizard.css';
 import { update } from 'firebase/database';
+import { TextField, Button, InputLabel, Select, MenuItem, FormControl, Box } from '@mui/material';
 
 
 
-export function NewWizardSideBar() {
+export function NewWizardSideDrawer() {
   const { newWizard } = useAppContext();
   return (
     <>
@@ -33,8 +34,6 @@ export function CreateNewWizard() {
   
 
     const updatedWizard = { ...newWizard };
-
-    console.log(updatedWizard)
 
     let currWizList = userData.myWizards;
 
@@ -63,8 +62,6 @@ export function CreateNewWizard() {
     const updatedUserData = { ...userData, myWizards: currWizList };
     setUserData(updatedUserData);
 
-    
-    
     navigate('/warbands');
   }
 
@@ -75,14 +72,14 @@ export function CreateNewWizard() {
   return (
     <div className="new-wizard-container">
         <h3>Create New Wizard</h3>
-        <form>
+        <form onSubmit={handleSubmit} className='new-wizard-form'>
           <NewWizardEdit />
           {newWizard.stats.classId > 0 && <SpellSelection category='primary'/>}
           {newWizard.stats.classId > 0 && <SpellSelection category='aligned'/>}
           {newWizard.stats.classId > 0 && <SpellSelection category='neutral'/>}
           <section className='button-container center'>
-            <button type='button' onClick={handleCancel}>Cancel</button>
-            <button type='submit' onClick={handleSubmit}>Submit</button>
+            <Button type='cancel' onClick={handleCancel}>Cancel</Button>
+            <Button type='submit'>Submit</Button>
           </section>
         </form>
     </div>
@@ -109,20 +106,35 @@ function NewWizardEdit() {
   }
 
   const schoolList = refData.schoolsOfMagic.slice(1).map(school => (
-    <option key={school.id} value={school.id}>{school.name}</option>
+    <MenuItem key={school.id} value={school.id}>{school.name}</MenuItem>
   ))
 
   return (
     <>
-      <section className='center'>
-        <label>Name: </label>
-        <input type="text" value={newWizard.name} onChange={(e) => setNewWizard({ ...newWizard, name: e.target.value })}/>
-        <br />
-        <label>Class: </label>
-        <select value={newWizard.stats.classId} onChange={handleClassChange}>
-          <option value={0}>--</option>
-          {schoolList}
-        </select>
+      <section className='new-wizard-form' >
+        <Box sx={{ display: 'flex', flexDirection: 'row', minWidth: 120, mt: 2, gap: 2 }}>
+          <TextField 
+            className='TextField'
+            required
+            id="name" 
+            label="Name" 
+            value={newWizard.name} 
+            onChange={(e) => setNewWizard({ ...newWizard, name: e.target.value })}
+            />
+          <FormControl fullWidth sx={{ gap: 2, minWidth: 120}}>
+            <InputLabel id="class-label">Class</InputLabel>
+            <Select
+              className='TextField'
+              labelId="class-label"
+              id="class-select"
+              value={newWizard.stats.classId}
+              label="Class"
+              onChange={handleClassChange}
+            >
+              {schoolList}
+            </Select>
+          </FormControl>
+        </Box>
       </section>
     </>
   );
@@ -176,21 +188,20 @@ function SpellSelection({category}) {
     if (!spellList || spellList.length === 0) return null
 
     const spellConflict = newWizard.neutralSpellIds
-        
-    
+
     const spellOptions = spellList.map((spell, index) => (
-      <option 
+      <MenuItem 
         key={spell.id} 
         value={spell.id} 
         disabled={selectedSpells.includes(spell.id)}
         // will have to figure a way to disable when a school spell is selected to gray out other school spells
-        id={`${category}-spell-${index}`}
+        id={`spell-${category}`}
       >
         {spell.name}
-      </option>
-      ))
-    
-    return [<option key="empty" value="" >--</option>, ...spellOptions]
+      </MenuItem>
+    ))
+
+    return spellOptions
   }
 
   const spellCountArray = category === 'neutral' ? [1, 2] : [1, 2, 3]
@@ -204,19 +215,24 @@ function SpellSelection({category}) {
       </div>
       <div className='center'>
         {spellCountArray.map((index) => (
-          <div key={index}>
-              {category==='primary' && <label>{getSchoolFromId(wizardClassId).name} Spell {index}: </label>}
-              {category==='aligned' && <label>{getSchoolFromId(schoolIdArray[index - 1]).name} Spell: </label>}
-              {category==='neutral' && <label>Neutral Spell {index}: </label>}
-            <select
-              value={selectedSpells[index - 1] || ""}
-              onChange={(e) => handleSpellSelection(e, index - 1)}
-            >
-              {category==='primary' && renderSpellOptions(filteredSpells)}
-              {category==='aligned' && renderSpellOptions(filteredSpells[index - 1])}
-              {category==='neutral' && renderSpellOptions(filteredSpells)}
-            </select>
-          </div>
+          <Box key={index} sx={{ minWidth: 180 }}>
+            <FormControl fullWidth>
+                {category==='primary' && <InputLabel id="spell-primary">{getSchoolFromId(wizardClassId).name}</InputLabel>}
+                {category==='aligned' && <InputLabel id="spell-aligned">{getSchoolFromId(schoolIdArray[index - 1]).name}</InputLabel>}
+                {category==='neutral' && <InputLabel id="spell-neutral">Neutral </InputLabel>}
+              <Select
+                labelId={`spell-${category}`}
+                value={selectedSpells[index - 1] || ""}
+                onChange={(e) => handleSpellSelection(e, index - 1)}
+                label={category}
+                sx={{ backgroundColor: 'black', color: 'white' }}
+              >
+                {category==='primary' && renderSpellOptions(filteredSpells)}
+                {category==='aligned' && renderSpellOptions(filteredSpells[index - 1])}
+                {category==='neutral' && renderSpellOptions(filteredSpells)}
+              </Select>
+            </FormControl >
+        </Box>
         ))}
       </div>
       

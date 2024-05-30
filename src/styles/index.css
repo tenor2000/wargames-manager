@@ -126,17 +126,35 @@ h1 {
   }
 } */
 
-.search-bar {
+
+.search-bar-root {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
   padding: 5px;
-  width: 200px;
-  border-radius: 10px;
-  border: var(--border-color);
+  width: 100%;
+  max-width: 300px; /* Adjust width as needed */
+}
+
+.search-bar-root .MuiOutlinedInput-root {
+  border-radius: 50px; /* This creates the pill shape */
   background-color: rgba(0, 0, 0, 0.5);
 }
+
+.search-bar-root .MuiOutlinedInput-input {
+  color: white; /* Change text color inside the input */
+}
+
+.search-bar-root .MuiOutlinedInput-notchedOutline {
+  border-color: var(--border-color); /* Custom border color */
+}
+
+.search-bar-root .MuiInputAdornment-root .MuiIconButton-root {
+  color: white; /* Color for the clear button icon */
+}
+
+
 
 .center {
   display: flex;

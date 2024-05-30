@@ -1,8 +1,9 @@
 import { useAppContext } from './AppContext.jsx';
 import { BasicSpellCard, ExpandBox } from './BasicComponents.jsx';
 import { getSchoolFromId } from './HelperFunctions.js';
-import { Accordion, AccordionDetails, AccordionSummary, Button } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Button, TextField, InputAdornment, IconButton } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CancelIcon from '@mui/icons-material/Cancel';
 import './styles/Spells.css';
 
 export function SpellView() {
@@ -34,22 +35,51 @@ export function SpellView() {
         setSpellViewList(filteredSpells);
     }
 
+    function clearSearch() {
+        handleSearchFilter('');
+        setSchoolFilterId(0);
+        document.getElementById('search-bar').value = '';
+    }
+
     const schoolname = getSchoolFromId(schoolFilterId).name;
 
     return (
         <>
-            <div className='center'>
+            {/* <div className='center column'>
                 <h2>{schoolname} {schoolname==='All' ? 'Spells' : 'Spellbook'}</h2>
+                <input id='search-bar'className="search-bar" onChange={(e) => handleSearchFilter(e.target.value)}  placeholder="Search..."/>
+                <Button onClick={clearSearch}>clear</Button>
             </div>
-            <input onChange={(e) => handleSearchFilter(e.target.value)} className="search-bar" placeholder="Search..."/>
-            <div>
-            {spellsBySchool()}
+            <div className='spell-list-view'>
+                {spellsBySchool()}
+            </div> */}
+            <div className='center column'>
+                <h2>{schoolname} {schoolname === 'All' ? 'Spells' : 'Spellbook'}</h2>
+                <TextField
+                    id="search-bar"
+                    className="search-bar-root"
+                    onChange={(e) => handleSearchFilter(e.target.value)}
+                    placeholder="Search..."
+                    variant="outlined"
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton onClick={clearSearch}>
+                                    <CancelIcon />
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+            </div>
+            <div className='spell-list-view'>
+                {spellsBySchool()}
             </div>
         </>
     );
 }
 
-export function SpellSideBar() {
+export function SpellSideDrawer() {
     const { refData, spellViewList, setSpellViewList, setSchoolFilterId } = useAppContext();
 
     const spellList = refData.spells;

@@ -114,12 +114,6 @@
     justify-content: center;
 }
 
-.no-soldier-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
 .edit-soldier-table {
     width: 100%;
     border-collapse: collapse;

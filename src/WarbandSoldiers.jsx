@@ -1,7 +1,7 @@
 import { useAppContext } from "./AppContext";
 import { useState, useEffect } from "react";
 import { BasicStatCard } from "./BasicComponents";
-import { getRandomName, getSoldierFromId, getStatusFromId } from "./HelperFunctions";
+import { getRandomName, getSoldierFromId, getStatusFromId, modSign } from "./HelperFunctions";
 
 import { Tooltip, TextField, Button, Snackbar } from "@mui/material";
 
@@ -17,7 +17,7 @@ const formSoldierStats = (mySoldierArray) => {
     })
     return soldierList
 }
-export function HiredSoldiersBlock() {
+export function SoldierRosterBlock() {
     const { currentWizard } = useAppContext();
     console.log(currentWizard)
 
@@ -33,17 +33,15 @@ export function HiredSoldiersBlock() {
 export function EditSoldiersView() {
     const { currentWizard, setCurrentWizard, editMode, setEditMode, refData} = useAppContext();
     const [ totalEditedCost, setTotalEditedCost ] = useState(0);
-    const [ editedWizard, setEditedWizard ] = useState(currentWizard);
-    
-
-    const modSign = (stat) => {
-        return stat >= 0 ? `+${stat}` : stat;
-      }
+    const [ editedWizard, setEditedWizard ] = useState({...currentWizard});
 
     const handleCancel = () => {
         const newEditMode = {...editMode};
         newEditMode['soldiers'] = false;
-        setEditedWizard({...currentWizard});
+        const updateWizard = {...currentWizard};
+        console.log(currentWizard.soldiers)
+        console.log(editedWizard.soldiers)
+        // setCurrentWizard({...currentWizard});
         setEditMode(newEditMode);
     }
 
@@ -52,6 +50,7 @@ export function EditSoldiersView() {
         if (updateWizard.gold - totalEditedCost < 0) {
             return <alert>'Not enough gold'</alert>
         }
+        console.log('saved')
 
         updateWizard.gold -= totalEditedCost;
         updateWizard.soldiers.forEach((soldier) => {
@@ -87,6 +86,8 @@ export function EditSoldiersView() {
     const handleRemove = (removedSoldier) => {
         const goodbyeText = removedSoldier.stats.status === 0 ? `You have dumped ${removedSoldier.name} in a ditch somewhere.` : `${removedSoldier.name} walks away in disbelief as tears runs down their face.`;
         const confirmText = `Are you sure you want to remove ${removedSoldier.name}?`;
+
+        console.log(goodbyeText);
 
         if (window.confirm(confirmText)) {
             console.log(goodbyeText);
@@ -146,11 +147,11 @@ export function EditSoldiersView() {
     }
 
     function ShowClassSelections({soldier}) {
-        let age
+
         return (
             <>
                 <select 
-                    disabled={soldier.stats.status !== 8} 
+                    disabled={soldier.stats.status !== 8} // 8 = 'For Hire'
                     value={soldier.stats.classId} 
                     onChange={(e) => handleClassChange(soldier, e.target.value)}
                     defaultValue={soldier.classId}
@@ -188,22 +189,15 @@ export function EditSoldiersView() {
             </>
         )
     }
+    
+    for (let x = editedWizard.soldiers.length; x < 8; x++) {
+        editedWizard.soldiers.push(getRandomSoldierForHire());
+    }
 
-    // Fill slots with potential hires
-    useEffect(() => {
-        const fillSlotsWithPotentialHires = () => {
-            const updatedWizard = {...editedWizard };
-            while (updatedWizard.soldiers.length < 8) {
-                updatedWizard.soldiers.push(getRandomSoldierForHire());
-            }
-            setEditedWizard(updatedWizard);
-        };
-        fillSlotsWithPotentialHires();
 
-    } , [editedWizard]);
 
     return (
-        <form className='edit-soldiers-view'>
+        <div className='edit-soldiers-view'>
             <h3>Edit Roster</h3>
             <table className='edit-soldier-table'>
                 <thead>
@@ -213,8 +207,8 @@ export function EditSoldiersView() {
                         <th><img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move Icon'/></th>
                         <th><img src='src/assets/Game-Icons-net/axe-sword.svg' className="stat-icon" alt='Fight Icon'/></th>
                         <th><img src='src/assets/Game-Icons-net/high-shot.svg' className="stat-icon" alt='Shoot Icon'/></th>
-                        <th><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will Icon'/></th>
                         <th><img src='src/assets/Game-Icons-net/abdominal-armor.svg' className="stat-icon" alt='Armor Icon'/></th>
+                        <th><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will Icon'/></th>
                         <th><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Fight Icon'/></th>
                         <th>Notes</th>
                         <th>Status</th>
@@ -225,10 +219,9 @@ export function EditSoldiersView() {
                 <tbody>
                     {formSoldierStats(editedWizard.soldiers).map((soldier, index) => {
                         return (
-                        <tr key={index}>
-                            {/* <td><input key = {index} type="text" value={soldier.name} onChange={(e) => handleNameChange(soldier, e.target.value)} /></td> */}
+                        <tr key={`soldier-${index}`}>
                             <td>
-                                <TextField 
+                                <TextField
                                     value={soldier.name} 
                                     onChange={(e) => handleNameChange(index, e.target.value)}
                                     variant='standard' 
@@ -245,8 +238,8 @@ export function EditSoldiersView() {
                             <td>{soldier.stats.move}</td>
                             <td>{modSign(soldier.stats.fight)}</td>
                             <td>{modSign(soldier.stats.shoot)}</td>
-                            <td>{modSign(soldier.stats.will)}</td>
                             <td>{soldier.stats.armor}</td>
+                            <td>{modSign(soldier.stats.will)}</td>
                             <td>{soldier.stats.health}</td>
                             <td>
                                 <Tooltip title={soldier.stats.notes} placement="top">
@@ -275,7 +268,7 @@ export function EditSoldiersView() {
                 </tbody>
             </table>
 
-        </form>
+        </div>
         
     )
 }
