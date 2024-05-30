@@ -1,4 +1,218 @@
 export const referenceData = {
+    arms: [
+        {
+            id: 1,
+            name: 'Dagger',
+            damageMod: -1,
+            maxRange: '--',
+            notes: 'First dagger does not take up an item slot.',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 2,
+            name: 'Hand Weapon',
+            damageMod: '--',
+            maxRange: '--',
+            notes: '--',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 3,
+            name: 'Two-Handed Weapon',
+            damageMod: 2,
+            maxRange: '--',
+            notes: 'Takes up two item slots.',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 4,
+            name: 'Staff',
+            damageMod: -1,
+            maxRange: '--',
+            notes: '-1 damage modifier to opponent in hand-to-hand combat',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 5,
+            name: 'Bow',
+            damageMod: '--',
+            maxRange: 24,
+            notes: 'Load and fire as a single action; must have a quiver',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 6,
+            name: 'Crossbow',
+            damageMod: 2,
+            maxRange: 24,
+            notes: 'Load and fire as separate actions; may reload in place of movement; must have a quiver',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 7,
+            name: 'Unarmed',
+            damageMod: -2,
+            maxRange: '--',
+            notes: '-2 Fight.',
+            source: 'Core Rulebook'
+        }
+    ],
+    armor: [
+        {
+            id: 1,
+            name: 'Shield',
+            armorMod: 1,
+            notes: 'May not be carried with a two-handed weapon or staff',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 2,
+            name: 'Light Armor',
+            armorMod: 1,
+            notes: '--',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 3,
+            name: 'Heavy Armor',
+            armorMod: 2,
+            notes: '-1 Move',
+            source: 'Core Rulebook'
+        }
+    ],
+    creatures: [
+        {
+            id: 1,
+            name: 'Bear',
+            type: 'Animal',
+            move: 6,
+            fight: 4,
+            shoot: 0,
+            will: 0,
+            armor: 12,
+            health: 14,
+            notes: 'Animal, Large, Strong',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 2,
+            name: 'Boar',
+            type: 'Animal',
+            move: 6,
+            fight: 2,
+            shoot: 0,
+            armor: 12,
+            will: 2,
+            health: 8,
+            notes: 'Animal, Bounty(10gc), Horns (technically, tusks)',
+            source: 'Core Rulebook'
+        },
+        {    
+            id: 3,
+            name: 'Giant Rat',
+            type: 'Animal',
+            move: 6,
+            fight: 0,
+            shoot: 0,
+            armor: 6,
+            will: 0,
+            health: 1,
+            notes: 'Animal, Pack Hunter',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 4,
+            name: 'Ice Spider',
+            type: 'Animal',
+            move: 6,
+            fight: 1,
+            shoot: 0,
+            armor: 8,
+            will: 0,
+            health: 4,
+            notes: 'Animal, Expert Climber, Poison',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 5,
+            name: 'Ice Toad',
+            type: 'Animal',
+            move: 4,
+            fight: 2,
+            shoot: 0,
+            armor: 10,
+            will: 0,
+            health: 5,
+            notes: 'Amphibious, Animal, Powerful',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 6,
+            name: 'Snow Leopard',
+            type: 'Animal',
+            move: 8,
+            fight: 3,
+            shoot: 0,
+            armor: 10,
+            will: 2,
+            health: 10,
+            notes: 'Animal, Expert Climber',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 7,
+            name: 'White Gorilla',
+            type: 'Animal',
+            move: 6,
+            fight: 4,
+            shoot: 0,
+            armor: 12,
+            will: 8,
+            health: 14,
+            notes: 'Animal, Strong',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 8,
+            name: 'Wild Dog',
+            type: 'Animal',
+            move: 8,
+            fight: 0,
+            shoot: 0,
+            armor: 8,
+            will: 0,
+            health: 4,
+            notes: 'Animal, Pack Hunter',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 9,
+            name: 'Wolf',
+            type: 'Animal',
+            move: 8,
+            fight: 1,
+            shoot: 0,
+            armor: 10,
+            will: 0,
+            health: 6,
+            notes: 'Animal, Pack Hunter',
+            source: 'Core Rulebook'
+        }
+    ],
+    randomEncounterTable: [
+        {
+            encounterId: 1,
+            name: 'Level 1 Encounter',
+            source: 'Core Rulebook',
+            1: [12, 1]
+        },
+        {
+            id: 2,
+            name: 'Random Encounter',
+            notes: '--',
+            source: 'Core Rulebook'
+        }
+    ],
     spells: [
         {
             id: 101,
@@ -731,7 +945,7 @@ export const referenceData = {
         {
             id: 1,
             type: 'Standard',
-            source: 'base',
+            source: 'Core Rulebook',
             stats: {
                 class: 'Thug',
                 move: 6,
@@ -747,7 +961,7 @@ export const referenceData = {
         {
             id: 2,
             type: 'Standard',
-            source: 'base',
+            source: 'Core Rulebook',
             stats: {
                 class: 'Thief',
                 move: 7,
@@ -764,7 +978,7 @@ export const referenceData = {
             id: 3,
             
             type: 'Standard',
-            source: 'base',
+            source: 'Core Rulebook',
             stats: {
                 class: 'Warhound',
                 move: 8,
@@ -780,7 +994,7 @@ export const referenceData = {
         {
             id: 4,
             type: 'Standard',
-            source: 'base',
+            source: 'Core Rulebook',
             stats: {
                 class: 'Infantryman',
                 move: 6,
@@ -790,13 +1004,13 @@ export const referenceData = {
                 will: 0,
                 health: 10,
                 cost: 50,
-                notes: 'Two-Handed Weapon, Leather Armor',
+                notes: 'Two-Handed Weapon, Light Armor',
             },
         },
         {
             id: 5,
             type: 'Standard',
-            source: 'base',
+            source: 'Core Rulebook',
             stats: {
                 class: 'Man-at-Arms',
                 move: 6,
@@ -806,13 +1020,13 @@ export const referenceData = {
                 will: 1,
                 health: 12,
                 cost: 75,
-                notes: 'Hand Weapon, Shield, Leather Armor',
+                notes: 'Hand Weapon, Shield, Light Armor',
             },
         },
         {
             id: 6,
             type: 'Standard',
-            source: 'base',
+            source: 'Core Rulebook',
             stats: {
                 class: 'Apothecary',
                 move: 6,
@@ -822,13 +1036,13 @@ export const referenceData = {
                 will: 3,
                 health: 12,
                 cost: 75,
-                notes: 'Staff, starts each game carrying a healing potion',
+                notes: 'Staff, Healing Potion',
             },
         },
         {
             id: 7,
             type: 'Specialist',
-            source: 'base',
+            source: 'Core Rulebook',
             stats: {
                 class: 'Archer',
                 move: 6,
@@ -838,13 +1052,13 @@ export const referenceData = {
                 will: 0,
                 health: 10,
                 cost: 75,
-                notes: 'Bow, Dagger, Leather Armor',
+                notes: 'Bow, Quiver, Dagger, Light Armor',
             },
         },
         {
             id: 8,
             type: 'Specialist',
-            source: 'base',
+            source: 'Core Rulebook',
             stats: {
                 class: 'Crossbowman',
                 move: 6,
@@ -854,13 +1068,13 @@ export const referenceData = {
                 will: 0,
                 health: 10,
                 cost: 75,
-                notes: 'Crossbow, Dagger, Leather Armor',
+                notes: 'Crossbow, Quiver, Dagger, Light Armor',
             },
         },
         {
             id: 9,
             type: 'Specialist',
-            source: 'base',
+            source: 'Core Rulebook',
             stats: {
                 class: 'Treasure Hunter',
                 move: 7,
@@ -870,13 +1084,13 @@ export const referenceData = {
                 will: 2,
                 health: 12,
                 cost: 100,
-                notes: 'Hand Weapon, Dagger, Leather Armor',
+                notes: 'Hand Weapon, Dagger, Light Armor',
             },
         },
         {
             id: 10,
             type: 'Specialist',
-            source: 'base',
+            source: 'Core Rulebook',
             stats: {
                 class: 'Tracker',
                 move: 7,
@@ -886,13 +1100,13 @@ export const referenceData = {
                 will: 1,
                 health: 12,
                 cost: 100,
-                notes: 'Staff, Bow, Leather Armor',
+                notes: 'Staff, Bow, Quiver, Light Armor',
             },
         },
         {
             id: 11,
             type: 'Specialist',
-            source: 'base',
+            source: 'Core Rulebook',
             stats: {
                 class: 'Knight',
                 move: 5,
@@ -902,13 +1116,13 @@ export const referenceData = {
                 will: 1,
                 health: 12,
                 cost: 125,
-                notes: 'Hand Weapon, Shield, Mail Armor',
+                notes: 'Hand Weapon, Dagger, Shield, Heavy Armor',
             },
         },
         {
             id: 12,
             type: 'Specialist',
-            source: 'base',
+            source: 'Core Rulebook',
             stats: {
                 class: 'Templar',
                 move: 5,
@@ -918,13 +1132,13 @@ export const referenceData = {
                 will: 1,
                 health: 12,
                 cost: 125,
-                notes: 'Two-Handed Weapon, Mail Armor',
+                notes: 'Two-Handed Weapon, Heavy Armor',
             },
         },
         {
             id: 13,
             type: 'Specialist',
-            source: 'base',
+            source: 'Core Rulebook',
             stats: {
                 class: 'Ranger',
                 move: 7,
@@ -934,13 +1148,13 @@ export const referenceData = {
                 will: 2,
                 health: 12,
                 cost: 125,
-                notes: 'Bow, Hand Weapon, Leather Armor',
+                notes: 'Bow, Quiver, Hand Weapon, Light Armor',
             },
         },
         {
             id: 14,
             type: 'Specialist',
-            source: 'base',
+            source: 'Core Rulebook',
             stats: {
                 class: 'Barbarian',
                 move: 6,
@@ -950,13 +1164,13 @@ export const referenceData = {
                 will: 3,
                 health: 14,
                 cost: 125,
-                notes: 'Two-Handed Weapon',
+                notes: 'Two-Handed Weapon, Dagger',
             },
         },
         {
             id: 15,
             type: 'Specialist',
-            source: 'base',
+            source: 'Core Rulebook',
             stats: {
                 class: 'Marksman',
                 move: 5,
@@ -966,7 +1180,7 @@ export const referenceData = {
                 will: 1,
                 health: 12,
                 cost: 125,
-                notes: 'Crossbow, Hand Weapon, Mail Armor',
+                notes: 'Crossbow, Quiver, Hand Weapon, Heavy Armor',
             },
         },
     ],
@@ -1032,7 +1246,7 @@ export const referenceData = {
                 will: 1,
                 health: 12,
                 cost: 75,
-                notes: 'Hand Weapon, Shield, Leather Armor',
+                notes: 'Hand Weapon, Shield, Light Armor',
             },
         }
     },

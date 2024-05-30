@@ -20,6 +20,8 @@ export function ContextProvider({ children }) {
                                                 'vault': false,
                                                 'base': false
                                                 });
+    const [ currRefTable, setCurrRefTable ] = useState('all');
+    const [ sourceFilter, setSourceFilter ] = useState(['all']);
 
     const value = {
         isLoggedIn, setIsLoggedIn,
@@ -30,6 +32,8 @@ export function ContextProvider({ children }) {
         newWizard, setNewWizard,
         refData, setRefData,
         editMode, setEditMode,
+        currRefTable, setCurrRefTable,
+        sourceFilter, setSourceFilter
     };
 
     return (

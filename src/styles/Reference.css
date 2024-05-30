@@ -1,0 +1,12 @@
+.reference-table {
+    width: 100%;
+    border-collapse: collapse;
+    border:  var(--section-border);
+    padding: 5px;
+    background-color: black;
+}
+
+.reference-table th, .reference-table td {
+    border: var(--section-border);
+    padding: 5px;
+}

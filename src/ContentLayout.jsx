@@ -17,13 +17,13 @@ import { useNavigate } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import { Button, SwipeableDrawer } from '@mui/material';
 import { useAppContext } from './AppContext.jsx';
-import { HomePage, HomeSideBar } from './HomePage.jsx';
-import { ReferenceView, ReferenceSideBar } from './References.jsx';
-import { SpellView, SpellSideBar } from './Spells.jsx';
-import { WarbandView, WarbandSideBar } from './Warbands.jsx';
-import { CampaignView, CampaignSideBar } from './Campaigns.jsx';
-import { CreateNewWizard, NewWizardSideBar } from './CreateNewWizard.jsx';
-import { Login, LoginSideBar } from './Login.jsx';
+import { HomePage, HomeSideDrawer } from './HomePage.jsx';
+import { ReferenceView, ReferenceSideDrawer } from './References.jsx';
+import { SpellView, SpellSideDrawer } from './Spells.jsx';
+import { WarbandView, WarbandSideDrawer } from './Warbands.jsx';
+import { CampaignView, CampaignSideDrawer } from './Campaigns.jsx';
+import { CreateNewWizard, NewWizardSideDrawer } from './CreateNewWizard.jsx';
+import { Login, LoginSideDrawer } from './Login.jsx';
 import { BottomNavigation, BottomNavigationAction,Drawer, useMediaQuery } from '@mui/material';
 import { useTheme, makeStyles } from '@mui/material/styles';
 
@@ -63,7 +63,7 @@ export function MenuBar() {
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
     >
-      <SideBar />
+      <SideDrawer />
     </Box>
   );
 
@@ -82,7 +82,7 @@ export function MenuBar() {
                 <Route path="/campaigns" element={'Campaigns'} />
                 <Route path="/new-wizard" element={'Create New Wizard'} />
                 <Route path="/login" element={'Log In'} />
-                {/* Add routes for other sidebar items */}
+                {/* Add routes for other sidedrawer items */}
             </Routes>
       </Typography>
       )
@@ -189,18 +189,18 @@ export function MenuBar() {
   );
 }
 
-export function SideBar () {
+export function SideDrawer () {
     return (
-        <div className="sidebar">
+        <div className="side-drawer">
             <Routes>
-                <Route path="/" element={<HomeSideBar />} />
-                <Route path="/reference" element={<ReferenceSideBar />} />
-                <Route path="/spells" element={<SpellSideBar />} />
-                <Route path="/warbands" element={<WarbandSideBar />} />
-                <Route path="/campaigns" element={<CampaignSideBar />} />
-                <Route path="/reference" element={<ReferenceSideBar />} />
-                <Route path="/new-wizard" element={<NewWizardSideBar />} />
-                <Route path="/login" element={<LoginSideBar />} />
+                <Route path="/" element={<HomeSideDrawer />} />
+                <Route path="/reference" element={<ReferenceSideDrawer />} />
+                <Route path="/spells" element={<SpellSideDrawer />} />
+                <Route path="/warbands" element={<WarbandSideDrawer />} />
+                <Route path="/campaigns" element={<CampaignSideDrawer />} />
+                <Route path="/reference" element={<ReferenceSideDrawer />} />
+                <Route path="/new-wizard" element={<NewWizardSideDrawer />} />
+                <Route path="/login" element={<LoginSideDrawer />} />
                 {/* Add routes for other sidebar items */}
             </Routes>
         </div>
@@ -210,22 +210,25 @@ export function SideBar () {
 export function ContentArea() {
   const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
+  const contentStyle = {
+    marginBottom: isPortrait ? '15%' : '0',
+  };
+
     return (
-      <div className='content-container'>
+      <div className='content-container' style={contentStyle}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/reference" element={<ReferenceView />} />
           <Route path="/spells" element={<SpellView />} />
           <Route path="/warbands" element={<WarbandView />} />
           <Route path="/campaigns" element={<CampaignView />} />
-          <Route path="/warband-view" element={<WarbandSideBar />} />
           <Route path="/new-wizard" element={<CreateNewWizard />} />
           <Route path="/login" element={<Login />} />
           {/* Add routes for other pages */}
         </Routes>
       </div>
     );
-  }
+} 
 
 export function MobileBottomNav() {
   const [value, setValue] = React.useState(0);
@@ -270,15 +273,15 @@ export function MobileBottomNav() {
         position: 'fixed',
         bottom: 0,
         left: 0,
-        backgroundColor: theme.palette.background.paper, // may need to change
+        backgroundColor: 'black', // may need to change
         zIndex: 1000,
       }}
     >
-        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', filter: 'invert(100%)'}} src={('src/assets/Game-Icons-net/castle.svg')} alt="Spells" />} />
-        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', filter: 'invert(100%)'}} src={('src/assets/Game-Icons-net/bookshelf.svg')} alt="Spells" />} />
-        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', filter: 'invert(100%)'}} src={('src/assets/Game-Icons-net/book-cover.svg')} alt="Spells" />} />
-        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', filter: 'invert(100%)'}} src={('src/assets/Game-Icons-net/axe-sword.svg')} alt="Spells" />} />
-        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', filter: 'invert(100%)'}} src={('src/assets/Game-Icons-net/rule-book.svg')} alt="Spells" />} />
+        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', /* filter: 'invert(100%)' */}} src={('src/assets/Game-Icons-net/castle.svg')} alt="Spells" />} />
+        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', /* filter: 'invert(100%)' */}} src={('src/assets/Game-Icons-net/bookshelf.svg')} alt="Spells" />} />
+        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', /* filter: 'invert(100%)' */}} src={('src/assets/Game-Icons-net/book-cover.svg')} alt="Spells" />} />
+        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', /* filter: 'invert(100%)' */}} src={('src/assets/Game-Icons-net/axe-sword.svg')} alt="Spells" />} />
+        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', /* filter: 'invert(100%)' */}} src={('src/assets/Game-Icons-net/rule-book.svg')} alt="Spells" />} />
     </BottomNavigation>
   );
 }

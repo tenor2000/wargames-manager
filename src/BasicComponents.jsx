@@ -3,7 +3,7 @@ import { useAuth } from './AuthContext.jsx'
 import { useState, Fragment, IconButton } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
-import { getStatusFromId, getSpellFromId } from './HelperFunctions.js';
+import { getStatusFromId, getSpellFromId, modSign } from './HelperFunctions.js';
 import { Alert } from "@mui/material";
 
 
@@ -40,11 +40,6 @@ export function ExpandBox({title, children, className=''}) {
 
 
 export function BasicStatCard({ name, stats, show_costs=false, show_status=true, editMode=false }) {
-
-  const modSign = (stat) => {
-    return stat >= 0 ? `+${stat}` : stat;
-  }
-  
   return (
     <div className="stat-card">
       <table className="stat-block-table">

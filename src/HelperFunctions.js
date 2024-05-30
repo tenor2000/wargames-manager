@@ -71,3 +71,7 @@ export function getStatusFromId(statusId) {
 
   return refData.statuses[statusId]
 }
+
+export const modSign = (stat) => {
+  return stat >= 0 ? `+${stat}` : stat;
+}
