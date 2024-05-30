@@ -5,6 +5,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import HomeIcon from '@mui/icons-material/Home';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -14,22 +15,23 @@ import Menu from '@mui/material/Menu';
 
 import { useNavigate } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
-import { Button, Stack } from '@mui/material';
+import { Button, SwipeableDrawer } from '@mui/material';
 import { useAppContext } from './AppContext.jsx';
 import { HomePage, HomeSideBar } from './HomePage.jsx';
-import { DashboardView, DashboardSideBar } from './Dashboard.jsx';
 import { ReferenceView, ReferenceSideBar } from './References.jsx';
 import { SpellView, SpellSideBar } from './Spells.jsx';
 import { WarbandView, WarbandSideBar } from './Warbands.jsx';
 import { CampaignView, CampaignSideBar } from './Campaigns.jsx';
 import { CreateNewWizard, NewWizardSideBar } from './CreateNewWizard.jsx';
 import { Login, LoginSideBar } from './Login.jsx';
-import { BottomNavigation, Drawer, List, ListItem, ListItemText } from '@mui/material';
+import { BottomNavigation, BottomNavigationAction,Drawer, useMediaQuery } from '@mui/material';
+import { useTheme, makeStyles } from '@mui/material/styles';
 
 export function MenuBar() {
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
   const navigate = useNavigate();
 
   const handleChange = (event) => {
@@ -61,16 +63,56 @@ export function MenuBar() {
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
     >
-      {/* <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List> */}
       <SideBar />
     </Box>
   );
+
+  const MobileNavHeading = () => {
+    if (!isPortrait) {
+      return null
+    }
+      
+    return (
+      <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Routes>
+                <Route path="/" element={'Home'} />
+                <Route path="/reference" element={'Reference'} />
+                <Route path="/spells" element={'Spells'} />
+                <Route path="/warbands" element={'Warbands'} />
+                <Route path="/campaigns" element={'Campaigns'} />
+                <Route path="/new-wizard" element={'Create New Wizard'} />
+                <Route path="/login" element={'Log In'} />
+                {/* Add routes for other sidebar items */}
+            </Routes>
+      </Typography>
+      )
+  }
+
+  const MenuNavItems = () => {
+    if (isPortrait) {
+      return null
+    }
+      
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Button onClick={() => navigate('/')}>Home</Button>
+        </Typography>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Button onClick={() => navigate('/reference')}>Reference</Button>
+        </Typography>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Button onClick={() => navigate('/spells')}>Spells</Button>
+        </Typography>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Button onClick={() => navigate('/warbands')}>Warbands</Button>
+        </Typography>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Button onClick={() => navigate('/campaigns')}>Campaigns</Button>
+        </Typography>
+      </Box>
+      )
+  }
 
   return (
     <Box sx={{ flexGrow: 1 }} className="menu-bar">
@@ -98,24 +140,9 @@ export function MenuBar() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            <Button onClick={() => navigate('/')}>Home</Button>
-          </Typography>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            <Button onClick={() => navigate('/dashboard')}>Dashboard</Button>
-          </Typography>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            <Button onClick={() => navigate('/reference')}>Reference</Button>
-          </Typography>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            <Button onClick={() => navigate('/spells')}>Spells</Button>
-          </Typography>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            <Button onClick={() => navigate('/warbands')}>Warbands</Button>
-          </Typography>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            <Button onClick={() => navigate('/campaigns')}>Campaigns</Button>
-          </Typography>
+          <MobileNavHeading />
+          <MenuNavItems />
+          <Box sx={{ flexGrow: 1 }} />
           {auth && (
             <div>
               <IconButton
@@ -152,6 +179,7 @@ export function MenuBar() {
       </AppBar>
       <Drawer
         anchor="left"
+        variant="persistent"
         open={drawerOpen}
         onClose={toggleDrawer(false)}
       >
@@ -166,7 +194,6 @@ export function SideBar () {
         <div className="sidebar">
             <Routes>
                 <Route path="/" element={<HomeSideBar />} />
-                <Route path="/dashboard" element={<DashboardSideBar />} />
                 <Route path="/reference" element={<ReferenceSideBar />} />
                 <Route path="/spells" element={<SpellSideBar />} />
                 <Route path="/warbands" element={<WarbandSideBar />} />
@@ -181,12 +208,12 @@ export function SideBar () {
 }
 
 export function ContentArea() {
+  const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
     return (
       <div className='content-container'>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/dashboard" element={<DashboardView />} />
           <Route path="/reference" element={<ReferenceView />} />
           <Route path="/spells" element={<SpellView />} />
           <Route path="/warbands" element={<WarbandView />} />
@@ -199,3 +226,59 @@ export function ContentArea() {
       </div>
     );
   }
+
+export function MobileBottomNav() {
+  const [value, setValue] = React.useState(0);
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
+
+  if (!isPortrait) {
+    return null; // Hide the BottomNavigation if not in portrait mode
+  }
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    switch (newValue) {
+      case 0:
+        navigate('/');
+        break;
+      case 1:
+        navigate('/reference');
+        break;
+      case 2:
+        navigate('/spells');
+        break;
+      case 3:
+        navigate('/warbands');
+        break;
+      case 4:
+        navigate('/campaigns');
+        break;
+      default:
+        break;
+    }
+  };
+
+  return (
+    <BottomNavigation
+      value={value}
+      onChange={handleChange}
+      showLabels
+      sx={{
+        width: '100%',
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        backgroundColor: theme.palette.background.paper, // may need to change
+        zIndex: 1000,
+      }}
+    >
+        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', filter: 'invert(100%)'}} src={('src/assets/Game-Icons-net/castle.svg')} alt="Spells" />} />
+        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', filter: 'invert(100%)'}} src={('src/assets/Game-Icons-net/bookshelf.svg')} alt="Spells" />} />
+        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', filter: 'invert(100%)'}} src={('src/assets/Game-Icons-net/book-cover.svg')} alt="Spells" />} />
+        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', filter: 'invert(100%)'}} src={('src/assets/Game-Icons-net/axe-sword.svg')} alt="Spells" />} />
+        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', filter: 'invert(100%)'}} src={('src/assets/Game-Icons-net/rule-book.svg')} alt="Spells" />} />
+    </BottomNavigation>
+  );
+}

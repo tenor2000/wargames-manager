@@ -1,7 +1,13 @@
 .new-wizard-container {
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
     align-items: center;
     height: 100%;
+}
+
+.new-wizard-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
