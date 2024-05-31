@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useAppContext } from './AppContext.jsx';
-import { modSign } from './HelperFunctions';
+import { modSign, getCreatureFromId } from './HelperFunctions';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext.jsx';
-import { Accordion, AccordionDetails, AccordionSummary, Button, Box } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Button, Box, Checkbox, FormGroup, FormControlLabel } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import './styles/Reference.css';
 
@@ -12,13 +12,13 @@ export function ReferenceView() {
 
     return (
         <>
-            <div className="reference-container">
-                <h1>Reference</h1>
+            <div className="reference-container center">
+                <h2>Reference</h2>
             </div>
             {(currRefTable === 'all' || currRefTable==='soldiers') && <SoldierReference />}
             {(currRefTable === 'all' || currRefTable==='armsandarmor') && <ArmsArmorReference />}
-            {(currRefTable === 'all' || currRefTable==='randomencounters') && <RandomEncounterReference />}
             {(currRefTable === 'all' || currRefTable==='creatures') && <CreatureReference />}
+            {(currRefTable === 'all' || currRefTable==='randomencounters') && <RandomEncounterReference />}
             {currRefTable==='base' && <BaseReference />}
             {currRefTable==='vault' && <VaultReference />}
         </>
@@ -26,36 +26,47 @@ export function ReferenceView() {
 }
 
 export function ReferenceSideDrawer() {
-    const { userData } = useAuth();
-    const navigate = useNavigate();
     const { refData, currRefTable, setCurrRefTable } = useAppContext();
-    
-    function handleChangeTableClick(table) {
-        setCurrRefTable(table);
-    }
 
     return (
         <>
             <Box className="sidedrawer-view">
-                <h3 onClick={() => handleChangeTableClick(null)}
-                    style = {{cursor: 'pointer'}}>
-                        Reference Data
-                </h3>
-                <Button onClick={() => handleChangeTableClick('all')}>All</Button>
-                <Button onClick={() => handleChangeTableClick('soldiers')}>Soldiers</Button>
-                <Button onClick={() => handleChangeTableClick('armsandarmor')}>General Arms and Armor</Button>
-                <Button onClick={() => handleChangeTableClick('apprentices')}>Apprentices</Button>
-                <Button onClick={() => handleChangeTableClick('spellbook')}>Spellbook</Button>
-                <Button onClick={() => handleChangeTableClick('base')}>Base Stats</Button>
-                <Button onClick={() => handleChangeTableClick('vault')}>Vault</Button>
-
-                <Box className="button-container center">
-
-                </Box>
+                <h3>Reference Data</h3>
+                <Button onClick={() => setCurrRefTable('all')}>All</Button>
+                <Button onClick={() => setCurrRefTable('soldiers')}>Soldiers</Button>
+                <Button onClick={() => setCurrRefTable('armsandarmor')}>General Arms and Armor</Button>
+                <Button onClick={() => setCurrRefTable('creatures')}>Creatures</Button>
+                <Button onClick={() => setCurrRefTable('randomencounters')}>Random Encounters</Button>
+                <Button onClick={() => setCurrRefTable('base')}>Base Stats</Button>
+                <Button onClick={() => setCurrRefTable('vault')}>Vault</Button>
             </Box>
             <Box>
                 <h4>Filter</h4>
+                <SourceFilter />
             </Box>
+        </>
+    );
+}
+
+function SourceFilter() {
+    // WIP
+    const { sourceFilter, setSourceFilter } = useAppContext();
+
+    const handleFilterChange = (filterName) => {
+        const newFilter = [...sourceFilter];
+        if (newFilter.includes(filterName)) {
+            newFilter.push(filterName);
+        } else {
+            newFilter = newFilter.filter((filter) => filter !== filterName);
+        }
+        setSourceFilter(newFilter);
+    }
+
+    return (
+        <>
+            <FormGroup>
+                <FormControlLabel control={<Checkbox checked={sourceFilter.includes('all')} onChange={() => handleFilterChange('all')} />} label="All" />
+            </FormGroup>
         </>
     );
 }
@@ -110,7 +121,7 @@ function SoldierReference() {
                 <h3>{'Standard Soldiers'}</h3>
             </AccordionSummary>
                 <AccordionDetails>
-                    <table className='reference-table'>
+                    <table className='reference-table' style={{textAlign: 'center'}}>
                         <thead>
                             <SoldierHeaderRow />
                         </thead>
@@ -125,7 +136,7 @@ function SoldierReference() {
                 <h3>{'Specialist Soldiers'}</h3>
             </AccordionSummary>
                 <AccordionDetails>
-                <table className='reference-table'>
+                <table className='reference-table' style={{textAlign: 'center'}}>
                     <thead>
                         <SoldierHeaderRow />
                     </thead>
@@ -162,7 +173,7 @@ function ArmsArmorReference() {
                 <td>{item.name}</td>
                 {item.damageMod && <td>{modSign(item.damageMod)}</td>}
                 {item.armorMod && <td>{modSign(item.armorMod)}</td>}
-                {item.maxRange && <td>{item.maxRange > 0 ? `${item.maxRange}"` : "-"}</td>}
+                {item.maxRange && <td>{item.maxRange > 0 ? `${item.maxRange}"` : "--"}</td>}
                 <td>{item.notes}</td>
                 <td>{item.source}</td>
             </tr>
@@ -176,7 +187,7 @@ function ArmsArmorReference() {
                 <h3>{'General Arms'}</h3>
             </AccordionSummary>
                 <AccordionDetails>
-                    <table className='reference-table'>
+                    <table className='reference-table' style={{textAlign: 'center'}}>
                         <thead>
                             <HeaderRow type='arms'/>
                         </thead>
@@ -191,7 +202,7 @@ function ArmsArmorReference() {
                 <h3>{'General Armor'}</h3>
             </AccordionSummary>
                 <AccordionDetails>
-                <table className='reference-table'>
+                <table className='reference-table' style={{textAlign: 'center'}}>
                     <thead>
                         <HeaderRow list='armor'/>
                     </thead>
@@ -207,8 +218,6 @@ function ArmsArmorReference() {
 
 function RandomEncounterReference() {
     const { refData, sourceFilter } = useAppContext();
-
-    return null
 
     const HeaderRow = () => {
         return (
@@ -230,26 +239,39 @@ function RandomEncounterReference() {
     };
 
     function RenderTableRows() {
+        const level1 = refData.randomEncounterTable[0]
+        const level2 = refData.randomEncounterTable[1]
+        const level3 = refData.randomEncounterTable[2]
+
+        const dataRows = []
+
+        for (let i = 1; i <= 20; i++) {
+            let creatureNameL1 = getCreatureFromId(level1.rollResults[i][0]).name
+            let creatureNameL2 = getCreatureFromId(level2.rollResults[i][0]).name
+            let creatureNameL3 = getCreatureFromId(level3.rollResults[i][0]).name
+
+            const creatureCountL1 = level1.rollResults[i][1] > 1 ? `s (${level1.rollResults[i][1]})` : '';
+            const creatureCountL2 = level2.rollResults[i][1] > 1 ? `s (${level2.rollResults[i][1]})` : '';
+            const creatureCountL3 = level3.rollResults[i][1] > 1 ? `s (${level3.rollResults[i][1]})` : '';
+
+            creatureNameL1 = creatureNameL1.endsWith('olf') && level1.rollResults[i][1] > 1 ? creatureNameL1.slice(0, -3) + 'olve' : creatureNameL1;
+            creatureNameL2 = creatureNameL2.endsWith('olf') && level2.rollResults[i][1] > 1 ? creatureNameL2.slice(0, -3) + 'olve' : creatureNameL2;
+            creatureNameL3 = creatureNameL3.endsWith('olf') && level3.rollResults[i][1] > 1 ? creatureNameL3.slice(0, -3) + 'olve' : creatureNameL3;
+            
+            dataRows.push(
+                <tr key={i}>
+                    <td>{i}</td>
+                    <td>{creatureNameL1}{creatureCountL1}</td>
+                    <td>{creatureNameL2}{creatureCountL2}</td>
+                    <td>{creatureNameL3}{creatureCountL3}</td>
+                </tr>
+            )
+        }
+
+
         return (
             <>
-                <tr>
-                    <td>1</td>
-                    <td>{refData.encounter[0].level1[0]}</td>
-                    <td>{refData.encounter[0].level2[0]}</td>
-                    <td>{refData.encounter[0].level3[0]}</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>{refData.encounter[0].level1[1]}</td>
-                    <td>{refData.encounter[0].level2[1]}</td>
-                    <td>{refData.encounter[0].level3[1]}</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>{refData.encounter[0].level1[2]}</td>
-                    <td>{refData.encounter[0].level2[2]}</td>
-                    <td>{refData.encounter[0].level3[2]}</td>
-                </tr>
+                {dataRows}
             </>
         )
     }
@@ -258,15 +280,15 @@ function RandomEncounterReference() {
         <>
         <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="weapon-stats" aria-controls="weapon-stats">
-                <h3>{'General Arms'}</h3>
+                <h3>{'Random Encounter Table'}</h3>
             </AccordionSummary>
                 <AccordionDetails>
-                    <table className='reference-table'>
+                    <table className='reference-table' style={{textAlign: 'center'}}>
                         <thead>
                             <HeaderRow/>
                         </thead>
                         <tbody>
-                            <RenderTableRows list={refData.arms}/>
+                            <RenderTableRows />
                         </tbody>
                     </table>
             </AccordionDetails>
@@ -278,7 +300,7 @@ function RandomEncounterReference() {
 function CreatureReference() {
     const { refData, sourceFilter } = useAppContext();
 
-    return null
+    const filteredList = sourceFilter.includes('all') ? refData.creatures : refData.creatures.filter(creature => sourceFilter.includes(creature.source));
 
     const HeaderRow = () => {
         return (
@@ -292,7 +314,6 @@ function CreatureReference() {
                     <th><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will Icon'/></th>
                     <th><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Fight Icon'/></th>
                     <th>Notes</th>
-                    <th>Cost</th>
                     <th>Source</th>
                 </tr>
             </>
@@ -302,24 +323,19 @@ function CreatureReference() {
     function RenderTableRows() {
         return (
             <>
-                <tr>
-                    <td>1</td>
-                    <td>{refData.encounter[0].level1[0]}</td>
-                    <td>{refData.encounter[0].level2[0]}</td>
-                    <td>{refData.encounter[0].level3[0]}</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>{refData.encounter[0].level1[1]}</td>
-                    <td>{refData.encounter[0].level2[1]}</td>
-                    <td>{refData.encounter[0].level3[1]}</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>{refData.encounter[0].level1[2]}</td>
-                    <td>{refData.encounter[0].level2[2]}</td>
-                    <td>{refData.encounter[0].level3[2]}</td>
-                </tr>
+                {filteredList.map((creature, index) => (
+                    <tr key={'creature' + index}>
+                        <td>{creature.name}</td>
+                        <td>{creature.move}</td>
+                        <td>{modSign(creature.fight)}</td>
+                        <td>{modSign(creature.shoot)}</td>
+                        <td>{creature.armor}</td>
+                        <td>{modSign(creature.will)}</td>
+                        <td>{creature.health}</td>
+                        <td>{creature.notes}</td>
+                        <td>{creature.source}</td>
+                    </tr>
+                ))}
             </>
         )
     }
@@ -328,15 +344,15 @@ function CreatureReference() {
         <>
         <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="weapon-stats" aria-controls="weapon-stats">
-                <h3>{'General Arms'}</h3>
+                <h3>{'Creatures'}</h3>
             </AccordionSummary>
                 <AccordionDetails>
-                    <table className='reference-table'>
+                    <table className='reference-table' style={{textAlign: 'center'}}>
                         <thead>
                             <HeaderRow/>
                         </thead>
                         <tbody>
-                            <RenderTableRows list={refData.arms}/>
+                            <RenderTableRows />
                         </tbody>
                     </table>
             </AccordionDetails>

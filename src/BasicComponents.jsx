@@ -3,10 +3,11 @@ import { useAuth } from './AuthContext.jsx'
 import { useState, Fragment, IconButton } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
-import { getStatusFromId, getSpellFromId, modSign } from './HelperFunctions.js';
-import { Alert } from "@mui/material";
+import { getStatusFromId, getSpellFromId, getItemFromId, modSign } from './HelperFunctions.js';
+import { Box } from "@mui/material";
 
 
+// ExpandBox is deprecated
 export function ExpandBox({title, children, className=''}) {
   const [expanded, setExpanded] = useState(false);
 
@@ -59,14 +60,14 @@ export function BasicStatCard({ name, stats, show_costs=false, show_status=true,
             <td><img src='src/assets/Game-Icons-net/high-shot.svg' className="stat-icon" alt='Shoot Icon'/>{modSign(stats.shoot)}</td>
           </tr>
           <tr>
-            <td><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will Icon'/>{modSign(stats.will)}</td>
             <td><img src='src/assets/Game-Icons-net/abdominal-armor.svg' className="stat-icon" alt='Armor Icon'/>{stats.armor}</td>
+            <td><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will Icon'/>{modSign(stats.will)}</td>
             <td><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Fight Icon'/>{stats.health}</td>
           </tr>
           <tr>
             <td colSpan="3">
-              {stats.itemSlots.map((slot, index) => (
-                <p key= {'Item' + index}>Item {index+1}: {slot !== 'none' ? slot : '--'}</p>
+              {stats.itemSlots.map((itemId, index) => (
+                <p key= {'Item' + index}>Item {index+1}: {itemId !== 0 ? getItemFromId(itemId).name : '--'}</p>
               ))}
             </td>
           </tr>
@@ -80,18 +81,18 @@ export function BasicStatCard({ name, stats, show_costs=false, show_status=true,
   )
 }
 
-export function BasicSpellCard({spellId}) {
+export function BasicSpellCard({spellId, titlebar=true}) {
   const spellViewObj = getSpellFromId(spellId)
 
   return (
     <div>
-      <table className="spellbook-table">
+      <table className="spellbook-table" style={{textAlign: 'center'}}>
         <thead>
-          <tr colSpan="3">
-            <th colSpan="3">
+        {titlebar &&<tr colSpan="3">
+             <th colSpan="3">
               <h2>{spellViewObj.name ? spellViewObj.name : '--'}</h2>
             </th>
-          </tr>
+          </tr>}
         </thead>
         <tbody>
           <tr>

@@ -6,14 +6,14 @@ import { useAuth } from './AuthContext.jsx';
 import { useAppContext } from './AppContext.jsx';
 import { SpellBookBlock } from './WarbandSpellbook.jsx';
 import { SoldierRosterBlock, EditSoldiersView } from './WarbandSoldiers.jsx';
-import { ShowPotentialApprentices, EditApprentice } from './WarbandApprentice.jsx';
-import { Accordion, AccordionDetails, AccordionSummary, Button } from '@mui/material';
+import { ApprenticeView } from './WarbandApprentice.jsx';
+import { Accordion, AccordionDetails, AccordionSummary, Button, Box } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import './styles/Warbands.css';
 
 
 export function WarbandView() {
-    const { currentWizard, setCurrentWarzard } = useAppContext();
+    const { currentWizard, setCurrentWizard } = useAppContext();
 
     return (
         <div className="warband-view">
@@ -52,7 +52,7 @@ export function WarbandSideDrawer() {
 
     return (
         <div className="sidedrawer-view">
-            <h3 onClick={() => handleWarbandDashClick()}
+            <h3 onClick={handleWarbandDashClick}
                 style = {{cursor: 'pointer'}}>
                     My Wizards
             </h3>
@@ -104,10 +104,10 @@ function WarbandDash() {
 }
 
 function WarbandDetails() {
-    const { currentWizard, editMode, setEditMode } = useAppContext();
+    const { currentWizard, editMode, setEditMode, setCurrentWizard } = useAppContext();
+    const { userData, setUserData } = useAuth();
 
     const wizardStats = currentWizard.stats;
-    const apprenticeStats = deriveApprenticeStats(wizardStats, currentWizard.apprentice);
 
     wizardStats['class'] = getSchoolFromId(wizardStats.classId).name;
 
@@ -117,11 +117,21 @@ function WarbandDetails() {
         setEditMode(newEditMode);
     }
 
+    function handleWizardDeletion() {
+        if (window.confirm('Are you sure you want to \'retire\' this wizard?')) {
+            const newUserData = {...userData};
+            newUserData.myWizards = newUserData.myWizards.filter(wizard => wizard.id !== currentWizard.id);
+            setUserData(newUserData);
+            setCurrentWizard(null)
+        };
+    }
+
     return (
         <>
-            <div>
+            <Box>
                 <h2>{currentWizard.name}</h2>
-            </div>
+                <Button onClick={handleWizardDeletion}>Retire Wizard</Button>
+            </Box>
             <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="wizard-stats" aria-controls="wizard-stats">
                 <h3>{'Wizard'}</h3>
@@ -136,11 +146,7 @@ function WarbandDetails() {
                     <h3>{'Apprentice'}</h3>
                 </AccordionSummary>
                 <AccordionDetails className='center column'>
-                    {apprenticeStats.status !== 9 && editMode !== 'apprentice' &&
-                        <BasicStatCard name={apprenticeStats.name} stats = {apprenticeStats} />
-                    }
-                    {apprenticeStats.status === 9 && <ShowPotentialApprentices/>}
-                    {editMode.apprentice && <EditApprentice />}
+                    <ApprenticeView />
                 </AccordionDetails>
             </Accordion>
 

@@ -1,17 +1,82 @@
 import { useAppContext } from './AppContext';
+import { useAuth } from './AuthContext';
 import { getRandomName, deriveApprenticeStats } from './HelperFunctions';
 import { BasicStatCard } from './BasicComponents';
-import { Accordion, AccordionDetails, AccordionSummary, Button } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Button, Box } from '@mui/material';
+
+
+export function ApprenticeView() {
+    const { currentWizard, setCurrentWizard,editMode, setEditMode } = useAppContext();
+    const { userData, setUserData } = useAuth();
+    
+    const wizardStats = currentWizard.stats;
+    //wizardStats['class'] = getSchoolFromId(wizardStats.classId).name;
+    const apprenticeStats = deriveApprenticeStats(wizardStats, currentWizard.apprentice);
+
+    const handleEditClick = (editMode) => {
+        const newEditMode = {...editMode};
+        newEditMode['apprentice'] = true;
+        setEditMode(newEditMode);
+    }
+
+    const handleRemoval = () => {
+        const goodbyeText = currentWizard.apprentice.status === 0 ? `dump ${currentWizard.apprentice.name}'s body in a ditch somewhere`  : `fire your apprentice, ${currentWizard.apprentice.name}`;
+
+        if (window.confirm(`Are you sure you want to ${goodbyeText}?`)) {
+            const newUserData = {...userData}
+            console.log(userData)
+            newUserData.myWizards = userData.myWizards.map(wizard => 
+                wizard.id === currentWizard.id ? 
+                {...wizard, apprentice: { ...wizard.apprentice, name: '', status: 9, itemSlots: [0,0,0,0] }} : 
+                wizard
+            );
+            
+            const updatedWizard = newUserData.myWizards.find(wizard => wizard.id === currentWizard.id);
+    
+            setCurrentWizard(updatedWizard);
+            setUserData(newUserData);
+        }
+    }
+
+    return (
+        <>
+            {apprenticeStats.status !== 9 && editMode !== 'apprentice' && 
+            <>
+                <BasicStatCard name={apprenticeStats.name} stats = {apprenticeStats} />
+                <Box>
+                    <Button onClick={() => handleEditClick('apprentice')}>Edit</Button>
+                    <Button onClick={() => handleRemoval('apprentice')}>{apprenticeStats.status === 0 ? 'Dump' : 'Fire'}</Button>
+                </Box>
+            </>
+            }
+            {apprenticeStats.status === 9 && <ShowPotentialApprentices/>}
+            {editMode.apprentice && <EditApprentice />}
+        </>
+    )
+}
 
 export function ShowPotentialApprentices() {
     const { refData, currentWizard, setCurrentWizard } = useAppContext();
+    const { userData, setUserData } = useAuth();
 
-    const hireApprentice = (apprenticeName) => {
-        const updatedWizard = {...currentWizard}
-        updatedWizard.apprentice.name = apprenticeName;
-        updatedWizard.apprentice.status = 1;
-        setCurrentWizard(updatedWizard)
-        console.log('Hired ' + apprenticeName)
+    const hireApprentice = (apprenticeName, cost) => {
+        if (currentWizard.gold < cost) {
+            alert(`You do not have enough gold to afford ${apprenticeName}'s services!`);
+            return
+        }
+        // POST request to hire the apprentice
+        const newUserData = {...userData}
+
+        newUserData.myWizards = userData.myWizards.map(wizard => 
+            wizard.id === currentWizard.id ? 
+            {...wizard, apprentice: { ...wizard.apprentice, name: apprenticeName, status: 1 }, gold: wizard.gold - cost} : 
+            wizard
+        );
+        
+        const updatedWizard = newUserData.myWizards.find(wizard => wizard.id === currentWizard.id);
+
+        setCurrentWizard(updatedWizard);
+        setUserData(newUserData);
     }
 
     const apprenticeList = (nameList) => {
@@ -26,16 +91,17 @@ export function ShowPotentialApprentices() {
     }
 
     const apprenticeStats = deriveApprenticeStats(currentWizard.stats, currentWizard.apprentice);
+    const apprenticeCost = (currentWizard.stats.level - 6)*10 + 160;
 
     return (
         <div>
             <h3>You currently do not have an Apprentice.</h3>
-            <p>You can hire one from the list below.</p>
+            <p>You can hire one for <b style={{color: 'red'}}>{apprenticeCost} gold</b> from the list below.</p>
             <div className='apprentice-hire-container'>
             {apprenticeList(refData.nameGenerator.apprentice).map((apprenticeName) => 
                 <div key= {apprenticeName}>
-                    <BasicStatCard name={apprenticeName} stats={apprenticeStats} show_costs={true} show_status={false}/>
-                    <Button onClick={() => hireApprentice(apprenticeName)} >Hire {apprenticeName}</Button>
+                    <BasicStatCard name={apprenticeName} stats={apprenticeStats} show_status={false}/>
+                    <Button onClick={() => hireApprentice(apprenticeName, apprenticeCost)} >Hire {apprenticeName}</Button>
                 </div>
             )}
             </div>
@@ -62,8 +128,8 @@ export function EditApprentice() {
     return (
         <>
             <h3>Edit Apprentice</h3>
-            <button onClick={handleCancel}>Cancel</button>
-            <button>Save</button>
+            <Button onClick={handleCancel}>Cancel</Button>
+            <Button>Save</Button>
         </>
     )
 }

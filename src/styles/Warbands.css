@@ -55,8 +55,7 @@
 
 .spellbutton-container {
     display: flex;
-    gap: 10px;
-    margin: 10px;
+
     align-items: center;
 }
 
@@ -96,7 +95,7 @@
 
 .spellbook-description {
     text-align: left;
-    height: 175px;
+    height: auto;
     overflow-y: scroll;
 }
 
@@ -126,3 +125,6 @@
     border: var(--section-border);
     padding: 5px;
 }
+
+
+  

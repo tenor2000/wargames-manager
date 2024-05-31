@@ -23,7 +23,7 @@ export function SpellView() {
                     <h3>{spell.name}</h3>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <BasicSpellCard spellId={spell.id} />
+                    <BasicSpellCard spellId={spell.id} titlebar={false} />
                 </AccordionDetails>
             </Accordion>
         ))
@@ -45,14 +45,6 @@ export function SpellView() {
 
     return (
         <>
-            {/* <div className='center column'>
-                <h2>{schoolname} {schoolname==='All' ? 'Spells' : 'Spellbook'}</h2>
-                <input id='search-bar'className="search-bar" onChange={(e) => handleSearchFilter(e.target.value)}  placeholder="Search..."/>
-                <Button onClick={clearSearch}>clear</Button>
-            </div>
-            <div className='spell-list-view'>
-                {spellsBySchool()}
-            </div> */}
             <div className='center column'>
                 <h2>{schoolname} {schoolname === 'All' ? 'Spells' : 'Spellbook'}</h2>
                 <TextField

@@ -75,3 +75,23 @@ export function getStatusFromId(statusId) {
 export const modSign = (stat) => {
   return stat >= 0 ? `+${stat}` : stat;
 }
+
+export function getCreatureFromId(creatureId) {
+  const { refData } = useAppContext();
+  return refData.creatures.find(creature => creature.id === creatureId)
+}
+
+export function getItemFromId(itemId) {
+  const { refData } = useAppContext();
+  let refList
+
+  if (itemId > 100 && itemId < 200) {
+    refList = refData.arms
+  } else if (itemId > 200 && itemId < 300) {
+    refList = refData.armor
+  } else {
+    return null
+  }
+
+  return refList.find(item => item.id === itemId)
+}

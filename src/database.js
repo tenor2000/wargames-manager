@@ -1,7 +1,7 @@
 export const referenceData = {
     arms: [
         {
-            id: 1,
+            id: 101,
             name: 'Dagger',
             damageMod: -1,
             maxRange: '--',
@@ -9,7 +9,7 @@ export const referenceData = {
             source: 'Core Rulebook'
         },
         {
-            id: 2,
+            id: 102,
             name: 'Hand Weapon',
             damageMod: '--',
             maxRange: '--',
@@ -17,7 +17,7 @@ export const referenceData = {
             source: 'Core Rulebook'
         },
         {
-            id: 3,
+            id: 103,
             name: 'Two-Handed Weapon',
             damageMod: 2,
             maxRange: '--',
@@ -25,7 +25,7 @@ export const referenceData = {
             source: 'Core Rulebook'
         },
         {
-            id: 4,
+            id: 104,
             name: 'Staff',
             damageMod: -1,
             maxRange: '--',
@@ -33,7 +33,7 @@ export const referenceData = {
             source: 'Core Rulebook'
         },
         {
-            id: 5,
+            id: 105,
             name: 'Bow',
             damageMod: '--',
             maxRange: 24,
@@ -41,7 +41,7 @@ export const referenceData = {
             source: 'Core Rulebook'
         },
         {
-            id: 6,
+            id: 106,
             name: 'Crossbow',
             damageMod: 2,
             maxRange: 24,
@@ -49,7 +49,7 @@ export const referenceData = {
             source: 'Core Rulebook'
         },
         {
-            id: 7,
+            id: 107,
             name: 'Unarmed',
             damageMod: -2,
             maxRange: '--',
@@ -59,21 +59,21 @@ export const referenceData = {
     ],
     armor: [
         {
-            id: 1,
+            id: 201,
             name: 'Shield',
             armorMod: 1,
             notes: 'May not be carried with a two-handed weapon or staff',
             source: 'Core Rulebook'
         },
         {
-            id: 2,
+            id: 202,
             name: 'Light Armor',
             armorMod: 1,
             notes: '--',
             source: 'Core Rulebook'
         },
         {
-            id: 3,
+            id: 203,
             name: 'Heavy Armor',
             armorMod: 2,
             notes: '-1 Move',
@@ -197,20 +197,326 @@ export const referenceData = {
             health: 6,
             notes: 'Animal, Pack Hunter',
             source: 'Core Rulebook'
+        },
+        {
+            id: 10,
+            name: 'Small Construct',
+            type: 'Construct',
+            move: 6,
+            fight: 1,
+            shoot: 0,
+            armor: 11,
+            will: 0,
+            health: 10,
+            notes: 'Construct',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 11,
+            name: 'Medium Construct',
+            type: 'Construct',
+            move: 5,
+            fight: 3,
+            shoot: 0,
+            armor: 12,
+            will: 0,
+            health: 12,
+            notes: 'Construct',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 12,
+            name: 'Large Construct',
+            type: 'Construct',
+            move: 4,
+            fight: 4,
+            shoot: 0,
+            armor: 13,
+            will: 0,
+            health: 14,
+            notes: 'Construct, Large, Strong',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 13,
+            name: 'Imp',
+            type: 'Demon',
+            move: 6,
+            fight: 1,
+            shoot: 0,
+            armor: 10,
+            will: 4,
+            health: 6,
+            notes: 'Demon',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 14,
+            name: 'Minor Demon',
+            type: 'Demon',
+            move: 6,
+            fight: 3,
+            shoot: 0,
+            armor: 11,
+            will: 4,
+            health: 12,
+            notes: 'Demon',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 15,
+            name: 'Major Demon',
+            type: 'Demon',
+            move: 6,
+            fight: 5,
+            shoot: 0,
+            armor: 12,
+            will: 6,
+            health: 15,
+            notes: 'Demon, Large, Strong, True Sight',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 16,
+            name: 'Frost Giant',
+            type: 'Misc',
+            move: 6,
+            fight: 5,
+            shoot: 0,
+            armor: 15,
+            will: 4,
+            health: 25,
+            notes: 'Elemental Resistance (2), Large, Strong',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 17,
+            name: 'Giant Worm',
+            type: 'Misc',
+            move: 7,
+            fight: 4,
+            shoot: 0,
+            armor: 10,
+            will: 5,
+            health: 20,
+            notes: 'Burrowing, Large',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 18,
+            name: 'Snow Troll',
+            type: 'Misc',
+            move: 4,
+            fight: 4,
+            shoot: 0,
+            armor: 14,
+            will: 2,
+            health: 16,
+            notes: 'Large, Strong',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 19,
+            name: 'Werewolf',
+            type: 'Misc',
+            move: 7,
+            fight: 4,
+            shoot: 0,
+            armor: 11,
+            will: 5,
+            health: 12,
+            notes: 'Bounty (20gc), Expert Climber',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 20,
+            name: 'Armoured Skeleton',
+            type: 'Undead',
+            move: 6,
+            fight: 2,
+            shoot: 0,
+            armor: 12,
+            will: 0,
+            health: 1,
+            notes: 'Pack Hunter, Undead',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 21,
+            name: 'Animated Skull',
+            type: 'Undead',
+            move: 3,
+            fight: 0,
+            shoot: 0,
+            armor: 10,
+            will: -2,
+            health: 1,
+            notes: 'Levitate, Undead',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 22,
+            name: 'Ghoul',
+            type: 'Undead',
+            move: 6,
+            fight: 2,
+            shoot: 0,
+            armor: 10,
+            will: 2,
+            health: 10,
+            notes: 'Undead',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 23,
+            name: 'Skeleton',
+            type: 'Undead',
+            move: 6,
+            fight: 1,
+            shoot: 0,
+            armor: 10,
+            will: 0,
+            health: 1,
+            notes: 'Undead',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 24,
+            name: 'Skeleton Archer',
+            type: 'Undead',
+            move: 6,
+            fight: 0,
+            shoot: 0,
+            armor: 10,
+            will: 0,
+            health: 1,
+            notes: 'Undead, Bow',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 25,
+            name: 'Vampire',
+            type: 'Undead',
+            move: 7,
+            fight: 4,
+            shoot: 0,
+            armor: 12,
+            will: 5,
+            health: 14,
+            notes: 'Immune to Normal Weapons, Magic Attack, Mind Lock, True Sight, Undead',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 26,
+            name: 'Wraith',
+            type: 'Undead',
+            move: 6,
+            fight: 2,
+            shoot: 0,
+            armor: 10,
+            will: 3,
+            health: 6,
+            notes: 'Energy Drain, Ethereal, Immune to Normal Weapons, Magic Attack, Undead',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 27,
+            name: 'Zombie',
+            type: 'Undead',
+            move: 4,
+            fight: 1,
+            shoot: 0,
+            armor: 12,
+            will: 0,
+            health: 6,
+            notes: 'Undead',
+            source: 'Core Rulebook'
         }
     ],
     randomEncounterTable: [
         {
-            encounterId: 1,
+            id: 1,
             name: 'Level 1 Encounter',
             source: 'Core Rulebook',
-            1: [12, 1]
+            rollResults: [
+                [/*id, amount*/],
+                [23, 1], //skeleton
+                [23, 2], //skeleton
+                [20, 1], //armoured skeleton
+                [27, 1], //zombie
+                [27, 2], //zombie
+                [22, 1], //ghoul
+                [1, 1], //bear
+                [2, 1], //boar
+                [3, 1], //Giant Rat
+                [3, 2], //Giant Rat
+                [3, 4], //Giant Rat
+                [4, 1], //Ice Spider
+                [6, 1], //Snow Leopard
+                [8, 1], //Wild Dog
+                [8, 2], //Wild Dog
+                [9, 1], //Wolf
+                [9, 2], //Wolf
+                [10, 1], //Small Construct
+                [13, 1], //imp
+                [5, 1] //ice toad
+            ]
         },
         {
             id: 2,
-            name: 'Random Encounter',
-            notes: '--',
-            source: 'Core Rulebook'
+            name: 'Level 2 Encounter',
+            source: 'Core Rulebook',
+            rollResults: [
+                [/*creature id, amount*/],
+                [20, 2], //armoured skeleton
+                [22, 1], //ghoul
+                [22, 2], //ghoul
+                [26, 1], //wraith
+                [1, 1], //bear
+                [1, 1], //bear
+                [2, 1], //boar
+                [2, 1], //boar
+                [4, 1], //ice spiders
+                [4, 2], //ice spiders
+                [6, 1], //Snow Leopard
+                [7, 1], //white gorilla
+                [9, 2], //wolf
+                [11, 1], //medium construct
+                [14, 1], //minor demon
+                [5, 1], //ice toad
+                [5, 2], //ice toad
+                [18, 1], //snow troll
+                [17, 1], //giant worm
+                [19, 1] //werewolf
+            ]
+        },
+        {
+            id: 3,
+            name: 'Level 3 Encounter',
+            source: 'Core Rulebook',
+            rollResults: [
+                [/*creature id, amount*/],
+                [20, 3], //armoured skeleton
+                [22, 1], //ghoul
+                [22, 2], //ghoul
+                [22, 2], //ghoul
+                [26, 1], //wraith
+                [26, 1], //wraith
+                [25, 1], //vampire
+                [7, 1], //white gorilla
+                [7, 1], //white gorilla
+                [12, 1], //large construct
+                [12, 1], //large construct
+                [14, 1], //minor demon
+                [14, 1], //minor demon
+                [16, 1], //frost giant
+                [18, 1], //snow troll
+                [18, 1], //snow troll
+                [18, 2], //snow troll
+                [19, 1], //werewolf
+                [17, 1], //Giant Worm
+                [17, 1] //Giant Worm
+            ]
         }
     ],
     spells: [
@@ -1208,7 +1514,7 @@ export const referenceData = {
                 will: 4,
                 cost: 0,
                 status: 1,
-                itemSlots: ['none', 'none', 'none', 'none', 'none'],
+                itemSlots: [0, 0, 0, 0, 0],
                 statMods: [],
             },
             gold: 400,
@@ -1217,7 +1523,7 @@ export const referenceData = {
                 class: 'Apprentice',
                 status: 9,
                 armor: 10,
-                itemSlots: ['none', 'none', 'none', 'none'],
+                itemSlots: [0, 0, 0, 0],
                 statMods: [],
                 cost: 100,
             },
@@ -1355,7 +1661,7 @@ export const userInfoData = {
                 will: 4,
                 cost: 0,
                 status: 1,
-                itemSlots: ['dagger', 'none', 'none', 'none', 'none'],
+                itemSlots: [101, 0, 0, 0, 0],
                 statMods: [],
             },
             gold: 400,
@@ -1364,9 +1670,9 @@ export const userInfoData = {
                 class: 'Apprentice',
                 status: 1,
                 armor: 10,
-                itemSlots: ['one-handed weapon', 'none', 'none', 'none'],
+                itemSlots: [103, 202, 0, 0],
                 statMods: [],
-                cost: 100,
+                cost: 100, // It actually calculated (level-6)*10 + 160
             },
             primarySpellIds: [401, 402, 403],
             alignedSpellIds: [601, 701, 901],
@@ -1377,14 +1683,14 @@ export const userInfoData = {
                 402: 1,
             },
             soldiers: [
-                {name: 'Julius', status: 1, classId: 1, itemSlots: ['none']},
-                {name: 'Adam', status: 0, classId: 1, itemSlots: ['none']},
-                {name: 'Roger', status: 1, classId: 2, itemSlots: ['none']},
-                {name: 'Todd', status: 2, classId: 2, itemSlots: ['none']},
-                {name: 'Jeff', status: 1, classId: 4, itemSlots: ['none']},
-                {name: 'Hank', status: 1, classId: 7, itemSlots: ['none']},
-                {name: 'George', status: 1, classId: 5, itemSlots: ['none']},
-                {name: 'Clyde', status: 1, classId: 6, itemSlots: ['none']},
+                {name: 'Julius', status: 1, classId: 1, itemSlots: [0]},
+                {name: 'Adam', status: 0, classId: 1, itemSlots: [0]},
+                {name: 'Roger', status: 1, classId: 2, itemSlots: [0]},
+                {name: 'Todd', status: 2, classId: 2, itemSlots: [0]},
+                {name: 'Jeff', status: 1, classId: 4, itemSlots: [0]},
+                {name: 'Hank', status: 1, classId: 7, itemSlots: [0]},
+                {name: 'George', status: 1, classId: 5, itemSlots: [0]},
+                {name: 'Clyde', status: 1, classId: 6, itemSlots: [0]},
             ],
             soldiersLost: 0,
             xpGained: 0,
@@ -1408,7 +1714,7 @@ export const userInfoData = {
                 will: 4,
                 cost: 0,
                 status: 1,
-                itemSlots: ['dagger', 'none', 'none', 'none', 'none'],
+                itemSlots: [105, 0, 0, 0, 0],
                 statMods: [],
             },
             gold: 400,
@@ -1417,7 +1723,7 @@ export const userInfoData = {
                 class: 'Apprentice',
                 status: 1,
                 armor: 10,
-                itemSlots: ['dagger', 'none', 'none', 'none'],
+                itemSlots: [101, 0, 0, 0],
                 statMods: [],
                 cost: 100,
             },
@@ -1429,14 +1735,14 @@ export const userInfoData = {
                 301: -1
             },
             soldiers: [
-                {name: 'Fred', status: 1, classId: 1, itemSlots: ['none']},
-                {name: 'Sally', status: 0, classId: 1, itemSlots: ['none']},
-                {name: 'Jimmy', status: 1, classId: 2, itemSlots: ['none']},
-                {name: 'Ned', status: 2, classId: 2, itemSlots: ['none']},
-                {name: 'Sue', status: 1, classId: 3, itemSlots: ['none']},
-                {name: 'Bill', status: 1, classId: 4, itemSlots: ['none']},
-                {name: 'Joe', status: 1, classId: 7, itemSlots: ['none']},
-                {name: 'Jack', status: 1, classId: 6, itemSlots: ['none']},
+                {name: 'Fred', status: 1, classId: 1, itemSlots: [101]},
+                {name: 'Sally', status: 0, classId: 1, itemSlots: [0]},
+                {name: 'Jimmy', status: 1, classId: 2, itemSlots: [0]},
+                {name: 'Ned', status: 2, classId: 2, itemSlots: [0]},
+                {name: 'Sue', status: 1, classId: 3, itemSlots: [0]},
+                {name: 'Bill', status: 1, classId: 4, itemSlots: [0]},
+                {name: 'Joe', status: 1, classId: 7, itemSlots: [0]},
+                {name: 'Jack', status: 1, classId: 6, itemSlots: [0]},
             ],
             soldiersLost: 0,
             xpGained: 400,
@@ -1459,7 +1765,7 @@ export const userInfoData = {
                 will: 4,
                 cost: 0,
                 status: 1,
-                itemSlots: ['dagger', 'none', 'none', 'none', 'none'],
+                itemSlots: [101, 0, 0, 0, 0],
                 statMods: [],
             },
             gold: 400,
@@ -1468,7 +1774,7 @@ export const userInfoData = {
                 class: 'Apprentice',
                 status: 9,
                 armor: 10,
-                itemSlots: ['none', 'none', 'none', 'none'],
+                itemSlots: [0, 0, 0, 0],
                 statMods: [],
                 cost: 100,
             },

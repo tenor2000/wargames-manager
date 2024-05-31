@@ -8,12 +8,10 @@ export function SpellBookBlock() {
     const [ spellViewObj, setSpellViewObj ] = useState('null')
     const [ spellSchoolMod, setSpellSchoolMod ] = useState(0)
 
-    const primarySpellArr = currentWizard.primarySpellIds
-    const alignedSpellArr = currentWizard.alignedSpellIds
-    const neutralSpellArr = currentWizard.neutralSpellIds
-    const opposedSpellArr = currentWizard.opposedSpellIds
-
-    
+    const primarySpellArr = currentWizard.primarySpellIds;
+    const alignedSpellArr = currentWizard.alignedSpellIds;
+    const neutralSpellArr = currentWizard.neutralSpellIds;
+    const opposedSpellArr = currentWizard.opposedSpellIds;
 
     function SpellViewCard() {
         const spellMod = currentWizard.spellModifiers[spellViewObj.id]
@@ -22,13 +20,8 @@ export function SpellBookBlock() {
 
         return (
             <div>
-                <Button 
-                    style={{ width: '100%' }} 
-                    onClick={() => setSpellViewObj('null')}
-                >
-                    Close Viewer
-                </Button>
-                <table className="spellbook-table">
+                
+                <table className="spellbook-table" style={{textAlign: 'center'}}>
                     <tbody>
                         <tr colSpan="4">
                             <th colSpan="4">
@@ -47,6 +40,12 @@ export function SpellBookBlock() {
                         </tr>
                     </tbody>
                 </table>
+                <Button 
+                    style={{ width: '100%' }} 
+                    onClick={() => setSpellViewObj('null')}
+                >
+                    Close Viewer
+                </Button>
             </div>
         )
     }
@@ -84,7 +83,7 @@ export function SpellBookBlock() {
         <>
             {spellViewObj !== 'null' && <SpellViewCard spell={spellViewObj}/>}
             <div className='spellbutton-container'>
-                <h3>Primary: </h3>
+                <h4>Primary Spells </h4>
                 <div>
                     {primarySpellArr.map((spellId) => (
                         <MySpellButton key={spellId} spellId={spellId} />
@@ -92,7 +91,7 @@ export function SpellBookBlock() {
                 </div>
             </div>
             <div className="spellbutton-container">
-                <h3>Aligned: </h3> 
+                <h4>Aligned Spells</h4> 
                 <div>
                     {alignedSpellArr.map((spellId) => (
                         <MySpellButton key={spellId} spellId={spellId} schoolModifier={2} />
@@ -100,7 +99,7 @@ export function SpellBookBlock() {
                 </div>
             </div>
             <div className="spellbutton-container">
-                <h3>Neutral: </h3> 
+                <h4>Neutral Spells</h4> 
                 <div>
                     {neutralSpellArr.map((spellId) => (
                         <MySpellButton key={spellId} spellId={spellId} schoolModifier={4}/>
@@ -108,7 +107,7 @@ export function SpellBookBlock() {
                 </div>
             </div>
             <div className="spellbutton-container">
-                {currentWizard.opposedSpellIds.length > 0 ? <h3>Opposed: </h3> : null}
+                {currentWizard.opposedSpellIds.length > 0 ? <h4>Opposed Spells </h4> : null}
                 <div>
                     {opposedSpellArr.map((spellId) => (
                         <MySpellButton key={spellId} spellId={spellId} schoolModifier={6}/>

@@ -1,4 +1,5 @@
 import { useAppContext } from "./AppContext";
+import { useAuth } from "./AuthContext";
 import { useState, useEffect } from "react";
 import { BasicStatCard } from "./BasicComponents";
 import { getRandomName, getSoldierFromId, getStatusFromId, modSign } from "./HelperFunctions";
@@ -19,7 +20,6 @@ const formSoldierStats = (mySoldierArray) => {
 }
 export function SoldierRosterBlock() {
     const { currentWizard } = useAppContext();
-    console.log(currentWizard)
 
     return (
         <div className='soldier-card-view'>
@@ -32,6 +32,7 @@ export function SoldierRosterBlock() {
 
 export function EditSoldiersView() {
     const { currentWizard, setCurrentWizard, editMode, setEditMode, refData} = useAppContext();
+    const { userData, setUserData } = useAuth();
     const [ totalEditedCost, setTotalEditedCost ] = useState(0);
     const [ editedWizard, setEditedWizard ] = useState({...currentWizard});
 
@@ -48,22 +49,33 @@ export function EditSoldiersView() {
     const handleSave = () => {
         const updateWizard = {...editedWizard};
         if (updateWizard.gold - totalEditedCost < 0) {
-            return <alert>'Not enough gold'</alert>
+            alert('Not enough gold')
+            return
         }
-        console.log('saved')
 
-        updateWizard.gold -= totalEditedCost;
+        // POST request to update the soldier roster
         updateWizard.soldiers.forEach((soldier) => {
             if (soldier.status === 7) { // 7 = 'Hired'
                 soldier.status = 1
             };
         })
         updateWizard.soldiers = updateWizard.soldiers.filter((soldier) => soldier.status !== 8); // 8 = 'For Hire'
-        setCurrentWizard(updateWizard);
-        console.log('Updated ' + updateWizard.name)
         const newEditMode = {...editMode};
         newEditMode['soldiers'] = false;
         setEditMode(newEditMode);
+
+        const newUserData = {...userData}
+
+        newUserData.myWizards = userData.myWizards.map(wizard => 
+            wizard.id === currentWizard.id ? 
+            {...wizard, soldiers: updateWizard.soldiers, gold: wizard.gold - totalEditedCost} : 
+            wizard
+        );
+        
+        const updatedWizard = newUserData.myWizards.find(wizard => wizard.id === currentWizard.id);
+
+        setCurrentWizard(updatedWizard);
+        setUserData(newUserData);
     }
 
     const handleNameChange = (index, newName) => {
@@ -86,8 +98,6 @@ export function EditSoldiersView() {
     const handleRemove = (removedSoldier) => {
         const goodbyeText = removedSoldier.stats.status === 0 ? `You have dumped ${removedSoldier.name} in a ditch somewhere.` : `${removedSoldier.name} walks away in disbelief as tears runs down their face.`;
         const confirmText = `Are you sure you want to remove ${removedSoldier.name}?`;
-
-        console.log(goodbyeText);
 
         if (window.confirm(confirmText)) {
             console.log(goodbyeText);
@@ -172,7 +182,7 @@ export function EditSoldiersView() {
         soldier.status = 8; // 8 = 'For Hire'
         soldier.classId = Math.floor(Math.random() * refData.soldiers.length) + 1;
         soldier.name = soldier.classId === 3 ? getRandomName(refData.nameGenerator.animal) : getRandomName(refData.nameGenerator.soldier);
-        soldier.itemSlots = ['none'];
+        soldier.itemSlots = [0];
       
         return soldier
     }
@@ -193,8 +203,6 @@ export function EditSoldiersView() {
     for (let x = editedWizard.soldiers.length; x < 8; x++) {
         editedWizard.soldiers.push(getRandomSoldierForHire());
     }
-
-
 
     return (
         <div className='edit-soldiers-view'>
