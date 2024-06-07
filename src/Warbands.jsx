@@ -1,19 +1,29 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ExpandBox, BasicStatCard  } from './BasicComponents.jsx';
-import { getSchoolFromId, deriveApprenticeStats, getRandomName } from './HelperFunctions.js';
+import { BasicStatCard  } from './BasicComponents.jsx';
+import { getSchoolFromId, getRandomName } from './HelperFunctions.js';
 import { useAuth } from './AuthContext.jsx';
 import { useAppContext } from './AppContext.jsx';
 import { SpellBookBlock } from './WarbandSpellbook.jsx';
 import { SoldierRosterBlock, EditSoldiersView } from './WarbandSoldiers.jsx';
-import { ApprenticeView } from './WarbandApprentice.jsx';
+import { ApprenticeView, WizardView } from './WarbandWizard.jsx';
 import { Accordion, AccordionDetails, AccordionSummary, Button, Box } from '@mui/material';
+import { useMediaQuery } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import './styles/Warbands.css';
 
 
 export function WarbandView() {
-    const { currentWizard, setCurrentWizard } = useAppContext();
+    const { currentWizard } = useAppContext();
+    const { loading, error } = useAppContext();
+
+    if (loading) {
+        return <div>Loading...</div>;
+      }
+    
+    if (error) {
+    return <div>Error loading data</div>;
+    }
 
     return (
         <div className="warband-view">
@@ -26,8 +36,23 @@ export function WarbandView() {
 export function WarbandSideDrawer() {
     const { userData } = useAuth();
     const navigate = useNavigate();
-    const { currentWizard, setCurrentWizard, setNewWizard, refData, setEditMode } = useAppContext();
+    const { loading, error, currentWizard, setCurrentWizard, setNewWizard, refData, setEditMode } = useAppContext();
     
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+    
+    if (error) {
+        return <div>Error loading data</div>;
+    }
+
+    const wizardsList = userData.myWizards.map(wizard => (
+        <div key={wizard.id} className="sidedrawer-item" onClick={() => handleWizardClick(wizard)}>
+            {wizard.name} <br/> 
+            {getSchoolFromId(wizard.stats.classId, refData).name} - Level {wizard.stats.level}
+        </div>
+    ));
+
     function handleWarbandDashClick() {
         setCurrentWizard(null)
     }
@@ -38,17 +63,9 @@ export function WarbandSideDrawer() {
     }
 
     function handleNewWizardClick() {
-
         setNewWizard(refData.templates.wizard);
         navigate('/new-wizard');
     }
-
-    const wizardsList = userData.myWizards.map(wizard => (
-        <div key={wizard.id} className="sidedrawer-item" onClick={() => handleWizardClick(wizard)}>
-            {wizard.name} <br/> 
-            {getSchoolFromId(wizard.stats.classId).name} - Level {wizard.stats.level}
-        </div>
-    ))
 
     return (
         <div className="sidedrawer-view">
@@ -72,6 +89,7 @@ export function WarbandSideDrawer() {
 function WarbandDash() {
     const { userData } = useAuth();
     const { setNewWizard, refData } = useAppContext();
+    const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
     const navigate = useNavigate();
 
     const userWizards = userData.myWizards;
@@ -86,7 +104,7 @@ function WarbandDash() {
     return (
         <div className ='center column'>
             <div>
-                <h2>Warband Manager</h2>
+                {!isPortrait && <h2>Warband Manager</h2>}
             </div>
             <div>
                 <p>Here you can edit, create, and delete your warbands.</p>
@@ -104,12 +122,10 @@ function WarbandDash() {
 }
 
 function WarbandDetails() {
-    const { currentWizard, editMode, setEditMode, setCurrentWizard } = useAppContext();
+    const { currentWizard, editMode, setEditMode, setCurrentWizard, refData } = useAppContext();
     const { userData, setUserData } = useAuth();
-
-    const wizardStats = currentWizard.stats;
-
-    wizardStats['class'] = getSchoolFromId(wizardStats.classId).name;
+    const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
+    const isLandscape = useMediaQuery('(max-height: 768px) and (orientation: landscape)');
 
     function handleEditClick(section) {
         const newEditMode = {...editMode};
@@ -128,16 +144,18 @@ function WarbandDetails() {
 
     return (
         <>
-            <Box>
-                <h2>{currentWizard.name}</h2>
-                <Button onClick={handleWizardDeletion}>Retire Wizard</Button>
-            </Box>
+            {!isPortrait && 
+                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <h2>{currentWizard.name}</h2>
+                    <Button onClick={handleWizardDeletion}>Retire Wizard</Button>
+                </Box>
+            }
             <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="wizard-stats" aria-controls="wizard-stats">
                 <h3>{'Wizard'}</h3>
             </AccordionSummary>
             <AccordionDetails className='center column'>
-                <BasicStatCard name={currentWizard.name} stats = {wizardStats}/>
+                <WizardView />
             </AccordionDetails>
             </Accordion>
 
@@ -165,7 +183,7 @@ function WarbandDetails() {
                 </AccordionSummary>
                 <AccordionDetails className='center column'>
                     {Object.keys(currentWizard.soldiers).length > 0 && !editMode.soldiers && <SoldierRosterBlock/>}
-                    {Object.keys(currentWizard.soldiers).length === 0 && <p>There are no soldiers in {currentWizard.name}'s roster.</p>}
+                    {Object.keys(currentWizard.soldiers).length === 0 && !editMode.soldiers && <p>There are no soldiers in {currentWizard.name}'s roster.</p>}
                     {editMode.soldiers && <EditSoldiersView />}
                     {!editMode.soldiers && <Button onClick={() => handleEditClick('soldiers')}>Edit Roster</Button>}
                 </AccordionDetails>
@@ -178,6 +196,7 @@ function WarbandDetails() {
                 <AccordionDetails className='center column'>
                     <p>The Vault is where all treasure is stored</p>
                     <p>Gold: {currentWizard.gold}</p>
+                    <p>XP: {currentWizard.xp}</p>
                 </AccordionDetails>
             </Accordion>
 
@@ -189,6 +208,12 @@ function WarbandDetails() {
                     <p>Base of Operations Description</p>
                 </AccordionDetails>
             </Accordion>
+            {isPortrait && 
+                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+                    
+                    <Button onClick={handleWizardDeletion}>Retire Wizard</Button>
+                </Box>
+            }
         </>
 
     );

@@ -2,7 +2,7 @@ import { useAppContext } from './AppContext.jsx';
 import { useAuth } from './AuthContext.jsx';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getRandomName, getSchoolFromId, getSchoolFromSpellId } from './HelperFunctions.js';
+import { getSchoolFromId, getSchoolFromSpellId } from './HelperFunctions.js';
 import './styles/NewWizard.css';
 import { update } from 'firebase/database';
 import { TextField, Button, InputLabel, Select, MenuItem, FormControl, Box } from '@mui/material';
@@ -151,9 +151,9 @@ function SpellSelection({category}) {
   if (category === 'primary') {
     schoolIdArray = [wizardClassId];
   } else if (category === 'aligned') {
-    schoolIdArray = getSchoolFromId(wizardClassId).aligned;
+    schoolIdArray = getSchoolFromId(wizardClassId, refData).aligned;
   } else if (category === 'neutral') {
-    schoolIdArray = getSchoolFromId(wizardClassId).neutral;
+    schoolIdArray = getSchoolFromId(wizardClassId, refData).neutral;
   } else {
     return null;
   }
@@ -161,10 +161,10 @@ function SpellSelection({category}) {
   let filteredSpells;
   if (category === 'aligned') {
     filteredSpells = schoolIdArray.map(schoolId => 
-      allSpellList.filter(spell => getSchoolFromSpellId(spell.id).id === schoolId)
+      allSpellList.filter(spell => getSchoolFromSpellId(spell.id, refData).id === schoolId)
     );
   } else {
-    filteredSpells = allSpellList.filter(spell => schoolIdArray.includes(getSchoolFromSpellId(spell.id).id));
+    filteredSpells = allSpellList.filter(spell => schoolIdArray.includes(getSchoolFromSpellId(spell.id, refData).id));
   }
 
 
@@ -209,7 +209,7 @@ function SpellSelection({category}) {
   return (
     <section>
       <div className='center'>
-        {category==='primary' && <h3>Choose 3 Spells from the {getSchoolFromId(wizardClassId).name} School of Magic</h3>}
+        {category==='primary' && <h3>Choose 3 Spells from the {getSchoolFromId(wizardClassId, refData).name} School of Magic</h3>}
         {category==='aligned' && <h3>Choose 3 Spells from Aligned Schools of Magic</h3>}
         {category==='neutral' && <h3>Choose 2 Spells from Neutral Schools of Magic</h3>}
       </div>
@@ -217,8 +217,8 @@ function SpellSelection({category}) {
         {spellCountArray.map((index) => (
           <Box key={index} sx={{ minWidth: 180 }}>
             <FormControl fullWidth>
-                {category==='primary' && <InputLabel id="spell-primary">{getSchoolFromId(wizardClassId).name}</InputLabel>}
-                {category==='aligned' && <InputLabel id="spell-aligned">{getSchoolFromId(schoolIdArray[index - 1]).name}</InputLabel>}
+                {category==='primary' && <InputLabel id="spell-primary">{getSchoolFromId(wizardClassId, refData).name}</InputLabel>}
+                {category==='aligned' && <InputLabel id="spell-aligned">{getSchoolFromId(schoolIdArray[index - 1], refData).name}</InputLabel>}
                 {category==='neutral' && <InputLabel id="spell-neutral">Neutral </InputLabel>}
               <Select
                 labelId={`spell-${category}`}

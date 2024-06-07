@@ -3,14 +3,15 @@ import { useAuth } from "./AuthContext";
 import { useState, useEffect } from "react";
 import { BasicStatCard } from "./BasicComponents";
 import { getRandomName, getSoldierFromId, getStatusFromId, modSign } from "./HelperFunctions";
+import { Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from '@mui/material';
 
-import { Tooltip, TextField, Button, Snackbar } from "@mui/material";
+import { Box, Tooltip, TextField, Button, Snackbar } from "@mui/material";
 
 
-const formSoldierStats = (mySoldierArray) => {
+const formSoldierStats = (mySoldierArray, refData) => {
     let soldierList = [];
     mySoldierArray.forEach((soldier) => {
-        const soldierEntryStats = getSoldierFromId(soldier.classId);
+        const soldierEntryStats = getSoldierFromId(soldier.classId, refData);
         const soldierStats = {...soldierEntryStats.stats};
         soldierStats.status = soldier.status;
         soldierStats.itemSlots = soldier.itemSlots;
@@ -19,12 +20,12 @@ const formSoldierStats = (mySoldierArray) => {
     return soldierList
 }
 export function SoldierRosterBlock() {
-    const { currentWizard } = useAppContext();
+    const { currentWizard, refData } = useAppContext();
 
     return (
         <div className='soldier-card-view'>
-            {formSoldierStats(currentWizard.soldiers).map((soldier, index) => (
-                    <BasicStatCard key={soldier.name} name={soldier.name} stats={soldier.stats} show_costs={true} />
+            {formSoldierStats(currentWizard.soldiers, refData).map((soldier, index) => (
+                    <BasicStatCard key={soldier.name} name={soldier.name} stats={soldier.stats} refData={refData}show_costs={true} />
                 ))}
         </div>
     );
@@ -35,6 +36,7 @@ export function EditSoldiersView() {
     const { userData, setUserData } = useAuth();
     const [ totalEditedCost, setTotalEditedCost ] = useState(0);
     const [ editedWizard, setEditedWizard ] = useState({...currentWizard});
+    const [ notesOpen, setNotesOpen ] = useState(false);
 
     const handleCancel = () => {
         const newEditMode = {...editMode};
@@ -130,7 +132,7 @@ export function EditSoldiersView() {
         } else if (soldier.stats.status === 7) {
             return <b style={{color: 'green'}}>Hired</b>
         } else {
-            return <b style={{color: 'lightblue'}}>{getStatusFromId(soldier.stats.status)}</b>
+            return <b style={{color: 'lightblue'}}>{getStatusFromId(soldier.stats.status, refData)}</b>
         }
     }
 
@@ -188,7 +190,7 @@ export function EditSoldiersView() {
     }
 
     function ResourceTally() {
-        const specialSoldierList = editedWizard.soldiers.filter(soldier => getSoldierFromId(soldier.classId).type === 'Specialist' && soldier.status !== 8);
+        const specialSoldierList = editedWizard.soldiers.filter(soldier => getSoldierFromId(soldier.classId, refData).type === 'Specialist' && soldier.status !== 8);
         const totalSpecialsRecruited = specialSoldierList.length;
         
         return (
@@ -205,78 +207,85 @@ export function EditSoldiersView() {
     }
 
     return (
-        <div className='edit-soldiers-view'>
+        <Box>
             <h3>Edit Roster</h3>
-            <table className='edit-soldier-table'>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Class</th>
-                        <th><img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move Icon'/></th>
-                        <th><img src='src/assets/Game-Icons-net/axe-sword.svg' className="stat-icon" alt='Fight Icon'/></th>
-                        <th><img src='src/assets/Game-Icons-net/high-shot.svg' className="stat-icon" alt='Shoot Icon'/></th>
-                        <th><img src='src/assets/Game-Icons-net/abdominal-armor.svg' className="stat-icon" alt='Armor Icon'/></th>
-                        <th><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will Icon'/></th>
-                        <th><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Fight Icon'/></th>
-                        <th>Notes</th>
-                        <th>Status</th>
-                        <th>Cost</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {formSoldierStats(editedWizard.soldiers).map((soldier, index) => {
-                        return (
-                        <tr key={`soldier-${index}`}>
-                            <td>
-                                <TextField
-                                    value={soldier.name} 
-                                    onChange={(e) => handleNameChange(index, e.target.value)}
-                                    variant='standard' 
-                                    sx={{
-                                        '& .MuiInputBase-input': {
-                                            color: 'white', // Text color
-                                            fontSize: '16px', // Text size
-                                            fontWeight: 'bold' // Text weight
-                                          }
-                                    }}
-                                    />
-                            </td>
-                            <td>{soldier.stats.status === 8 ? <ShowClassSelections soldier={soldier}/> : soldier.stats.class}</td>
-                            <td>{soldier.stats.move}</td>
-                            <td>{modSign(soldier.stats.fight)}</td>
-                            <td>{modSign(soldier.stats.shoot)}</td>
-                            <td>{soldier.stats.armor}</td>
-                            <td>{modSign(soldier.stats.will)}</td>
-                            <td>{soldier.stats.health}</td>
-                            <td>
-                                <Tooltip title={soldier.stats.notes} placement="top">
-                                    <img
-                                        src="src/assets/Game-Icons-net/stabbed-note.svg"
-                                        className="stat-icon"
-                                        alt="Notes Icon"
-                                    />
-                                </Tooltip>
-                            </td>
-                            <td><ShowStatus soldier={soldier} /></td>
-                            <td><ShowCost soldier={soldier} /></td>
-                            <td><ShowAction soldier={soldier} /></td>
-                        </tr>
-                        )}
-                    )}
-                    <tr>
-                        <td colSpan="12"><ResourceTally/></td>
-                    </tr>
-                    <tr>
-                        <td colSpan="12">
-                            <Button onClick={handleCancel}>Cancel</Button>
-                            <Button onClick={handleSave}>Save</Button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </div>
+            <Paper className='generic-paper' sx={{ width: '100%', overflow: 'hidden' }}>
+                <TableContainer>
+                    <Table size='small'>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Name</TableCell>
+                                <TableCell>Class</TableCell>
+                                <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move Icon'/></TableCell>
+                                <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/axe-sword.svg' className="stat-icon" alt='Fight Icon'/></TableCell>
+                                <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/high-shot.svg' className="stat-icon" alt='Shoot Icon'/></TableCell>
+                                <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/abdominal-armor.svg' className="stat-icon" alt='Armor Icon'/></TableCell>
+                                <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will Icon'/></TableCell>
+                                <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Fight Icon'/></TableCell>
+                                <TableCell>Notes</TableCell>
+                                <TableCell>Status</TableCell>
+                                <TableCell>Cost</TableCell>
+                                <TableCell>Action</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {formSoldierStats(editedWizard.soldiers, refData).map((soldier, index) => {
+                                return (
+                                <TableRow key={`soldier-${index}`}>
+                                    <TableCell>
+                                        <TextField
+                                            value={soldier.name} 
+                                            onChange={(e) => handleNameChange(index, e.target.value)}
+                                            variant='standard' 
+                                            sx={{
+                                                '& .MuiInputBase-input': {
+                                                    color: 'white', 
+                                                    fontSize: '16px', 
+                                                    fontWeight: 'bold', 
+                                                    minWidth: '100px',
+                                                    width: '10vw',
+                                                }
+                                            }}
+                                            />
+                                    </TableCell>
+                                    <TableCell>{soldier.stats.status === 8 ? <ShowClassSelections soldier={soldier}/> : soldier.stats.class}</TableCell>
+                                    <TableCell sx={{textAlign: 'center'}}>{soldier.stats.move}</TableCell>
+                                    <TableCell sx={{textAlign: 'center'}}>{modSign(soldier.stats.fight)}</TableCell>
+                                    <TableCell sx={{textAlign: 'center'}}>{modSign(soldier.stats.shoot)}</TableCell>
+                                    <TableCell sx={{textAlign: 'center'}}>{soldier.stats.armor}</TableCell>
+                                    <TableCell sx={{textAlign: 'center'}}>{modSign(soldier.stats.will)}</TableCell>
+                                    <TableCell sx={{textAlign: 'center'}}>{soldier.stats.health}</TableCell>
+                                    <TableCell>
+                                        <Tooltip title={soldier.stats.notes} placement="top">
+                                            <img
+                                                src="src/assets/Game-Icons-net/stabbed-note.svg"
+                                                className="stat-icon"
+                                                alt="Notes Icon"
+                                            />
+                                        </Tooltip>
+                                    </TableCell>
+                                    <TableCell><ShowStatus soldier={soldier} /></TableCell>
+                                    <TableCell><ShowCost soldier={soldier} /></TableCell>
+                                    <TableCell><ShowAction soldier={soldier} /></TableCell>
+                                </TableRow>
+                                )}
+                            )}
+                            <TableRow>
+                                <TableCell colSpan="12" sx={{textAlign: 'center'}}>
+                                    <ResourceTally/>
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell colSpan="12" sx={{textAlign: 'center'}}>
+                                    <Button onClick={handleCancel}>Cancel</Button>
+                                    <Button onClick={handleSave}>Save</Button>
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Paper>
+        </Box>
         
     )
 }

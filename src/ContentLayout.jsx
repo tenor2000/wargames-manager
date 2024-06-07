@@ -23,14 +23,17 @@ import { SpellView, SpellSideDrawer } from './Spells.jsx';
 import { WarbandView, WarbandSideDrawer } from './Warbands.jsx';
 import { CampaignView, CampaignSideDrawer } from './Campaigns.jsx';
 import { CreateNewWizard, NewWizardSideDrawer } from './CreateNewWizard.jsx';
+import { getSchoolFromId } from './HelperFunctions.js';
 import { Login, LoginSideDrawer } from './Login.jsx';
-import { BottomNavigation, BottomNavigationAction,Drawer, useMediaQuery } from '@mui/material';
+import { BottomNavigation, BottomNavigationAction, Drawer, useMediaQuery, Paper } from '@mui/material';
 import { useTheme, makeStyles } from '@mui/material/styles';
+import { ref, set } from 'firebase/database';
 
 export function MenuBar() {
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const { currentWizard, schoolFilterId, refData, isSidebarOpen, setIsSidebarOpen } = useAppContext();
   const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
   const navigate = useNavigate();
 
@@ -68,6 +71,7 @@ export function MenuBar() {
   );
 
   const MobileNavHeading = () => {
+    const { currentWizard } = useAppContext();
     if (!isPortrait) {
       return null
     }
@@ -75,17 +79,38 @@ export function MenuBar() {
     return (
       <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
         <Routes>
-                <Route path="/" element={'Home'} />
-                <Route path="/reference" element={'Reference'} />
-                <Route path="/spells" element={'Spells'} />
-                <Route path="/warbands" element={'Warbands'} />
-                <Route path="/campaigns" element={'Campaigns'} />
-                <Route path="/new-wizard" element={'Create New Wizard'} />
-                <Route path="/login" element={'Log In'} />
-                {/* Add routes for other sidedrawer items */}
-            </Routes>
+            <Route path="/" element={'Home'} />
+            <Route path="/reference" element={'Reference'} />
+            <Route path="/spells" element={<MobileNavHelper page = 'spells'/>} />
+            <Route path="/warbands" element={<MobileNavHelper page = 'warbands'/>} />
+            <Route path="/campaigns" element={'Campaigns'} />
+            <Route path="/new-wizard" element={'Create New Wizard'} />
+            <Route path="/login" element={'Log In'} />
+            {/* Add routes for other sidedrawer items */}
+        </Routes>
       </Typography>
       )
+  }
+
+  const MobileNavHelper = ({page}) => {
+    if (!isPortrait) {
+      return null
+    }
+
+    if (page === 'warbands') {
+      return (
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          {currentWizard && isPortrait ? currentWizard.name : 'Warband Manager'}
+        </Typography>
+      )
+    } else if (page === 'spells') {
+      const schoolname = getSchoolFromId(schoolFilterId, refData).name;
+      return (
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          {isPortrait && <h4>{schoolname} Spells</h4>}
+        </Typography>
+      )
+    }
   }
 
   const MenuNavItems = () => {
@@ -142,7 +167,7 @@ export function MenuBar() {
           </IconButton>
           <MobileNavHeading />
           <MenuNavItems />
-          <Box sx={{ flexGrow: 1 }} />
+          <Box id="alt-search-bar" sx={{ flexGrow: 1 }} />
           {auth && (
             <div>
               <IconButton
@@ -190,21 +215,23 @@ export function MenuBar() {
 }
 
 export function SideDrawer () {
-    return (
-        <div className="side-drawer">
-            <Routes>
-                <Route path="/" element={<HomeSideDrawer />} />
-                <Route path="/reference" element={<ReferenceSideDrawer />} />
-                <Route path="/spells" element={<SpellSideDrawer />} />
-                <Route path="/warbands" element={<WarbandSideDrawer />} />
-                <Route path="/campaigns" element={<CampaignSideDrawer />} />
-                <Route path="/reference" element={<ReferenceSideDrawer />} />
-                <Route path="/new-wizard" element={<NewWizardSideDrawer />} />
-                <Route path="/login" element={<LoginSideDrawer />} />
-                {/* Add routes for other sidebar items */}
-            </Routes>
+  return (
+    <Paper className="generic-paper">
+      <div className="side-drawer">
+        <Routes>
+            <Route path="/" element={<HomeSideDrawer />} />
+            <Route path="/reference" element={<ReferenceSideDrawer />} />
+            <Route path="/spells" element={<SpellSideDrawer />} />
+            <Route path="/warbands" element={<WarbandSideDrawer />} />
+            <Route path="/campaigns" element={<CampaignSideDrawer />} />
+            <Route path="/reference" element={<ReferenceSideDrawer />} />
+            <Route path="/new-wizard" element={<NewWizardSideDrawer />} />
+            <Route path="/login" element={<LoginSideDrawer />} />
+            {/* Add routes for other sidebar items */}
+        </Routes>
         </div>
-    )
+    </Paper>
+  )
 }
 
 export function ContentArea() {
@@ -237,7 +264,7 @@ export function MobileBottomNav() {
   const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
   if (!isPortrait) {
-    return null; // Hide the BottomNavigation if not in portrait mode
+    return null;
   }
 
   const handleChange = (event, newValue) => {
@@ -271,6 +298,7 @@ export function MobileBottomNav() {
       sx={{
         width: '100%',
         position: 'fixed',
+        height: '7%',
         bottom: 0,
         left: 0,
         backgroundColor: 'black', // may need to change

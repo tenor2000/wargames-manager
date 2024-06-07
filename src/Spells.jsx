@@ -1,14 +1,27 @@
 import { useAppContext } from './AppContext.jsx';
-import { BasicSpellCard, ExpandBox } from './BasicComponents.jsx';
+import { useState } from 'react';
+import { BasicSpellCard, SearchBar } from './BasicComponents.jsx';
 import { getSchoolFromId } from './HelperFunctions.js';
-import { Accordion, AccordionDetails, AccordionSummary, Button, TextField, InputAdornment, IconButton } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import CancelIcon from '@mui/icons-material/Cancel';
+import { useMediaQuery } from '@mui/material';
 import './styles/Spells.css';
 
 export function SpellView() {
     const { schoolFilterId, setSchoolFilterId, spellViewList, setSpellViewList, refData} = useAppContext();
+    const { loading, error } = useAppContext();
+    const [ searchText, setSearchText ] = useState('');
+    const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
+    const isLandscape = useMediaQuery('(max-height: 768px) and (orientation: landscape)');
+
+    if (loading) {
+        console.log('Loading...')
+        return <div>Loading...</div>;
+    }
     
+    if (error) {
+        return <div>Error loading data</div>;
+    }
 
     const spellsBySchool = () => {
         let sortedSpells = spellViewList;
@@ -23,7 +36,7 @@ export function SpellView() {
                     <h3>{spell.name}</h3>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <BasicSpellCard spellId={spell.id} titlebar={false} />
+                    <BasicSpellCard spellId={spell.id} titlebar={false} refData={refData}/>
                 </AccordionDetails>
             </Accordion>
         ))
@@ -38,41 +51,52 @@ export function SpellView() {
     function clearSearch() {
         handleSearchFilter('');
         setSchoolFilterId(0);
-        document.getElementById('search-bar').value = '';
+        setSearchText('');
     }
 
-    const schoolname = getSchoolFromId(schoolFilterId).name;
-
+    const schoolname = getSchoolFromId(schoolFilterId, refData).name;
+ 
     return (
         <>
-            <div className='center column'>
-                <h2>{schoolname} {schoolname === 'All' ? 'Spells' : 'Spellbook'}</h2>
-                <TextField
-                    id="search-bar"
-                    className="search-bar-root"
-                    onChange={(e) => handleSearchFilter(e.target.value)}
-                    placeholder="Search..."
-                    variant="outlined"
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton onClick={clearSearch}>
-                                    <CancelIcon />
-                                </IconButton>
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-            </div>
+            {!isPortrait && 
+                <div className={isLandscape ? 'center row' : 'center column'}>
+                    <h2>{schoolname} {schoolname === 'All' ? 'Spells' : 'Spellbook'}</h2>
+                    <SearchBar 
+                        searchText={searchText}
+                        setSearchText={setSearchText}
+                        handleSearchFilter={handleSearchFilter}
+                        clearSearch={clearSearch}
+                    />
+                </div>
+            }
             <div className='spell-list-view'>
                 {spellsBySchool()}
             </div>
+            {isPortrait && 
+                <div className='center'>
+                    <SearchBar 
+                        searchText={searchText}
+                        setSearchText={setSearchText}
+                        handleSearchFilter={handleSearchFilter}
+                        clearSearch={clearSearch}
+                    />
+                </div>
+            }
         </>
     );
 }
 
 export function SpellSideDrawer() {
     const { refData, spellViewList, setSpellViewList, setSchoolFilterId } = useAppContext();
+    const { loading, error } = useAppContext();
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+    
+    if (error) {
+        return <div>Error loading data</div>;
+    }
 
     const spellList = refData.spells;
     const magicSchools = refData.schoolsOfMagic;
@@ -93,12 +117,9 @@ export function SpellSideDrawer() {
     return (
         <div className="spells-sidebar-view">
             <h3>Schools of Magic</h3>
-            
             <div className="spells-sidebar-item">
                 {spellSchools}
             </div>
-
-
         </div>
     );
 }

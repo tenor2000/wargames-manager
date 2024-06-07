@@ -1,16 +1,39 @@
 import { useAppContext } from './AppContext';
 import { useAuth } from './AuthContext';
-import { getRandomName, deriveApprenticeStats } from './HelperFunctions';
-import { BasicStatCard } from './BasicComponents';
-import { Accordion, AccordionDetails, AccordionSummary, Button, Box } from '@mui/material';
+import { getRandomName, deriveApprenticeStats, getSchoolFromId, modSign } from './HelperFunctions';
+import { BasicStatCard, BasicStatTableHeader, BasicStatTableRow } from './BasicComponents';
+import { Button, Box, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from '@mui/material';
+import { useMediaQuery } from '@mui/material';
 
+
+export function WizardView() {
+    const { currentWizard, refData } = useAppContext();
+    const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
+
+    const wizardStats = currentWizard.stats;
+    wizardStats['class'] = getSchoolFromId(wizardStats.classId, refData).name;
+
+    console.log(wizardStats)
+
+    return (
+        <>
+        {isPortrait && <BasicStatCard name={currentWizard.name} stats = {wizardStats} refData={refData} showLevel={true} />}
+        {!isPortrait && 
+            <BasicStatTableHeader show_costs={false} show_status={true} showLevel={true} editMode={true} >
+                <BasicStatTableRow name = {currentWizard.name} stats = {wizardStats} refData={refData} show_costs={false} show_status={true} showLevel={true} editMode={true} />
+            </BasicStatTableHeader>
+        }
+        </>
+    );
+}
 
 export function ApprenticeView() {
-    const { currentWizard, setCurrentWizard,editMode, setEditMode } = useAppContext();
+    const { currentWizard, setCurrentWizard,editMode, setEditMode, refData } = useAppContext();
     const { userData, setUserData } = useAuth();
+    const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
     
     const wizardStats = currentWizard.stats;
-    //wizardStats['class'] = getSchoolFromId(wizardStats.classId).name;
+    //wizardStats['class'] = getSchoolFromId(wizardStats.classId, refData).name;
     const apprenticeStats = deriveApprenticeStats(wizardStats, currentWizard.apprentice);
 
     const handleEditClick = (editMode) => {
@@ -38,11 +61,20 @@ export function ApprenticeView() {
         }
     }
 
+    console.log(apprenticeStats)
+
     return (
         <>
             {apprenticeStats.status !== 9 && editMode !== 'apprentice' && 
             <>
-                <BasicStatCard name={apprenticeStats.name} stats = {apprenticeStats} />
+                {isPortrait && 
+                    <BasicStatCard name={apprenticeStats.name} stats = {apprenticeStats} />
+                }
+                {!isPortrait && 
+                    <BasicStatTableHeader show_costs={false} show_status={true} showLevel={true} editMode={true} >
+                        <BasicStatTableRow name = {apprenticeStats.name} stats = {apprenticeStats} refData={refData} show_costs={false} show_status={true} showLevel={true} editMode={true} />
+                    </BasicStatTableHeader>
+                }
                 <Box>
                     <Button onClick={() => handleEditClick('apprentice')}>Edit</Button>
                     <Button onClick={() => handleRemoval('apprentice')}>{apprenticeStats.status === 0 ? 'Dump' : 'Fire'}</Button>
@@ -129,7 +161,7 @@ export function EditApprentice() {
         <>
             <h3>Edit Apprentice</h3>
             <Button onClick={handleCancel}>Cancel</Button>
-            <Button>Save</Button>
+            <Button onClick={handleSave}>Save</Button>
         </>
     )
 }

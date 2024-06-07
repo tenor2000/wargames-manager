@@ -2,25 +2,40 @@ import { useState } from 'react';
 import { useAppContext } from './AppContext.jsx';
 import { modSign, getCreatureFromId } from './HelperFunctions';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from './AuthContext.jsx';
+import { useMediaQuery } from '@mui/material';
+import { BasicStatCard, BasicStatTableHeader, BasicStatTableRow } from './BasicComponents.jsx';
 import { Accordion, AccordionDetails, AccordionSummary, Button, Box, Checkbox, FormGroup, FormControlLabel } from '@mui/material';
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import './styles/Reference.css';
+import { FaLaptopHouse, FaLessThanEqual } from 'react-icons/fa';
 
 export function ReferenceView() {
-    const { refData, currRefTable } = useAppContext();
+    const { currRefTable } = useAppContext();
+    const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
+    const { loading, error } = useAppContext();
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+    
+    if (error) {
+        return <div>Error loading data</div>;
+    }
 
     return (
         <>
-            <div className="reference-container center">
-                <h2>Reference</h2>
-            </div>
+            { !isPortrait && 
+                <div className="reference-container center">
+                    <h2>Reference</h2>
+                </div>
+            }
             {(currRefTable === 'all' || currRefTable==='soldiers') && <SoldierReference />}
             {(currRefTable === 'all' || currRefTable==='armsandarmor') && <ArmsArmorReference />}
             {(currRefTable === 'all' || currRefTable==='creatures') && <CreatureReference />}
             {(currRefTable === 'all' || currRefTable==='randomencounters') && <RandomEncounterReference />}
-            {currRefTable==='base' && <BaseReference />}
-            {currRefTable==='vault' && <VaultReference />}
+            {(currRefTable === 'all' || currRefTable==='base') && <BaseReference />}
+            {(currRefTable === 'all' || currRefTable==='treasure') && <TreasureReference />}
         </>
     );
 }
@@ -53,7 +68,7 @@ function SourceFilter() {
     const { sourceFilter, setSourceFilter } = useAppContext();
 
     const handleFilterChange = (filterName) => {
-        const newFilter = [...sourceFilter];
+        let newFilter = [...sourceFilter];
         if (newFilter.includes(filterName)) {
             newFilter.push(filterName);
         } else {
@@ -73,41 +88,33 @@ function SourceFilter() {
 
 function SoldierReference() {
     const { refData, sourceFilter } = useAppContext();
+    const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
+    const isLandscape = useMediaQuery('(max-height: 768px) and (orientation: landscape)');
 
-    const SoldierHeaderRow = () => {
-        return (
-            <>
-                <tr>
-                    <th>Soldier</th>
-                    <th><img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move Icon'/></th>
-                    <th><img src='src/assets/Game-Icons-net/axe-sword.svg' className="stat-icon" alt='Fight Icon'/></th>
-                    <th><img src='src/assets/Game-Icons-net/high-shot.svg' className="stat-icon" alt='Shoot Icon'/></th>
-                    <th><img src='src/assets/Game-Icons-net/abdominal-armor.svg' className="stat-icon" alt='Armor Icon'/></th>
-                    <th><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will Icon'/></th>
-                    <th><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Fight Icon'/></th>
-                    <th>Notes</th>
-                    <th>Cost</th>
-                    <th>Source</th>
-                </tr>
-            </>
-        );
-    };
-
-    function RenderSoldierList({soldierList}) {
+    function RenderSoldierRows({soldierList}) {
         const filteredList = sourceFilter.includes('all') ? soldierList : soldierList.filter(soldier => sourceFilter.includes(soldier.source))
         return filteredList.map(soldier => (
-            <tr key={`soldier-${soldier.id}`}>
-                <td>{soldier.stats.class}</td>
-                <td>{soldier.stats.move}</td>
-                <td>{modSign(soldier.stats.fight)}</td>
-                <td>{modSign(soldier.stats.shoot)}</td>
-                <td>{soldier.stats.armor}</td>
-                <td>{modSign(soldier.stats.will)}</td>
-                <td>{soldier.stats.health}</td>
-                <td>{soldier.stats.notes}</td>
-                <td>{soldier.stats.cost === 0 ? 'Free' : `${soldier.stats.cost} gc`}</td>
-                <td>{soldier.source}</td>
-            </tr>
+            <BasicStatTableRow 
+                key={`soldier-${soldier.id}`} 
+                name={false} 
+                stats = {soldier.stats} 
+                showCosts={true} 
+                showStatus={false} 
+                showItemSlots={false} 
+            />
+        ))
+    }
+
+    function RenderSoldierCards({soldierList}) {
+        return soldierList.map(soldier => (
+            <BasicStatCard 
+                key={`soldier-${soldier.id}`} 
+                name={false}
+                stats = {soldier.stats} 
+                show_costs={true}
+                show_status={false}
+                showItemSlots={false}
+            />
         ))
     }
 
@@ -120,30 +127,38 @@ function SoldierReference() {
             <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="wizard-stats" aria-controls="wizard-stats">
                 <h3>{'Standard Soldiers'}</h3>
             </AccordionSummary>
-                <AccordionDetails>
-                    <table className='reference-table' style={{textAlign: 'center'}}>
-                        <thead>
-                            <SoldierHeaderRow />
-                        </thead>
-                        <tbody>
-                            <RenderSoldierList soldierList={standardSoldierList} />
-                        </tbody>
-                    </table>
+                <AccordionDetails sx={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
+                    {!isPortrait && 
+                        <BasicStatTableHeader
+                            name={false}
+                            showLevel={false}
+                            showStatus={false}
+                            showItemSlots={false}
+                            showCosts={true}
+                            >
+                            <RenderSoldierRows soldierList={standardSoldierList} />
+                        </BasicStatTableHeader>
+                    }
+                    {isPortrait && <RenderSoldierCards soldierList={standardSoldierList} />}
             </AccordionDetails>
         </Accordion>
         <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="wizard-stats" aria-controls="wizard-stats">
                 <h3>{'Specialist Soldiers'}</h3>
             </AccordionSummary>
-                <AccordionDetails>
-                <table className='reference-table' style={{textAlign: 'center'}}>
-                    <thead>
-                        <SoldierHeaderRow />
-                    </thead>
-                    <tbody>
-                        <RenderSoldierList soldierList={specialistSoldierList} />
-                    </tbody>
-                </table>
+                <AccordionDetails sx={isPortrait ? {display: 'flex', flexDirection: 'column', gap: '10px'} : null}>
+                    {!isPortrait && 
+                        <BasicStatTableHeader
+                            name={false}
+                            showLevel={false}
+                            showStatus={false}
+                            showItemSlots={false}
+                            showCosts={true}
+                        >
+                            <RenderSoldierRows soldierList={specialistSoldierList} />
+                        </BasicStatTableHeader>
+                    }
+                    {isPortrait && <RenderSoldierCards soldierList={specialistSoldierList} />}
             </AccordionDetails>
         </Accordion>
     </>
@@ -152,31 +167,32 @@ function SoldierReference() {
 
 function ArmsArmorReference() {
     const { refData, sourceFilter } = useAppContext();
+    const isLandscape = useMediaQuery('(max-height: 768px) and (orientation: landscape)');
 
     const HeaderRow = ({type}) => {
         return (
-            <tr>
-                <th>{type==='arms' ? 'Weapon' : 'Armor'}</th>
-                <th>{type==='arms' ? 'Damage' : 'Armor'} Modifier</th>
-                {type==='arms' && <th>Maximum Range</th>}
-                <th>Notes</th>
-                <th>Source</th>
-            </tr>
+            <TableRow>
+                <TableCell >{type==='arms' ? 'Weapon' : 'Armor'}</TableCell>
+                <TableCell sx={{textAlign: 'center'}}>{type==='arms' ? 'Damage' : 'Armor'} Modifier</TableCell>
+                {type==='arms' && <TableCell sx={{textAlign: 'center'}}>Maximum Range</TableCell>}
+                <TableCell>Notes</TableCell>
+                {!isLandscape && <TableCell>Source</TableCell>}
+            </TableRow>
         );
     };
 
     function RenderTableRows({list}) {
         const filteredList = sourceFilter.includes('all') ? list : list.filter(item => sourceFilter.includes(item.source))
-        
+
         return filteredList.map(item => (
-            <tr key={`${item.name}-${item.id}`}>
-                <td>{item.name}</td>
-                {item.damageMod && <td>{modSign(item.damageMod)}</td>}
-                {item.armorMod && <td>{modSign(item.armorMod)}</td>}
-                {item.maxRange && <td>{item.maxRange > 0 ? `${item.maxRange}"` : "--"}</td>}
-                <td>{item.notes}</td>
-                <td>{item.source}</td>
-            </tr>
+            <TableRow key={`${item.name}-${item.id}`}>
+                <TableCell>{item.name}</TableCell>
+                {item.damageMod && <TableCell sx={{textAlign: 'center'}}>{modSign(item.damageMod)}</TableCell>}
+                {item.armorMod && <TableCell sx={{textAlign: 'center'}}>{modSign(item.armorMod)}</TableCell>}
+                {item.maxRange && <TableCell sx={{textAlign: 'center'}}>{item.maxRange > 0 ? `${item.maxRange}"` : "--"}</TableCell>}
+                <TableCell>{item.notes}</TableCell>
+                {!isLandscape && <TableCell>{item.source}</TableCell>}
+            </TableRow>
         ))
     }
 
@@ -187,29 +203,37 @@ function ArmsArmorReference() {
                 <h3>{'General Arms'}</h3>
             </AccordionSummary>
                 <AccordionDetails>
-                    <table className='reference-table' style={{textAlign: 'center'}}>
-                        <thead>
-                            <HeaderRow type='arms'/>
-                        </thead>
-                        <tbody>
-                            <RenderTableRows list={refData.arms}/>
-                        </tbody>
-                    </table>
+                    <Paper className="generic-paper" sx={{ width: '100%', overflow: 'hidden'}}>
+                        <TableContainer sx={{ maxHeight: 640 }}>
+                            <Table stickyHeader aria-label="sticky table" size="small">
+                                <TableHead>
+                                    <HeaderRow type='arms' />
+                                </TableHead>
+                                <TableBody>
+                                    <RenderTableRows list={refData.arms} />
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Paper>
             </AccordionDetails>
         </Accordion>
         <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="armor-stats" aria-controls="armor-stats">
                 <h3>{'General Armor'}</h3>
             </AccordionSummary>
-                <AccordionDetails>
-                <table className='reference-table' style={{textAlign: 'center'}}>
-                    <thead>
-                        <HeaderRow list='armor'/>
-                    </thead>
-                    <tbody>
-                        <RenderTableRows list={refData.armor} />
-                    </tbody>
-                </table>
+            <AccordionDetails>
+                <Paper className="generic-paper" sx={{ width: '100%', overflow: 'hidden'}}>
+                    <TableContainer sx={{ maxHeight: 640 }}>
+                        <Table stickyHeader aria-label="sticky table" size="small">
+                            <TableHead>
+                                <HeaderRow type='armor' />
+                            </TableHead>
+                            <TableBody>
+                                <RenderTableRows list={refData.armor} />
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Paper>
             </AccordionDetails>
         </Accordion>
     </>
@@ -222,18 +246,18 @@ function RandomEncounterReference() {
     const HeaderRow = () => {
         return (
             <>
-                <tr>
-                    <th>First Die Roll</th>
-                    <th>1-12</th>
-                    <th>13-18</th>
-                    <th>19-20</th>
-                </tr>
-                <tr>
-                    <th>Second Die Roll</th>
-                    <th>Level 1 Encounter</th>
-                    <th>Level 2 Encounter</th>
-                    <th>Level 3 Encounter</th>
-                </tr>
+                <TableRow>
+                    <TableCell>First Die Roll</TableCell>
+                    <TableCell>1-12</TableCell>
+                    <TableCell>13-18</TableCell>
+                    <TableCell>19-20</TableCell>
+                </TableRow>
+                <TableRow>
+                    <TableCell>Second Die Roll</TableCell>
+                    <TableCell>Level 1 Encounter</TableCell>
+                    <TableCell>Level 2 Encounter</TableCell>
+                    <TableCell>Level 3 Encounter</TableCell>
+                </TableRow>
             </>
         );
     };
@@ -246,9 +270,9 @@ function RandomEncounterReference() {
         const dataRows = []
 
         for (let i = 1; i <= 20; i++) {
-            let creatureNameL1 = getCreatureFromId(level1.rollResults[i][0]).name
-            let creatureNameL2 = getCreatureFromId(level2.rollResults[i][0]).name
-            let creatureNameL3 = getCreatureFromId(level3.rollResults[i][0]).name
+            let creatureNameL1 = getCreatureFromId(level1.rollResults[i][0], refData).name
+            let creatureNameL2 = getCreatureFromId(level2.rollResults[i][0], refData).name
+            let creatureNameL3 = getCreatureFromId(level3.rollResults[i][0], refData).name
 
             const creatureCountL1 = level1.rollResults[i][1] > 1 ? `s (${level1.rollResults[i][1]})` : '';
             const creatureCountL2 = level2.rollResults[i][1] > 1 ? `s (${level2.rollResults[i][1]})` : '';
@@ -259,12 +283,12 @@ function RandomEncounterReference() {
             creatureNameL3 = creatureNameL3.endsWith('olf') && level3.rollResults[i][1] > 1 ? creatureNameL3.slice(0, -3) + 'olve' : creatureNameL3;
             
             dataRows.push(
-                <tr key={i}>
-                    <td>{i}</td>
-                    <td>{creatureNameL1}{creatureCountL1}</td>
-                    <td>{creatureNameL2}{creatureCountL2}</td>
-                    <td>{creatureNameL3}{creatureCountL3}</td>
-                </tr>
+                <TableRow key={i}>
+                    <TableCell>{i}</TableCell>
+                    <TableCell>{creatureNameL1}{creatureCountL1}</TableCell>
+                    <TableCell>{creatureNameL2}{creatureCountL2}</TableCell>
+                    <TableCell>{creatureNameL3}{creatureCountL3}</TableCell>
+                </TableRow>
             )
         }
 
@@ -282,15 +306,19 @@ function RandomEncounterReference() {
             <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="weapon-stats" aria-controls="weapon-stats">
                 <h3>{'Random Encounter Table'}</h3>
             </AccordionSummary>
-                <AccordionDetails>
-                    <table className='reference-table' style={{textAlign: 'center'}}>
-                        <thead>
-                            <HeaderRow/>
-                        </thead>
-                        <tbody>
-                            <RenderTableRows />
-                        </tbody>
-                    </table>
+            <AccordionDetails>
+                <Paper className="generic-paper" sx={{ width: '100%', overflow: 'hidden'}}>
+                    <TableContainer sx={{ maxHeight: 640 }}>
+                        <Table stickyHeader aria-label="sticky table" size="small">
+                            <TableHead>
+                                <HeaderRow />
+                            </TableHead>
+                            <TableBody>
+                                <RenderTableRows />
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Paper>
             </AccordionDetails>
         </Accordion>
     </>
@@ -299,23 +327,26 @@ function RandomEncounterReference() {
 
 function CreatureReference() {
     const { refData, sourceFilter } = useAppContext();
+    const isPortrait = useMediaQuery('(orientation: portrait)');
+
+    const alignment = 'center';
 
     const filteredList = sourceFilter.includes('all') ? refData.creatures : refData.creatures.filter(creature => sourceFilter.includes(creature.source));
 
     const HeaderRow = () => {
         return (
             <>
-                <tr>
-                    <th>Creature</th>
-                    <th><img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move Icon'/></th>
-                    <th><img src='src/assets/Game-Icons-net/axe-sword.svg' className="stat-icon" alt='Fight Icon'/></th>
-                    <th><img src='src/assets/Game-Icons-net/high-shot.svg' className="stat-icon" alt='Shoot Icon'/></th>
-                    <th><img src='src/assets/Game-Icons-net/abdominal-armor.svg' className="stat-icon" alt='Armor Icon'/></th>
-                    <th><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will Icon'/></th>
-                    <th><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Fight Icon'/></th>
-                    <th>Notes</th>
-                    <th>Source</th>
-                </tr>
+                <TableRow>
+                    <TableCell>Name</TableCell>
+                    <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move Icon'/></TableCell>
+                    <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/axe-sword.svg' className="stat-icon" alt='Fight Icon'/></TableCell>
+                    <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/high-shot.svg' className="stat-icon" alt='Shoot Icon'/></TableCell>
+                    <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/abdominal-armor.svg' className="stat-icon" alt='Armor Icon'/></TableCell>
+                    <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will Icon'/></TableCell>
+                    <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Fight Icon'/></TableCell>
+                    <TableCell>Notes</TableCell>
+                    {!isPortrait && <TableCell>Source</TableCell>}
+                </TableRow>
             </>
         );
     };
@@ -324,17 +355,17 @@ function CreatureReference() {
         return (
             <>
                 {filteredList.map((creature, index) => (
-                    <tr key={'creature' + index}>
-                        <td>{creature.name}</td>
-                        <td>{creature.move}</td>
-                        <td>{modSign(creature.fight)}</td>
-                        <td>{modSign(creature.shoot)}</td>
-                        <td>{creature.armor}</td>
-                        <td>{modSign(creature.will)}</td>
-                        <td>{creature.health}</td>
-                        <td>{creature.notes}</td>
-                        <td>{creature.source}</td>
-                    </tr>
+                    <TableRow key={creature + index}>
+                        <TableCell>{creature.name}</TableCell>
+                        <TableCell sx={{textAlign: 'center'}}>{creature.move}</TableCell>
+                        <TableCell sx={{textAlign: 'center'}}>{modSign(creature.fight)}</TableCell>
+                        <TableCell sx={{textAlign: 'center'}}>{modSign(creature.shoot)}</TableCell>
+                        <TableCell sx={{textAlign: 'center'}}>{creature.armor}</TableCell>
+                        <TableCell sx={{textAlign: 'center'}}>{modSign(creature.will)}</TableCell>
+                        <TableCell sx={{textAlign: 'center'}}>{creature.health}</TableCell>
+                        <TableCell>{creature.notes}</TableCell>
+                        {!isPortrait && <TableCell>{creature.source}</TableCell>}
+                    </TableRow>
                 ))}
             </>
         )
@@ -347,14 +378,178 @@ function CreatureReference() {
                 <h3>{'Creatures'}</h3>
             </AccordionSummary>
                 <AccordionDetails>
-                    <table className='reference-table' style={{textAlign: 'center'}}>
-                        <thead>
-                            <HeaderRow/>
-                        </thead>
-                        <tbody>
-                            <RenderTableRows />
-                        </tbody>
-                    </table>
+                    <Paper className="generic-paper" sx={{ width: '100%', overflow: 'hidden'}}>
+                        <TableContainer sx={{ maxHeight: 640 }}>
+                            <Table stickyHeader aria-label="sticky table" size="small">
+                                <TableHead >
+                                    <HeaderRow />
+                                </TableHead>
+                                <TableBody>
+                                    <RenderTableRows />
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Paper>
+            </AccordionDetails>
+        </Accordion>
+    </>
+    );
+}
+
+function BaseReference() {
+    const { refData, sourceFilter } = useAppContext();
+
+    const HeaderRow = ({type}) => {
+        return (
+            <TableRow>
+                <TableCell >{type==='locations' ? 'Locations' : 'Resources'}</TableCell>
+                {type!=='locations' && <TableCell sx={{textAlign: 'center'}}>Cost</TableCell>}
+                <TableCell>Effects</TableCell>
+                <TableCell>Source</TableCell>
+            </TableRow>
+        );
+    };
+
+    function RenderTableRows({list, type=false}) {
+        const filteredList = sourceFilter.includes('all') ? list : list.filter(item => sourceFilter.includes(item.source))
+
+        return filteredList.map(item => (
+            <TableRow key={`${item.name}-${item.id}`}>
+                <TableCell>{item.name}</TableCell>
+                {type!=='locations' && <TableCell sx={{textAlign: 'center'}}>{item.cost}gc</TableCell>}
+                <TableCell>{item.effects}</TableCell>
+                <TableCell>{item.source}</TableCell>
+            </TableRow>
+        ))
+    }
+
+    return (
+        <>
+        <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="weapon-stats" aria-controls="weapon-stats">
+                <h3>{'Base: Locations'}</h3>
+            </AccordionSummary>
+                <AccordionDetails>
+                    <Paper className="generic-paper" sx={{ width: '100%', overflow: 'hidden'}}>
+                        <TableContainer sx={{ maxHeight: 640 }}>
+                            <Table stickyHeader aria-label="sticky table" size="small">
+                                <TableHead>
+                                    <HeaderRow type='locations' />
+                                </TableHead>
+                                <TableBody>
+                                    <RenderTableRows list={refData.baseLocations} type='locations'/>
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Paper>
+            </AccordionDetails>
+        </Accordion>
+        <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="armor-stats" aria-controls="armor-stats">
+                <h3>{'Base: Resources'}</h3>
+            </AccordionSummary>
+            <AccordionDetails>
+                <Paper className="generic-paper" sx={{ width: '100%', overflow: 'hidden'}}>
+                    <TableContainer sx={{ maxHeight: 640 }}>
+                        <Table stickyHeader aria-label="sticky table" size="small">
+                            <TableHead>
+                                <HeaderRow type='resources' />
+                            </TableHead>
+                            <TableBody>
+                                <RenderTableRows list={refData.baseResources} />
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Paper>
+            </AccordionDetails>
+        </Accordion>
+    </>
+    );
+}
+
+function TreasureReference() {
+    const { refData, sourceFilter } = useAppContext();
+
+    // Temp
+    return (
+        <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="weapon-stats" aria-controls="weapon-stats">
+                <h3>{'Treasure'}</h3>
+            </AccordionSummary>
+                <AccordionDetails>
+                    <Paper className="generic-paper" sx={{ width: '80%', overflow: 'hidden'}}>
+                        <p>Coming Soon</p>
+                    </Paper>
+            </AccordionDetails>
+        </Accordion>
+    )
+    // End Temp
+
+    const HeaderRow = ({type}) => {
+        return (
+            <TableRow>
+                <TableCell >{type==='arms' ? 'Weapon' : 'Armor'}</TableCell>
+                <TableCell sx={{textAlign: 'center'}}>{type==='arms' ? 'Damage' : 'Armor'} Modifier</TableCell>
+                {type==='arms' && <TableCell sx={{textAlign: 'center'}}>Maximum Range</TableCell>}
+                <TableCell>Notes</TableCell>
+                <TableCell>Source</TableCell>
+            </TableRow>
+        );
+    };
+
+    function RenderTableRows({list}) {
+        const filteredList = sourceFilter.includes('all') ? list : list.filter(item => sourceFilter.includes(item.source))
+
+        return filteredList.map(item => (
+            <TableRow key={`${item.name}-${item.id}`}>
+                <TableCell>{item.name}</TableCell>
+                {item.damageMod && <TableCell sx={{textAlign: 'center'}}>{modSign(item.damageMod)}</TableCell>}
+                {item.armorMod && <TableCell sx={{textAlign: 'center'}}>{modSign(item.armorMod)}</TableCell>}
+                {item.maxRange && <TableCell sx={{textAlign: 'center'}}>{item.maxRange > 0 ? `${item.maxRange}"` : "--"}</TableCell>}
+                <TableCell>{item.notes}</TableCell>
+                <TableCell>{item.source}</TableCell>
+            </TableRow>
+        ))
+    }
+
+    return (
+        <>
+        <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="weapon-stats" aria-controls="weapon-stats">
+                <h3>{'General Arms'}</h3>
+            </AccordionSummary>
+                <AccordionDetails>
+                    <Paper className="generic-paper" sx={{ width: '100%', overflow: 'hidden'}}>
+                        <TableContainer sx={{ maxHeight: 640 }}>
+                            <Table stickyHeader aria-label="sticky table" size="small">
+                                <TableHead>
+                                    <HeaderRow type='arms' />
+                                </TableHead>
+                                <TableBody>
+                                    <RenderTableRows list={refData.arms} />
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Paper>
+            </AccordionDetails>
+        </Accordion>
+        <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="armor-stats" aria-controls="armor-stats">
+                <h3>{'General Armor'}</h3>
+            </AccordionSummary>
+            <AccordionDetails>
+                <Paper className="generic-paper" sx={{ width: '100%', overflow: 'hidden'}}>
+                    <TableContainer sx={{ maxHeight: 640 }}>
+                        <Table stickyHeader aria-label="sticky table" size="small">
+                            <TableHead>
+                                <HeaderRow type='armor' />
+                            </TableHead>
+                            <TableBody>
+                                <RenderTableRows list={refData.armor} />
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Paper>
             </AccordionDetails>
         </Accordion>
     </>

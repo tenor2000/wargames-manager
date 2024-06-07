@@ -14,6 +14,8 @@
   --border-color: lightblue;
   --section-border: var(--border-color) 1px solid;
   --font-color: white;
+  --table-backgroundColor: bluegray;
+  --table-textColor: white;
 }
 
 * {
@@ -154,8 +156,6 @@ h1 {
   color: white; /* Color for the clear button icon */
 }
 
-
-
 .center {
   display: flex;
   justify-content: center;
@@ -166,4 +166,38 @@ h1 {
 .column {
   display: flex;
   flex-direction: column;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+/* Tables for future light dark modes */
+.generic-paper {
+  background-color: var(--table-backgroundColor) !important;
+  color: var(--table-textColor) !important;
+}
+
+.generic-paper .MuiTableCell-root {
+  color: var(--table-textColor) !important
+}
+/* Default font size */
+body {
+  font-size: 16px;
+}
+
+/* Minimum font size for small screens */
+@media (max-width: 600px) {
+  body {
+      font-size: 18px;
+  }
+}
+
+/* Minimum font size for very small screens */
+@media (max-width: 400px) {
+  body {
+      font-size: 20px;
+  }
 }

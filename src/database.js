@@ -1,3 +1,171 @@
+// Eventually will be server side database
+// This is just for local testing
+// userData from useAuth()
+export const userInfoData = {
+    myWizards: [
+        {
+            id: 1,
+            name: 'Ivan the Illusionator',
+            stats: {
+                classId: 4,
+                level: 0,
+                health: 14,
+                currentHealth: 14,
+                move: 6,
+                fight: 2,
+                shoot: 0,
+                armor: 10,
+                will: 4,
+                cost: 0,
+                status: 1,
+                itemSlots: [101, 0, 0, 0, 0],
+                statMods: [],
+            },
+            gold: 400,
+            apprentice: {
+                name: "Jim",
+                class: 'Apprentice',
+                status: 1,
+                armor: 10,
+                itemSlots: [101, 202, 0, 0],
+                statMods: [],
+                cost: 100, // It actually calculated (level-6)*10 + 160
+            },
+            primarySpellIds: [401, 402, 403],
+            alignedSpellIds: [601, 701, 901],
+            neutralSpellIds: [101, 301],
+            opposedSpellIds: [],
+            spellModifiers: {
+                401: -1,
+            },
+            soldiers: [
+                {name: 'Julius', status: 1, classId: 1, itemSlots: [0]},
+                {name: 'Adam', status: 0, classId: 1, itemSlots: [0]},
+                {name: 'Roger', status: 1, classId: 2, itemSlots: [0]},
+                {name: 'Todd', status: 2, classId: 2, itemSlots: [0]},
+                {name: 'Jeff', status: 1, classId: 4, itemSlots: [0]},
+                {name: 'Hank', status: 1, classId: 7, itemSlots: [0]},
+                {name: 'George', status: 1, classId: 5, itemSlots: [0]},
+                {name: 'Clyde', status: 1, classId: 6, itemSlots: [0]},
+            ],
+            soldiersLost: 0,
+            xp: 0,
+            xpSpent: 0,
+            vault: [],
+            base: 'none',
+        },
+        {
+            id: 2,
+            name: 'David the Enchanter',
+            stats: {
+                
+                classId: 3,
+                level: 4,
+                health: 14,
+                currentHealth: 14,
+                move: 6,
+                fight: 2,
+                shoot: 0,
+                armor: 10,
+                will: 4,
+                cost: 0,
+                status: 1,
+                itemSlots: [105, 0, 0, 0, 0],
+                statMods: [],
+            },
+            gold: 400,
+            apprentice: {
+                name: "Ted",
+                class: 'Apprentice',
+                status: 1,
+                armor: 10,
+                itemSlots: [101, 0, 0, 0],
+                statMods: [],
+                cost: 100,
+            },
+            primarySpellIds: [301, 302, 303],
+            alignedSpellIds: [1001, 601, 201],
+            neutralSpellIds: [501, 901],
+            opposedSpellIds: [],
+            spellModifiers: {
+                301: -1
+            },
+            soldiers: [
+                {name: 'Fred', status: 1, classId: 1, itemSlots: [101]},
+                {name: 'Sally', status: 0, classId: 1, itemSlots: [0]},
+                {name: 'Jimmy', status: 1, classId: 2, itemSlots: [0]},
+                {name: 'Ned', status: 2, classId: 2, itemSlots: [0]},
+                {name: 'Sue', status: 1, classId: 3, itemSlots: [0]},
+                {name: 'Bill', status: 1, classId: 4, itemSlots: [0]},
+                {name: 'Joe', status: 1, classId: 7, itemSlots: [0]},
+                {name: 'Jack', status: 1, classId: 6, itemSlots: [0]},
+            ],
+            soldiersLost: 0,
+            xp: 400,
+            xpSpent: 200,
+            vault: [],
+            base: 'none'
+        },
+        {
+            id: 3,
+            name: 'Homer the Warlock',
+            stats: {
+                classId: 10,
+                level: 0,
+                health: 14,
+                currentHealth: 14,
+                move: 6,
+                fight: 2,
+                shoot: 0,
+                armor: 10,
+                will: 4,
+                cost: 0,
+                status: 1,
+                itemSlots: [101, 0, 0, 0, 0],
+                statMods: [],
+            },
+            gold: 400,
+            apprentice: {
+                name: "",
+                class: 'Apprentice',
+                status: 9,
+                armor: 10,
+                itemSlots: [0, 0, 0, 0],
+                statMods: [],
+                cost: 100,
+            },
+            primarySpellIds: [1001, 1002, 1003],
+            alignedSpellIds: [301, 501, 802],
+            neutralSpellIds: [101, 201],
+            opposedSpellIds: [],
+            spellModifiers: {
+
+            },
+            soldiers: [
+
+            ],
+            soldiersLost: 0,
+            xp: 0,
+            xpSpent: 0,
+            vault: [],
+            base: 'none',
+        },
+    ],
+    myRecord: {
+        wins: 0,
+        losses: 0,
+
+    },
+    myPreferences: {
+        theme: 'light',
+    }
+}
+
+
+
+
+
+// referenceData is deprecated and no longer in use. 
 export const referenceData = {
     arms: [
         {
@@ -80,6 +248,66 @@ export const referenceData = {
             source: 'Core Rulebook'
         }
     ],
+    baseLocations: [
+        {
+            id: 1001, 
+            name: 'Inn',
+            effects: 'This old inn has plenty of room to house soldiers and their gear. The wizard may keep an extra soldier in their warband. This soldier can be a specialist. However, this extra soldier cannot be used in a game and must remain in the base. Even with an inn, a wizard is still limited to eight soldiers in a game, with a maximum of four specialists. The wizard may change which soldier is left in the inn each game, which is useful if a soldier must miss a game due to injury.',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 1002, 
+            name: 'Temple',
+            effects: 'The ruins of this once-holy building still project an aura of calm. Spellcasters receive a +3 bonus to any castings of Miraculous Cure. Furthermore, roll a die after each game: on a 16+ they gain a free potion of healing (page 91).',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 1003, 
+            name: 'Crypt',
+            effects: 'It\'s not the most comfortable place to sleep, but it is full of \'supplies\'. Spellcasters receive a +2 bonus on all Raise Zombie and Animate Skull spells, regardless if the spell is cast during a game or Out of Game.',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 1004, 
+            name: 'Tower',
+            effects: 'This half-ruined spire allows the wizard to get closer to the heavens and to clear their mind. The tower grants a +2 bonus to all Casting Rolls for Reveal Secret and Awareness.',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 1005, 
+            name: 'Treasury',
+            effects: 'This treasury has remained relatively untouched and many of its vaults are still sealed. After each game, the warband may attempt to open a vault. Roll one die. If the result is 2-16 add that many gold crowns to the warband\'s treasury. If a 17-18 is rolled, add 100gc to that number. If a 19-20 is rolled, the warband finds a treasure - determine the nature of this treasure in the same way as rolling for a treasure token secured during a game.',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 1006, 
+            name: 'Brewery',
+            effects: 'There is still some life left in those old casks, and the warband takes full advantage. All soldiers start each game with +1 Will. Furthermore, the warband gains an additional 20gc after each game through the sale of excess stock.',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 1007, 
+            name: 'Library',
+            effects: 'This is one of the many libraries scattered throughout the city. The volumes contained within this one have fallen to the ravages of weather and time. A few valuable texts have survived, however. After each game the warband may roll one die. On a 15-18, they find a random scroll. On a 19-20 they discover a random grimoire.',
+            source: 'Core Rulebook'
+        },
+        {
+            id: 1008, 
+            name: 'Laboratory',
+            effects: 'A mostly intact residence of a wizard from long ago. It is still filled with their notes and experiments. A wizard gains 20 experience points after each game from what they learn in the house. This does not count against the 300 experience point maximum for each game.',
+            source: 'Core Rulebook'
+        }
+    ],
+    baseResources: [
+        {
+            id: 2001,
+            name: 'Kennel',
+            effects: 'Allows a wizard to keep one war hound or wolf (Animal Companion) in their warband above their normal soldier limit. Thus, a wizard may bring eight soldiers plus one war hound/wolf to each game.',
+            cost: 400,
+            source: 'Core Rulebook'
+        }
+        
+    ],
     creatures: [
         {
             id: 1,
@@ -104,7 +332,7 @@ export const referenceData = {
             armor: 12,
             will: 2,
             health: 8,
-            notes: 'Animal, Bounty(10gc), Horns (technically, tusks)',
+            notes: 'Animal, Bounty (10gc), Horns (technically, tusks)',
             source: 'Core Rulebook'
         },
         {    
@@ -439,7 +667,7 @@ export const referenceData = {
             name: 'Level 1 Encounter',
             source: 'Core Rulebook',
             rollResults: [
-                [/*id, amount*/],
+                [/*id, amount*/], // 0 is always empty
                 [23, 1], //skeleton
                 [23, 2], //skeleton
                 [20, 1], //armoured skeleton
@@ -860,7 +1088,7 @@ export const referenceData = {
             name: 'Draining Word',
             school: 'Sigilist',
             base_cast: 14,
-            category: 'Area of Effect',
+            category: 'Area Effect',
             description: 'This spell draws a bright rune of power in the sky. The spellcaster may choose one spell for Draining Word to affect. All rolls to attempt to cast that particular spell are at -3 for the rest of the game. A spellcaster may only have one Draining Word spell in effect at a time. Only one Draining Word can be active for each specific target spell at one time.'
         },
         {
@@ -1641,166 +1869,3 @@ export const referenceData = {
     },
 }
 
-// Eventually will be server side database
-// This is just for local testing
-// userData from useAuth()
-export const userInfoData = {
-    myWizards: [
-        {
-            id: 1,
-            name: 'Ivan the Illusionator',
-            stats: {
-                classId: 4,
-                level: 0,
-                health: 14,
-                currentHealth: 14,
-                move: 6,
-                fight: 2,
-                shoot: 0,
-                armor: 10,
-                will: 4,
-                cost: 0,
-                status: 1,
-                itemSlots: [101, 0, 0, 0, 0],
-                statMods: [],
-            },
-            gold: 400,
-            apprentice: {
-                name: "Jim",
-                class: 'Apprentice',
-                status: 1,
-                armor: 10,
-                itemSlots: [103, 202, 0, 0],
-                statMods: [],
-                cost: 100, // It actually calculated (level-6)*10 + 160
-            },
-            primarySpellIds: [401, 402, 403],
-            alignedSpellIds: [601, 701, 901],
-            neutralSpellIds: [101, 301],
-            opposedSpellIds: [],
-            spellModifiers: {
-                401: -1,
-                402: 1,
-            },
-            soldiers: [
-                {name: 'Julius', status: 1, classId: 1, itemSlots: [0]},
-                {name: 'Adam', status: 0, classId: 1, itemSlots: [0]},
-                {name: 'Roger', status: 1, classId: 2, itemSlots: [0]},
-                {name: 'Todd', status: 2, classId: 2, itemSlots: [0]},
-                {name: 'Jeff', status: 1, classId: 4, itemSlots: [0]},
-                {name: 'Hank', status: 1, classId: 7, itemSlots: [0]},
-                {name: 'George', status: 1, classId: 5, itemSlots: [0]},
-                {name: 'Clyde', status: 1, classId: 6, itemSlots: [0]},
-            ],
-            soldiersLost: 0,
-            xpGained: 0,
-            xpSpent: 0,
-            vault: [],
-            base: 'none',
-        },
-        {
-            id: 2,
-            name: 'David the Enchanter',
-            stats: {
-                
-                classId: 3,
-                level: 4,
-                health: 14,
-                currentHealth: 14,
-                move: 6,
-                fight: 2,
-                shoot: 0,
-                armor: 10,
-                will: 4,
-                cost: 0,
-                status: 1,
-                itemSlots: [105, 0, 0, 0, 0],
-                statMods: [],
-            },
-            gold: 400,
-            apprentice: {
-                name: "Ted",
-                class: 'Apprentice',
-                status: 1,
-                armor: 10,
-                itemSlots: [101, 0, 0, 0],
-                statMods: [],
-                cost: 100,
-            },
-            primarySpellIds: [301, 302, 303],
-            alignedSpellIds: [1001, 601, 201],
-            neutralSpellIds: [501, 901],
-            opposedSpellIds: [],
-            spellModifiers: {
-                301: -1
-            },
-            soldiers: [
-                {name: 'Fred', status: 1, classId: 1, itemSlots: [101]},
-                {name: 'Sally', status: 0, classId: 1, itemSlots: [0]},
-                {name: 'Jimmy', status: 1, classId: 2, itemSlots: [0]},
-                {name: 'Ned', status: 2, classId: 2, itemSlots: [0]},
-                {name: 'Sue', status: 1, classId: 3, itemSlots: [0]},
-                {name: 'Bill', status: 1, classId: 4, itemSlots: [0]},
-                {name: 'Joe', status: 1, classId: 7, itemSlots: [0]},
-                {name: 'Jack', status: 1, classId: 6, itemSlots: [0]},
-            ],
-            soldiersLost: 0,
-            xpGained: 400,
-            xpSpent: 200,
-            vault: [],
-            base: 'none'
-        },
-        {
-            id: 3,
-            name: 'Homer the Warlock',
-            stats: {
-                classId: 10,
-                level: 0,
-                health: 14,
-                currentHealth: 14,
-                move: 6,
-                fight: 2,
-                shoot: 0,
-                armor: 10,
-                will: 4,
-                cost: 0,
-                status: 1,
-                itemSlots: [101, 0, 0, 0, 0],
-                statMods: [],
-            },
-            gold: 400,
-            apprentice: {
-                name: "",
-                class: 'Apprentice',
-                status: 9,
-                armor: 10,
-                itemSlots: [0, 0, 0, 0],
-                statMods: [],
-                cost: 100,
-            },
-            primarySpellIds: [1001, 1002, 1003],
-            alignedSpellIds: [301, 501, 802],
-            neutralSpellIds: [101, 201],
-            opposedSpellIds: [],
-            spellModifiers: {
-
-            },
-            soldiers: [
-
-            ],
-            soldiersLost: 0,
-            xpGained: 0,
-            xpSpent: 0,
-            vault: [],
-            base: 'none',
-        },
-    ],
-    myRecord: {
-        wins: 0,
-        losses: 0,
-
-    },
-    myPreferences: {
-        theme: 'light',
-    }
-}

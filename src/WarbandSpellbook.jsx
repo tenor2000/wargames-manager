@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { useAppContext } from './AppContext.jsx';
 import { getSpellFromId } from './HelperFunctions.js';
 import { Button } from '@mui/material';
+import { BasicSpellCard } from './BasicComponents.jsx';
 
 export function SpellBookBlock() {
-    const { currentWizard } = useAppContext();
+    const { currentWizard, refData } = useAppContext();
     const [ spellViewObj, setSpellViewObj ] = useState('null')
     const [ spellSchoolMod, setSpellSchoolMod ] = useState(0)
 
@@ -20,28 +21,9 @@ export function SpellBookBlock() {
 
         return (
             <div>
-                
-                <table className="spellbook-table" style={{textAlign: 'center'}}>
-                    <tbody>
-                        <tr colSpan="4">
-                            <th colSpan="4">
-                                <h2>{spellViewObj.name}</h2>
-                                
-                            </th>
-                        </tr>
-                        <tr>
-                            <td>{spellViewObj.school}</td>
-                            <td>Cast Number: {varCast}</td>
-                            <td>Base Cast: {spellViewObj.base_cast}</td>
-                            <td>{spellViewObj.category}</td>
-                        </tr>
-                        <tr className='spellbook-description'>
-                            <td colSpan="4">{spellViewObj.description}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <BasicSpellCard spellId={spellViewObj.id} refData={refData} titlebar={true} castnum={varCast} spellSchoolMod={spellSchoolMod}/>
                 <Button 
-                    style={{ width: '100%' }} 
+                    sx={{ width: '100%' }} 
                     onClick={() => setSpellViewObj('null')}
                 >
                     Close Viewer
@@ -52,7 +34,7 @@ export function SpellBookBlock() {
 
     function MySpellButton({ spellId , schoolModifier = 0}) {
         const { currentWizard } = useAppContext();
-        const spellEntry = getSpellFromId(spellId)
+        const spellEntry = getSpellFromId(spellId, refData)
         
         if (!spellEntry) {
             return null
