@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { AuthProvider } from './AuthContext.jsx';
 import { ContextProvider } from './AppContext.jsx';
-import { MenuBar, ContentArea, MobileBottomNav } from './ContentLayout.jsx';
+import { ThemeContextProvider } from './ThemeContext.jsx';
+import { MenuBar, ContentArea, SideBar, MobileBottomNav } from './ContentLayout.jsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './styles/App.css';
 
@@ -13,9 +14,11 @@ function App() {
       <Router>
         <AuthProvider>
           <ContextProvider>
-            <MenuBar />
-            <ContentArea />
-            <MobileBottomNav />
+            <ThemeContextProvider>
+              <MenuBar />
+              <ContentArea />
+              <MobileBottomNav />
+            </ThemeContextProvider>
           </ContextProvider>
         </AuthProvider>
       </Router>

@@ -13,8 +13,6 @@ export function WizardView() {
     const wizardStats = currentWizard.stats;
     wizardStats['class'] = getSchoolFromId(wizardStats.classId, refData).name;
 
-    console.log(wizardStats)
-
     return (
         <>
         {isPortrait && <BasicStatCard name={currentWizard.name} stats = {wizardStats} refData={refData} showLevel={true} />}
@@ -33,8 +31,8 @@ export function ApprenticeView() {
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
     
     const wizardStats = currentWizard.stats;
-    //wizardStats['class'] = getSchoolFromId(wizardStats.classId, refData).name;
     const apprenticeStats = deriveApprenticeStats(wizardStats, currentWizard.apprentice);
+    apprenticeStats.cost = (currentWizard.level-6)*10 + 160;
 
     const handleEditClick = (editMode) => {
         const newEditMode = {...editMode};
@@ -61,14 +59,12 @@ export function ApprenticeView() {
         }
     }
 
-    console.log(apprenticeStats)
-
     return (
         <>
             {apprenticeStats.status !== 9 && editMode !== 'apprentice' && 
             <>
                 {isPortrait && 
-                    <BasicStatCard name={apprenticeStats.name} stats = {apprenticeStats} />
+                    <BasicStatCard name={apprenticeStats.name} stats = {apprenticeStats} refData={refData}/>
                 }
                 {!isPortrait && 
                     <BasicStatTableHeader show_costs={false} show_status={true} showLevel={true} editMode={true} >

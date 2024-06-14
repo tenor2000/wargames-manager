@@ -87,15 +87,11 @@ export const modSign = (stat) => {
   return stat >= 0 ? `+${stat}` : stat;
 }
 
-export function getCreatureFromId(creatureId, refData) {
-  if (!refData || !refData.creatures) {
-    return { name: 'Unknown' }; // Default or fallback value
-  }
-  return refData.creatures.find(creature => creature.id === creatureId)
-}
-
 export function getItemFromId(itemId, refData) {
   if (!refData || !refData.arms && !refData.armor) {
+    // console.log(refData)
+    // console.log(refData.arms)
+    // console.log(refData.armor)
     return { name: 'Unknown' }; // Default or fallback value
   }
   let refList
@@ -109,4 +105,22 @@ export function getItemFromId(itemId, refData) {
   }
 
   return refList.find(item => item.id === itemId)
+}
+
+export function rollD20() {
+  return Math.floor(Math.random() * 20) + 1
+}
+
+export function getRandomSpell(refData) {
+  if (!refData || !refData.spells) {
+    return { name: 'Unknown' }; // Default or fallback value
+  }
+  return refData.spells[Math.floor(Math.random() * refData.spells.length)]
+}
+
+export function getCreatureFromId(creatureId, refData) { 
+  if (!refData || !refData.creatures) {
+    return { name: 'Unknown Creature with ID ' + creatureId }; // Default or fallback value
+  }
+  return refData.creatures.find(creature => creature.id === creatureId)
 }

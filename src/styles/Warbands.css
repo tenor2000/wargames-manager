@@ -24,7 +24,7 @@
     padding: 5px;
 }
 
-.stat-block-table {
+/* .stat-block-table {
     padding: 8px;
     border-collapse: collapse;
     border: var(--section-border);
@@ -44,7 +44,7 @@
     text-align: left;
     border: var(--section-border);
     padding: 8px;
-}
+} */
 
 .spellbook-container {
     display: block;

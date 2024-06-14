@@ -36,7 +36,7 @@ export function SpellView() {
                     <h3>{spell.name}</h3>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <BasicSpellCard spellId={spell.id} titlebar={false} refData={refData}/>
+                    <BasicSpellCard spellId={spell.id} titlebar={false} refData={refData} />
                 </AccordionDetails>
             </Accordion>
         ))
@@ -59,7 +59,7 @@ export function SpellView() {
     return (
         <>
             {!isPortrait && 
-                <div className={isLandscape ? 'center row' : 'center column'}>
+                <div className='center row'>
                     <h2>{schoolname} {schoolname === 'All' ? 'Spells' : 'Spellbook'}</h2>
                     <SearchBar 
                         searchText={searchText}

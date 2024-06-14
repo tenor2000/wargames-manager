@@ -4,11 +4,13 @@ import { BasicStatCard  } from './BasicComponents.jsx';
 import { getSchoolFromId, getRandomName } from './HelperFunctions.js';
 import { useAuth } from './AuthContext.jsx';
 import { useAppContext } from './AppContext.jsx';
+import { CareerHistory } from './WarbandHistory.jsx';
 import { SpellBookBlock } from './WarbandSpellbook.jsx';
 import { SoldierRosterBlock, EditSoldiersView } from './WarbandSoldiers.jsx';
 import { ApprenticeView, WizardView } from './WarbandWizard.jsx';
 import { Accordion, AccordionDetails, AccordionSummary, Button, Box } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
+import Divider from '@mui/material/Divider';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import './styles/Warbands.css';
 
@@ -46,11 +48,18 @@ export function WarbandSideDrawer() {
         return <div>Error loading data</div>;
     }
 
-    const wizardsList = userData.myWizards.map(wizard => (
-        <div key={wizard.id} className="sidedrawer-item" onClick={() => handleWizardClick(wizard)}>
-            {wizard.name} <br/> 
-            {getSchoolFromId(wizard.stats.classId, refData).name} - Level {wizard.stats.level}
-        </div>
+    const wizardsList = userData.myWizards
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map(wizard => (
+        <Button key={wizard.id} 
+            className="spells-sidebar-item" 
+            onClick={() => handleWizardClick(wizard)} 
+            style = {{cursor: 'pointer'}}
+        >
+            {wizard.name} <br></br>
+            Level {wizard.stats.level} {getSchoolFromId(wizard.stats.classId, refData).name}
+        </Button>
     ));
 
     function handleWarbandDashClick() {
@@ -68,15 +77,17 @@ export function WarbandSideDrawer() {
     }
 
     return (
-        <div className="sidedrawer-view">
+        <div className="spells-sidebar-view">
             <h3 onClick={handleWarbandDashClick}
-                style = {{cursor: 'pointer'}}>
-                    My Wizards
+                style = {{cursor: 'pointer'}}
+            >
+                Warband Dashboard
             </h3>
-            <ul>
-                {wizardsList}
-            </ul>
+
+            {wizardsList}
+
             <div className="button-container center">
+            <Divider/>
             <Button onClick={() => handleNewWizardClick()}>
                 + New Wizard
             </Button>
@@ -102,7 +113,7 @@ function WarbandDash() {
     }
     
     return (
-        <div className ='center column'>
+        <div className ='center column' style={{width: '100%'}}>
             <div>
                 {!isPortrait && <h2>Warband Manager</h2>}
             </div>
@@ -152,7 +163,7 @@ function WarbandDetails() {
             }
             <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="wizard-stats" aria-controls="wizard-stats">
-                <h3>{'Wizard'}</h3>
+                <h3>Wizard</h3>
             </AccordionSummary>
             <AccordionDetails className='center column'>
                 <WizardView />
@@ -161,7 +172,7 @@ function WarbandDetails() {
 
             <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="apprentice-stats" aria-controls="apprentice-stats">
-                    <h3>{'Apprentice'}</h3>
+                    <h3>Apprentice</h3>
                 </AccordionSummary>
                 <AccordionDetails className='center column'>
                     <ApprenticeView />
@@ -170,7 +181,7 @@ function WarbandDetails() {
 
             <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="spell-book" aria-controls="spell-book-info">
-                    <h3>{'Spell Book'}</h3>
+                    <h3>Spell Book</h3>
                 </AccordionSummary>
                 <AccordionDetails>
                     <SpellBookBlock/>
@@ -179,7 +190,7 @@ function WarbandDetails() {
 
             <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="hired-soldiers" aria-controls="hired-soldiers-info">
-                    <h3>{'Hired Soldiers'}</h3>
+                    <h3>Hired Soldiers</h3>
                 </AccordionSummary>
                 <AccordionDetails className='center column'>
                     {Object.keys(currentWizard.soldiers).length > 0 && !editMode.soldiers && <SoldierRosterBlock/>}
@@ -191,7 +202,7 @@ function WarbandDetails() {
 
             <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="vault" aria-controls="vault-info">
-                    <h3>{'Vault'}</h3>
+                    <h3>Vault</h3>
                 </AccordionSummary>
                 <AccordionDetails className='center column'>
                     <p>The Vault is where all treasure is stored</p>
@@ -202,10 +213,19 @@ function WarbandDetails() {
 
             <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="base-of-operations" aria-controls="base-of-operations-info">
-                    <h3>{'Base of Operations'}</h3>
+                    <h3>Base of Operations</h3>
                 </AccordionSummary>
                 <AccordionDetails className='center column'>
                     <p>Base of Operations Description</p>
+                </AccordionDetails>
+            </Accordion>
+
+            <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="base-of-operations" aria-controls="base-of-operations-info">
+                    <h3>Career History</h3>
+                </AccordionSummary>
+                <AccordionDetails className='center column'>
+                    <CareerHistory userData={userData}/>
                 </AccordionDetails>
             </Accordion>
             {isPortrait && 

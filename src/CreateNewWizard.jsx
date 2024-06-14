@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { getSchoolFromId, getSchoolFromSpellId } from './HelperFunctions.js';
 import './styles/NewWizard.css';
 import { update } from 'firebase/database';
+import { useMediaQuery } from '@mui/material';
 import { TextField, Button, InputLabel, Select, MenuItem, FormControl, Box } from '@mui/material';
 
 
@@ -88,6 +89,7 @@ export function CreateNewWizard() {
 
 function NewWizardEdit() {
   const { refData, newWizard, setNewWizard } = useAppContext();
+  const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
   const handleClassChange = (event) => {
     const selectedClassId = parseInt(event.target.value);
@@ -112,7 +114,13 @@ function NewWizardEdit() {
   return (
     <>
       <section className='new-wizard-form' >
-        <Box sx={{ display: 'flex', flexDirection: 'row', minWidth: 120, mt: 2, gap: 2 }}>
+        <Box sx={{ display: 'flex', 
+                  flexDirection: isPortrait ? 'column' : 'row',
+                  alignItems: 'row', 
+                  minWidth: 120, 
+                  mt: 2, 
+                  gap: 2 }}
+        >
           <TextField 
             className='TextField'
             required
@@ -120,6 +128,7 @@ function NewWizardEdit() {
             label="Name" 
             value={newWizard.name} 
             onChange={(e) => setNewWizard({ ...newWizard, name: e.target.value })}
+            size= "small"
             />
           <FormControl fullWidth sx={{ gap: 2, minWidth: 120}}>
             <InputLabel id="class-label">Class</InputLabel>
@@ -130,6 +139,7 @@ function NewWizardEdit() {
               value={newWizard.stats.classId}
               label="Class"
               onChange={handleClassChange}
+              size= "small"
             >
               {schoolList}
             </Select>
@@ -143,6 +153,7 @@ function NewWizardEdit() {
 function SpellSelection({category}) {
   const { refData, newWizard, currentWizard, setNewWizard } = useAppContext();
   const [ selectedSpells, setSelectedSpells] = useState([])
+  const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
   const wizardClassId = newWizard.stats.classId
   const allSpellList = refData.spells;
@@ -185,6 +196,7 @@ function SpellSelection({category}) {
   }
 
   const renderSpellOptions = (spellList) => {
+
     if (!spellList || spellList.length === 0) return null
 
     const spellConflict = newWizard.neutralSpellIds
@@ -208,12 +220,21 @@ function SpellSelection({category}) {
   
   return (
     <section>
-      <div className='center'>
-        {category==='primary' && <h3>Choose 3 Spells from the {getSchoolFromId(wizardClassId, refData).name} School of Magic</h3>}
-        {category==='aligned' && <h3>Choose 3 Spells from Aligned Schools of Magic</h3>}
-        {category==='neutral' && <h3>Choose 2 Spells from Neutral Schools of Magic</h3>}
-      </div>
-      <div className='center'>
+      {!isPortrait &&
+        <Box className='center' sx={{ mt: 2 }}>
+          {category==='primary' && <h3>Choose 3 Spells from the {getSchoolFromId(wizardClassId, refData).name} School of Magic</h3>}
+          {category==='aligned' && <h3>Choose 3 Spells from Aligned Schools of Magic</h3>}
+          {category==='neutral' && <h3>Choose 2 Spells from Neutral Schools of Magic</h3>}
+        </Box>
+      }
+      {isPortrait && 
+        <Box className='center' sx={{ mt: 2 }}>
+          {category==='primary' && <h3>Choose 3 {getSchoolFromId(wizardClassId, refData).name} Spells</h3>}
+          {category==='aligned' && <h3>Choose 3 Aligned Spells</h3>}
+          {category==='neutral' && <h3>Choose 2 Neutral Spells</h3>}
+        </Box>
+      }
+      <Box className='center' sx={{ mt: 2, gap: 2, ...(isPortrait && {display: 'flex', flexDirection: 'column' })}}>
         {spellCountArray.map((index) => (
           <Box key={index} sx={{ minWidth: 180 }}>
             <FormControl fullWidth>
@@ -225,6 +246,7 @@ function SpellSelection({category}) {
                 value={selectedSpells[index - 1] || ""}
                 onChange={(e) => handleSpellSelection(e, index - 1)}
                 label={category}
+                size= "small"
                 sx={{ backgroundColor: 'black', color: 'white' }}
               >
                 {category==='primary' && renderSpellOptions(filteredSpells)}
@@ -234,8 +256,7 @@ function SpellSelection({category}) {
             </FormControl >
         </Box>
         ))}
-      </div>
-      
+      </Box>
     </section>
   );
 }

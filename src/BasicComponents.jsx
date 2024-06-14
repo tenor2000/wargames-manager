@@ -42,7 +42,7 @@ export function ExpandBox({title, children, className=''}) {
 }
 
 
-export function BasicStatCard({ name, stats, refData, show_costs=false, show_status=true, showItemSlots=true, showLevel=false, editMode=false }) {
+export function BasicStatCard({ name, stats, refData, show_costs=false, show_status=true, showItemSlots=true, showLevel=false, editMode=false }) {  
   return (
     <div className="stat-card">
       <Paper className="generic-paper" sx={{ '& table': { width: '100%' }, display: 'flex', flexDirection: 'column', alignItems : 'center', overflow: 'hidden'}}>
@@ -74,8 +74,9 @@ export function BasicStatCard({ name, stats, refData, show_costs=false, show_sta
               {showItemSlots && 
                 <TableRow>
                   <TableCell colSpan={3} sx={{textAlign: 'left'}}>
+                    <h4>Slot items:</h4>
                     {stats.itemSlots.map((itemId, index) => (
-                      <p key= {'Item' + index}>Item {index+1}: {itemId !== 0 ? getItemFromId(itemId, refData).name : '--'}</p>
+                      <p key= {'Item' + index}>{itemId !== 0 ? getItemFromId(itemId, refData).name : ''}</p>
                     ))}
                   </TableCell>
                 </TableRow>
@@ -96,7 +97,7 @@ export function BasicStatTableHeader({children, name='Name', showClass = true, s
   return (
     <Paper className="generic-paper" sx={{ width: '100%', overflow: 'hidden'}}>
       <TableContainer sx={{ maxHeight: 640 }}>
-        <Table stickyHeader aria-label="sticky table" size="small">
+        <Table aria-label="sticky table" size="small"> {/* make sticky?*/}
           <TableHead >
             <TableRow>
               {name && <TableCell>{name}</TableCell>}
@@ -144,7 +145,7 @@ export function BasicStatTableRow({name, stats, refData, showCosts=false, showSt
 
   return (
     <TableRow>
-      {name && <TableCell>{name}??</TableCell>}
+      {name && <TableCell>{name}</TableCell>}
       {showClass && <TableCell>{stats.class}</TableCell>}
       {showLevel && <TableCell>{stats.level}</TableCell>}
       <TableCell sx={{textAlign: 'center'}}>{stats.move}</TableCell>
@@ -156,7 +157,7 @@ export function BasicStatTableRow({name, stats, refData, showCosts=false, showSt
       {showItemSlots && 
         <TableCell sx={{textAlign: 'left'}}>
           {stats.itemSlots.map((itemId, index) => (
-            <p key= {'Item' + index}>Item {index+1}: {itemId !== 0 ? getItemFromId(itemId, refData).name : '--'}</p>
+            <p key= {'Item' + index}>{itemId !== 0 ? getItemFromId(itemId, refData).name : ''}</p>
           ))}
         </TableCell>
       }
@@ -172,8 +173,8 @@ export function BasicSpellCard({spellId, refData, titlebar=true, castnum=false, 
   const spellViewObj = getSpellFromId(spellId, refData)
 
   return (
-    <Paper className="generic-paper" sx={{ '& table': { width: '80%' }, display: 'flex', flexDirection: 'column', alignItems : 'center', overflow: 'hidden'}}>
-      <Table className="spellbook-table" >
+    <Paper sx={{ width: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden'}}>
+      <Table >
         <TableHead >
             {titlebar && 
             <TableRow>

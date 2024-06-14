@@ -45,7 +45,7 @@ export function ReferenceSideDrawer() {
 
     return (
         <>
-            <Box className="sidedrawer-view">
+            <Box className="spells-sidebar-view">
                 <h3>Reference Data</h3>
                 <Button onClick={() => setCurrRefTable('all')}>All</Button>
                 <Button onClick={() => setCurrRefTable('soldiers')}>Soldiers</Button>
@@ -301,7 +301,7 @@ function RandomEncounterReference() {
     }
 
     return (
-        <>
+        
         <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="weapon-stats" aria-controls="weapon-stats">
                 <h3>{'Random Encounter Table'}</h3>
@@ -321,7 +321,6 @@ function RandomEncounterReference() {
                 </Paper>
             </AccordionDetails>
         </Accordion>
-    </>
     );
 }
 
@@ -335,19 +334,18 @@ function CreatureReference() {
 
     const HeaderRow = () => {
         return (
-            <>
-                <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move Icon'/></TableCell>
-                    <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/axe-sword.svg' className="stat-icon" alt='Fight Icon'/></TableCell>
-                    <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/high-shot.svg' className="stat-icon" alt='Shoot Icon'/></TableCell>
-                    <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/abdominal-armor.svg' className="stat-icon" alt='Armor Icon'/></TableCell>
-                    <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will Icon'/></TableCell>
-                    <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Fight Icon'/></TableCell>
-                    <TableCell>Notes</TableCell>
-                    {!isPortrait && <TableCell>Source</TableCell>}
-                </TableRow>
-            </>
+            <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move Icon'/></TableCell>
+                <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/axe-sword.svg' className="stat-icon" alt='Fight Icon'/></TableCell>
+                <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/high-shot.svg' className="stat-icon" alt='Shoot Icon'/></TableCell>
+                <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/abdominal-armor.svg' className="stat-icon" alt='Armor Icon'/></TableCell>
+                <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will Icon'/></TableCell>
+                <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Fight Icon'/></TableCell>
+                <TableCell>Notes</TableCell>
+                {!isPortrait && <TableCell>Source</TableCell>}
+            </TableRow>
+
         );
     };
 
@@ -372,7 +370,6 @@ function CreatureReference() {
     }
 
     return (
-        <>
         <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="weapon-stats" aria-controls="weapon-stats">
                 <h3>{'Creatures'}</h3>
@@ -392,7 +389,6 @@ function CreatureReference() {
                     </Paper>
             </AccordionDetails>
         </Accordion>
-    </>
     );
 }
 
@@ -425,45 +421,45 @@ function BaseReference() {
 
     return (
         <>
-        <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="weapon-stats" aria-controls="weapon-stats">
-                <h3>{'Base: Locations'}</h3>
-            </AccordionSummary>
+            <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="weapon-stats" aria-controls="weapon-stats">
+                    <h3>{'Base: Locations'}</h3>
+                </AccordionSummary>
+                    <AccordionDetails>
+                        <Paper className="generic-paper" sx={{ width: '100%', overflow: 'hidden'}}>
+                            <TableContainer sx={{ maxHeight: 640 }}>
+                                <Table stickyHeader aria-label="sticky table" size="small">
+                                    <TableHead>
+                                        <HeaderRow type='locations' />
+                                    </TableHead>
+                                    <TableBody>
+                                        <RenderTableRows list={refData.baseLocations} type='locations'/>
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Paper>
+                </AccordionDetails>
+            </Accordion>
+            <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="armor-stats" aria-controls="armor-stats">
+                    <h3>{'Base: Resources'}</h3>
+                </AccordionSummary>
                 <AccordionDetails>
                     <Paper className="generic-paper" sx={{ width: '100%', overflow: 'hidden'}}>
                         <TableContainer sx={{ maxHeight: 640 }}>
                             <Table stickyHeader aria-label="sticky table" size="small">
                                 <TableHead>
-                                    <HeaderRow type='locations' />
+                                    <HeaderRow type='resources' />
                                 </TableHead>
                                 <TableBody>
-                                    <RenderTableRows list={refData.baseLocations} type='locations'/>
+                                    <RenderTableRows list={refData.baseResources} />
                                 </TableBody>
                             </Table>
                         </TableContainer>
                     </Paper>
-            </AccordionDetails>
-        </Accordion>
-        <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="armor-stats" aria-controls="armor-stats">
-                <h3>{'Base: Resources'}</h3>
-            </AccordionSummary>
-            <AccordionDetails>
-                <Paper className="generic-paper" sx={{ width: '100%', overflow: 'hidden'}}>
-                    <TableContainer sx={{ maxHeight: 640 }}>
-                        <Table stickyHeader aria-label="sticky table" size="small">
-                            <TableHead>
-                                <HeaderRow type='resources' />
-                            </TableHead>
-                            <TableBody>
-                                <RenderTableRows list={refData.baseResources} />
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Paper>
-            </AccordionDetails>
-        </Accordion>
-    </>
+                </AccordionDetails>
+            </Accordion>
+        </>
     );
 }
 

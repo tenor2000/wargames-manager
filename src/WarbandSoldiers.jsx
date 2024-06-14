@@ -1,10 +1,10 @@
 import { useAppContext } from "./AppContext";
 import { useAuth } from "./AuthContext";
 import { useState, useEffect } from "react";
-import { BasicStatCard } from "./BasicComponents";
+import { BasicStatCard, BasicStatTableHeader, BasicStatTableRow } from "./BasicComponents";
 import { getRandomName, getSoldierFromId, getStatusFromId, modSign } from "./HelperFunctions";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from '@mui/material';
-
+import { useMediaQuery } from '@mui/material';
 import { Box, Tooltip, TextField, Button, Snackbar } from "@mui/material";
 
 
@@ -21,13 +21,25 @@ const formSoldierStats = (mySoldierArray, refData) => {
 }
 export function SoldierRosterBlock() {
     const { currentWizard, refData } = useAppContext();
+    const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
     return (
-        <div className='soldier-card-view'>
-            {formSoldierStats(currentWizard.soldiers, refData).map((soldier, index) => (
-                    <BasicStatCard key={soldier.name} name={soldier.name} stats={soldier.stats} refData={refData}show_costs={true} />
-                ))}
-        </div>
+        <>
+            {isPortrait &&
+            <div className='soldier-card-view'>
+                {formSoldierStats(currentWizard.soldiers, refData).map((soldier, index) => (
+                        <BasicStatCard key={soldier.name} name={soldier.name} stats={soldier.stats} refData={refData}show_costs={true} />
+                    ))}
+            </div>
+            }
+            {!isPortrait && 
+                <BasicStatTableHeader show_costs={true} show_status={true} editMode={true} >
+                    {formSoldierStats(currentWizard.soldiers, refData).map((soldier, index) => (
+                        <BasicStatTableRow key={soldier.name} name = {soldier.name} stats = {soldier.stats} refData={refData} show_costs={true} show_status={true} editMode={true} />
+                    ))}
+                </BasicStatTableHeader>
+            }
+        </>
     );
 }
 
@@ -123,17 +135,19 @@ export function EditSoldiersView() {
     }
 
     const ShowStatus = ({soldier}) => {
+        let statusColor;
         if (soldier.stats.status === 0) {
-            return <b style={{color: 'red'}}>Dead</b>
+            statusColor= 'red';
         } else if (soldier.stats.status === 2) {
-            return <b style={{color: 'gray'}}>Badly Injured</b>
+            statusColor = 'gray';
         } else if (soldier.stats.status === 8) {
-            return <b style={{color: 'green'}}>For Hire</b>
+            statusColor = 'green';
         } else if (soldier.stats.status === 7) {
-            return <b style={{color: 'green'}}>Hired</b>
+            statusColor = 'darkgreen';
         } else {
-            return <b style={{color: 'lightblue'}}>{getStatusFromId(soldier.stats.status, refData)}</b>
+            statusColor = 'lightblue'
         }
+        return <b style={{color: statusColor}}>{getStatusFromId(soldier.stats.status, refData)}</b>
     }
 
     const ShowCost = ({soldier}) => {
