@@ -23,6 +23,7 @@ import { ReferenceView, ReferenceSideDrawer } from './References.jsx';
 import { SpellView, SpellSideDrawer } from './Spells.jsx';
 import { WarbandView, WarbandSideDrawer } from './Warbands.jsx';
 import { CampaignView, CampaignSideDrawer } from './Campaigns.jsx';
+import { BattleView } from './BattleView.jsx';
 import { CreateNewWizard, NewWizardSideDrawer } from './CreateNewWizard.jsx';
 import { getSchoolFromId } from './HelperFunctions.js';
 import { Login, LoginSideDrawer } from './Login.jsx';
@@ -231,6 +232,7 @@ export function SideDrawer () {
             <Route path="/reference" element={<ReferenceSideDrawer />} />
             <Route path="/new-wizard" element={<NewWizardSideDrawer />} />
             <Route path="/login" element={<LoginSideDrawer />} />
+            <Route path="/battleview" element={<CampaignSideDrawer />} />
             {/* Add routes for other sidebar items */}
         </Routes>
         </div>
@@ -254,6 +256,7 @@ export function SideBar () {
           <Route path="/reference" element={<ReferenceSideDrawer />} />
           <Route path="/new-wizard" element={<NewWizardSideDrawer />} />
           <Route path="/login" element={<LoginSideDrawer />} />
+          <Route path="/battleview" element={<CampaignSideDrawer />} />
           {/* Add routes for other sidebar items */}
       </Routes>
     </div>
@@ -279,6 +282,7 @@ export function ContentArea() {
             <Route path="/campaigns" element={<CampaignView />} />
             <Route path="/new-wizard" element={<CreateNewWizard />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/battleview" element={<BattleView />} />
             {/* Add routes for other pages */}
           </Routes>
         </div>

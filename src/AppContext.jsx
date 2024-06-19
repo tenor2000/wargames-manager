@@ -1,7 +1,7 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import { set } from 'firebase/database';
 
-const dataSourceUrl = 'http://localhost:8000/frostgrave2e/data.json';
+const dataSourceUrl = 'http://localhost:8000/frostgrave2e/refData.json';
 
 const AppContext = createContext();
 
