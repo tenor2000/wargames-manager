@@ -8,34 +8,43 @@ import { useMediaQuery } from '@mui/material';
 import { Box, Tooltip, TextField, Button, Snackbar } from "@mui/material";
 
 
-const formSoldierStats = (mySoldierArray, refData) => {
+export const formSoldierStats = (mySoldierArray, refData) => {
     let soldierList = [];
     mySoldierArray.forEach((soldier) => {
-        const soldierEntryStats = getSoldierFromId(soldier.classId, refData);
-        const soldierStats = {...soldierEntryStats.stats};
-        soldierStats.status = soldier.status;
-        soldierStats.itemSlots = soldier.itemSlots;
-        soldierList.push({name: soldier.name, classId: soldier.classId, stats: soldierStats});
+        const soldierObj = getSoldierFromId(soldier.classId, refData);
+        if (soldierObj) {
+            soldierObj.status = soldier.status;
+            soldierObj.itemSlots = soldier.itemSlots;
+            soldierObj.name = soldier.name;
+            soldierList.push(soldierObj);
+        }
     })
     return soldierList
 }
+
 export function SoldierRosterBlock() {
     const { currentWizard, refData } = useAppContext();
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
+
+    if (currentWizard.soldiers.length === 0) {
+        return null;
+    }
+
+    const soldierList = formSoldierStats(currentWizard.soldiers, refData);
 
     return (
         <>
             {isPortrait &&
             <div className='soldier-card-view'>
-                {formSoldierStats(currentWizard.soldiers, refData).map((soldier, index) => (
-                        <BasicStatCard key={soldier.name} name={soldier.name} stats={soldier.stats} refData={refData}show_costs={true} />
+                {soldierList.map((soldier, index) => (
+                        <BasicStatCard key={index} statsObj={soldier} refData={refData} showStatus={true} showItemSlots={true} showCosts={true} />
                     ))}
             </div>
             }
             {!isPortrait && 
-                <BasicStatTableHeader show_costs={true} show_status={true} editMode={true} >
-                    {formSoldierStats(currentWizard.soldiers, refData).map((soldier, index) => (
-                        <BasicStatTableRow key={soldier.name} name = {soldier.name} stats = {soldier.stats} refData={refData} show_costs={true} show_status={true} editMode={true} />
+                <BasicStatTableHeader showName={true} showClass={true} showCosts={true} showStatus={true} showItemSlots={true}>
+                    {soldierList.map((soldier, index) => (
+                        <BasicStatTableRow key={index} statsObj = {soldier} refData={refData} />
                     ))}
                 </BasicStatTableHeader>
             }
@@ -110,13 +119,13 @@ export function EditSoldiersView() {
     }
 
     const handleRemove = (removedSoldier) => {
-        const goodbyeText = removedSoldier.stats.status === 0 ? `You have dumped ${removedSoldier.name} in a ditch somewhere.` : `${removedSoldier.name} walks away in disbelief as tears runs down their face.`;
+        const goodbyeText = removedSoldier.status === 0 ? `You have dumped ${removedSoldier.name} in a ditch somewhere.` : `${removedSoldier.name} walks away in disbelief as tears runs down their face.`;
         const confirmText = `Are you sure you want to remove ${removedSoldier.name}?`;
 
         if (window.confirm(confirmText)) {
             console.log(goodbyeText);
-            if (removedSoldier.stats.status === 7) { // 7 = 'Hired'
-                const newBalanceAmount = totalEditedCost - removedSoldier.stats.cost;
+            if (removedSoldier.status === 7) { // 7 = 'Hired'
+                const newBalanceAmount = totalEditedCost - removedSoldier.cost;
                 setTotalEditedCost(newBalanceAmount);
             }
             const updateWizard = {...editedWizard};
@@ -129,43 +138,43 @@ export function EditSoldiersView() {
         const updateWizard = {...editedWizard};
         const soldierToBeHired = updateWizard.soldiers.find(soldier => soldier.name === hiredSoldier.name);
         soldierToBeHired.status = 7; // 7 = 'Hired'
-        const newBalanceAmount = totalEditedCost + hiredSoldier.stats.cost;
+        const newBalanceAmount = totalEditedCost + hiredSoldier.cost;
         setTotalEditedCost(newBalanceAmount);
         setEditedWizard(updateWizard)
     }
 
     const ShowStatus = ({soldier}) => {
         let statusColor;
-        if (soldier.stats.status === 0) {
+        if (soldier.status === 0) {
             statusColor= 'red';
-        } else if (soldier.stats.status === 2) {
+        } else if (soldier.status === 2) {
             statusColor = 'gray';
-        } else if (soldier.stats.status === 8) {
+        } else if (soldier.status === 8) {
             statusColor = 'green';
-        } else if (soldier.stats.status === 7) {
+        } else if (soldier.status === 7) {
             statusColor = 'darkgreen';
         } else {
             statusColor = 'lightblue'
         }
-        return <b style={{color: statusColor}}>{getStatusFromId(soldier.stats.status, refData)}</b>
+        return <b style={{color: statusColor}}>{getStatusFromId(soldier.status, refData)}</b>
     }
 
     const ShowCost = ({soldier}) => {
-        if (soldier.stats.status === 7) {
-            return <b style={{color: 'red'}}>{soldier.stats.cost === 0 ? 'Free' : `$${soldier.stats.cost}`}</b>
-        } else if (soldier.stats.status === 8) {
-            return <b style={{color: 'green'}}>{soldier.stats.cost === 0 ? 'Free' : `$${soldier.stats.cost}`}</b>
+        if (soldier.status === 7) {
+            return <b style={{color: 'red'}}>{soldier.cost === 0 ? 'Free' : `$${soldier.cost}`}</b>
+        } else if (soldier.status === 8) {
+            return <b style={{color: 'green'}}>{soldier.cost === 0 ? 'Free' : `$${soldier.cost}`}</b>
         } else {
             return <b>--</b>
         }
     }
 
     const ShowAction = ({soldier}) => {
-        if (soldier.stats.status === 0) {
+        if (soldier.status === 0) {
             return <Button onClick={() => handleRemove(soldier)}><b style={{color: 'red'}}>Dump</b></Button>
-        } else if (soldier.stats.status === 8) {
+        } else if (soldier.status === 8) {
             return <Button onClick={() => handleHire(soldier)}><b style={{color: 'green'}}>Hire</b></Button>;
-        } else if (soldier.stats.status === 7) {
+        } else if (soldier.status === 7) {
             return <Button onClick={() => handleRemove(soldier)}><b style={{color: 'grey'}}>Remove</b></Button>;
         } else {
             return <Button onClick={() => handleRemove(soldier)}><b style={{color: 'red'}}>Fire</b></Button>;
@@ -177,14 +186,14 @@ export function EditSoldiersView() {
         return (
             <>
                 <select 
-                    disabled={soldier.stats.status !== 8} // 8 = 'For Hire'
-                    value={soldier.stats.classId} 
+                    disabled={soldier.status !== 8} // 8 = 'For Hire'
+                    value={soldier.classId} 
                     onChange={(e) => handleClassChange(soldier, e.target.value)}
                     defaultValue={soldier.classId}
                     >
                     {
                         refData.soldiers.map((soldierClass) => (
-                            <option key={soldierClass.id} value={soldierClass.id}>{soldierClass.stats.class}</option>
+                            <option key={soldierClass.id} value={soldierClass.id}>{soldierClass.class}</option>
                         ))
                     }
                 </select>
@@ -198,6 +207,9 @@ export function EditSoldiersView() {
         soldier.status = 8; // 8 = 'For Hire'
         soldier.classId = Math.floor(Math.random() * refData.soldiers.length) + 1;
         soldier.name = soldier.classId === 3 ? getRandomName(refData.nameGenerator.animal) : getRandomName(refData.nameGenerator.soldier);
+        // while (soldier.name in editedWizard.soldiers) {
+        //     soldier.name = soldier.classId === 3 ? getRandomName(refData.nameGenerator.animal) : getRandomName(refData.nameGenerator.soldier);;
+        // }
         soldier.itemSlots = [0];
       
         return soldier
@@ -262,15 +274,15 @@ export function EditSoldiersView() {
                                             }}
                                             />
                                     </TableCell>
-                                    <TableCell>{soldier.stats.status === 8 ? <ShowClassSelections soldier={soldier}/> : soldier.stats.class}</TableCell>
-                                    <TableCell sx={{textAlign: 'center'}}>{soldier.stats.move}</TableCell>
-                                    <TableCell sx={{textAlign: 'center'}}>{modSign(soldier.stats.fight)}</TableCell>
-                                    <TableCell sx={{textAlign: 'center'}}>{modSign(soldier.stats.shoot)}</TableCell>
-                                    <TableCell sx={{textAlign: 'center'}}>{soldier.stats.armor}</TableCell>
-                                    <TableCell sx={{textAlign: 'center'}}>{modSign(soldier.stats.will)}</TableCell>
-                                    <TableCell sx={{textAlign: 'center'}}>{soldier.stats.health}</TableCell>
+                                    <TableCell>{soldier.status === 8 ? <ShowClassSelections soldier={soldier}/> : soldier.class}</TableCell>
+                                    <TableCell sx={{textAlign: 'center'}}>{soldier.move}</TableCell>
+                                    <TableCell sx={{textAlign: 'center'}}>{modSign(soldier.fight)}</TableCell>
+                                    <TableCell sx={{textAlign: 'center'}}>{modSign(soldier.shoot)}</TableCell>
+                                    <TableCell sx={{textAlign: 'center'}}>{soldier.armor}</TableCell>
+                                    <TableCell sx={{textAlign: 'center'}}>{modSign(soldier.will)}</TableCell>
+                                    <TableCell sx={{textAlign: 'center'}}>{soldier.health}</TableCell>
                                     <TableCell>
-                                        <Tooltip title={soldier.stats.notes} placement="top">
+                                        <Tooltip title={soldier.notes} placement="top">
                                             <img
                                                 src="src/assets/Game-Icons-net/stabbed-note.svg"
                                                 className="stat-icon"

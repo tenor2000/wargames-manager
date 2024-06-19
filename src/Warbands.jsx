@@ -58,7 +58,7 @@ export function WarbandSideDrawer() {
             style = {{cursor: 'pointer'}}
         >
             {wizard.name} <br></br>
-            Level {wizard.stats.level} {getSchoolFromId(wizard.stats.classId, refData).name}
+            Level {wizard.level} {getSchoolFromId(wizard.classId, refData).name}
         </Button>
     ));
 
@@ -81,7 +81,7 @@ export function WarbandSideDrawer() {
             <h3 onClick={handleWarbandDashClick}
                 style = {{cursor: 'pointer'}}
             >
-                Warband Dashboard
+                My Wizards
             </h3>
 
             {wizardsList}
@@ -121,8 +121,8 @@ function WarbandDash() {
                 <p>Here you can edit, create, and delete your warbands.</p>
                 <p>Here are some of your warband statistics:</p>
                 <p>Total Wizards: {userWizards.length}</p>
-                <p>Total Level Gained: {userWizards.reduce((total, wizard) => total + wizard.stats.level, 0)}</p>
-                <p>Total XP Gained: {userWizards.reduce((total, wizard) => total + wizard.xpGained, 0)}</p>
+                <p>Total Level Gained: {userWizards.reduce((total, wizard) => total + wizard.level, 0)}</p>
+                <p>Total XP Gained: {userWizards.reduce((total, wizard) => total + wizard.xp + wizard.xpSpent, 0)}</p>
                 <p>Total Soldiers Lost: {userWizards.reduce((total, wizard) => total + wizard.soldiersLost, 0)}</p>
             </div>
             <div className="button-container center">

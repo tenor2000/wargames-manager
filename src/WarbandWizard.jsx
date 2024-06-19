@@ -10,15 +10,15 @@ export function WizardView() {
     const { currentWizard, refData } = useAppContext();
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
-    const wizardStats = currentWizard.stats;
+    const wizardStats = currentWizard;
     wizardStats['class'] = getSchoolFromId(wizardStats.classId, refData).name;
 
     return (
         <>
-        {isPortrait && <BasicStatCard name={currentWizard.name} stats = {wizardStats} refData={refData} showLevel={true} />}
+        {isPortrait && <BasicStatCard statsObj = {wizardStats} refData={refData} showLevel={true} showStatus={true} showClass={true}/>}
         {!isPortrait && 
-            <BasicStatTableHeader show_costs={false} show_status={true} showLevel={true} editMode={true} >
-                <BasicStatTableRow name = {currentWizard.name} stats = {wizardStats} refData={refData} show_costs={false} show_status={true} showLevel={true} editMode={true} />
+            <BasicStatTableHeader showName={true} showClass={true} showLevel={true} showStatus={true} showItemSlots={true}>
+                <BasicStatTableRow statsObj = {wizardStats} refData={refData}/>
             </BasicStatTableHeader>
         }
         </>
@@ -30,8 +30,7 @@ export function ApprenticeView() {
     const { userData, setUserData } = useAuth();
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
     
-    const wizardStats = currentWizard.stats;
-    const apprenticeStats = deriveApprenticeStats(wizardStats, currentWizard.apprentice);
+    const apprenticeStats = deriveApprenticeStats(currentWizard, currentWizard.apprentice);
     apprenticeStats.cost = (currentWizard.level-6)*10 + 160;
 
     const handleEditClick = (editMode) => {
@@ -64,11 +63,11 @@ export function ApprenticeView() {
             {apprenticeStats.status !== 9 && editMode !== 'apprentice' && 
             <>
                 {isPortrait && 
-                    <BasicStatCard name={apprenticeStats.name} stats = {apprenticeStats} refData={refData}/>
+                    <BasicStatCard statsObj = {apprenticeStats} refData={refData}/>
                 }
                 {!isPortrait && 
-                    <BasicStatTableHeader show_costs={false} show_status={true} showLevel={true} editMode={true} >
-                        <BasicStatTableRow name = {apprenticeStats.name} stats = {apprenticeStats} refData={refData} show_costs={false} show_status={true} showLevel={true} editMode={true} />
+                    <BasicStatTableHeader showName={true} showStatus={true} showClass={true} showItemSlots={true}>
+                        <BasicStatTableRow statsObj = {apprenticeStats} refData={refData}  />
                     </BasicStatTableHeader>
                 }
                 <Box>
@@ -118,8 +117,8 @@ export function ShowPotentialApprentices() {
         return apprenticeList
     }
 
-    const apprenticeStats = deriveApprenticeStats(currentWizard.stats, currentWizard.apprentice);
-    const apprenticeCost = (currentWizard.stats.level - 6)*10 + 160;
+    const apprenticeStats = deriveApprenticeStats(currentWizard, currentWizard.apprentice);
+    const apprenticeCost = (currentWizard.level - 6)*10 + 160;
 
     return (
         <div>
@@ -128,7 +127,7 @@ export function ShowPotentialApprentices() {
             <div className='apprentice-hire-container'>
             {apprenticeList(refData.nameGenerator.apprentice).map((apprenticeName) => 
                 <div key= {apprenticeName}>
-                    <BasicStatCard name={apprenticeName} stats={apprenticeStats} show_status={false}/>
+                    <BasicStatCard statsObj={apprenticeStats} />
                     <Button onClick={() => hireApprentice(apprenticeName, apprenticeCost)} >Hire {apprenticeName}</Button>
                 </div>
             )}
