@@ -2,27 +2,48 @@ import { Box, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext.jsx'
 import { useState, useEffect } from 'react';
-import { getCreatureFromId, rollD20, getRandomSpell } from './HelperFunctions.js';
+import { getCreatureFromId, rollD20, getRandomSpell, getScenarioFromId, getSchoolFromId } from './HelperFunctions.js';
 import { useAppContext } from './AppContext.jsx';
+
 import { Checkbox,Select, MenuItem, FormControl, FormGroup, FormLabel, InputLabel, Input, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import { TbRuler2, TbRuler3 } from 'react-icons/tb';
+
 
 export function CampaignView() {
-    const { refData } = useAppContext();
+    const { refData, currentWizard, loading, error } = useAppContext();
+    const navigate = useNavigate();
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+    
+    if (error) {
+        return <div>Error loading data</div>;
+    }
+
+    const handleNavigate = (destination) => {
+        navigate(`/${destination}`);
+    }
 
     return (
         <>
-            <Box className="campaigns-container" sx={{width: '100%', textAlign: 'center' }}>
-                <h2>Campaign View</h2>
-                <p>Coming Soon...</p>
-                <p>Things to implement:</p>
-                <p>-Manage Campaigns</p>
-                <p>-Battle Views</p>
-                <p>Level Up System</p>
-            </Box>
+            {!currentWizard && 
+              <Box sx={{width: '100%', textAlign: 'center' }}>
+                  <h2>Campaign View</h2>
+                  <p>Coming Soon...</p>
+                  <p>Things to implement:</p>
+                  <p>-Manage Campaigns</p>
+                  <p>-Battle Views</p>
+                  <p>Level Up System</p>
+              </Box>
+            }
+            {currentWizard && 
+              <Box sx={{width: '100%', textAlign: 'center' }}>
+                <Button onClick={() => handleNavigate('battleview')}>Start Battle</Button>
+              </Box>
+            }
 
-            <BattleView refData={refData} />
-            <AfterActionView />
+            {/* <BattleView refData={refData} /> */}
+            {/* <AfterActionView refData={refData}/> */}
             
         </>
     );
@@ -30,17 +51,56 @@ export function CampaignView() {
 
 export function CampaignSideDrawer() {
     const navigate = useNavigate();
+    const { userData } = useAuth();
+    const { refData, loading, error, setCurrentWizard } = useAppContext();
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+    
+    if (error) {
+        return <div>Error loading data</div>;
+    }
+
+    const wizardsList = userData.myWizards
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map(wizard => (
+        <Button key={wizard.id} 
+            className="spells-sidebar-item" 
+            onClick={() => handleWizardClick(wizard)} 
+            style = {{cursor: 'pointer'}}
+        >
+            {wizard.name} <br></br>
+            Level {wizard.level} {getSchoolFromId(wizard.classId, refData).name}
+        </Button>
+    ));
     
     const handleNewCampaign = () => {
         navigate('/newcampaign');
     };
 
+    const handleWizardClick = (wizard) => {
+        setCurrentWizard(wizard);
+    };
+
     return (
         <>
-            <div>
-                <h2>Campaign SideBar</h2>
-            </div>
-            <Button>Create New Campaign</Button>
+            <Box sx={{width: '100%', textAlign: 'center'}}>
+                <h3>My Wizards</h3>
+                {wizardsList}
+            </Box>
+            <Box sx={{width: '100%', textAlign: 'center'}}>
+                <h3>Tools</h3>
+                <p>Coming Soon...</p>
+            </Box>
+            <Box sx={{width: '100%', textAlign: 'center'}}>
+                <h3>Campaigns</h3>
+                <p>Coming Soon...</p>
+            </Box>
+
+            <Button onClick={handleNewCampaign}>New Campaign</Button>
+
         </>
     );
 }
@@ -74,7 +134,7 @@ function BattleView({refData}) {
         console.log(`Rolls: ${firstRoll}, ${secondRoll}`)
         const encounterLevelTable = refData.randomEncounterTable.find((table) => table.firstRollRange.includes(firstRoll));
         const [ creatureId, creatureNumber ] = encounterLevelTable.rollResults[secondRoll];
-        const creature = getCreatureFromId(creatureId, refData).name
+        const creature = getCreatureFromId(creatureId, refData).class
 
         const randomDirection = directions[Math.floor(Math.random() * directions.length)];
         const message = `Encounter: ${creature} x${creatureNumber} coming from the ${randomDirection}!`;
@@ -134,10 +194,19 @@ function BattleView({refData}) {
     );
 }
 
-function AfterActionView() {
+function AfterActionView({refData}) {
   const { userData } = useAuth();
   const [ xpGained, setXpGained ] = useState(0);
   const [ basicXPCounts, setBasicXPCounts ] = useState({ spellFailure: 0, spellSuccess: 0, treasureFound: 0, creaturesKilled: 0, wizardParticipated: false });
+  const [ scenarioXPCounts, setScenarioXPCounts ] = useState({});
+  const [currentScenario, setCurrentScenario] = useState(getScenarioFromId(101, refData));
+
+  useEffect(() => {
+    const scenario = getScenarioFromId(101, refData);
+    setCurrentScenario(scenario);
+  }, []);
+
+  console.log(refData)
   
   const calcXPTotal = () => {
     const { spellFailure, spellSuccess, treasureFound, creaturesKilled, wizardParticipated } = basicXPCounts;
@@ -146,13 +215,22 @@ function AfterActionView() {
     total += spellSuccess * 10;
     total += treasureFound * 40;
     total += creaturesKilled * 5;
+    // total += scenarioXPTotal;
     if (wizardParticipated) total += 40;
     return total;
   };
 
-  const handleChange = (e, type) => {
+  const handleBasicXPChange = (e, type) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
     setBasicXPCounts((prev) => ({
+      ...prev,
+      [type]: value
+    }));
+  }
+
+  const handleScenarioXPChange = (e, type) => {
+    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    setScenarioXPCounts((prev) => ({
       ...prev,
       [type]: value
     }));
@@ -166,7 +244,7 @@ function AfterActionView() {
   
   return (
     <>
-      <h2>After Battle Report</h2>
+      <h2>After Action Report</h2>
         <TableContainer>
           <Table size="small">
             <TableHead>
@@ -182,7 +260,7 @@ function AfterActionView() {
                   <FormControl sx={{ m: 1, minWidth: 60 }}>
                     <Checkbox 
                       checked={basicXPCounts.wizardParticipated}
-                      onChange={(e) => handleChange(e, 'wizardParticipated')}
+                      onChange={(e) => handleBasicXPChange(e, 'wizardParticipated')}
                       size="small"
                     />
                     </FormControl>
@@ -201,7 +279,7 @@ function AfterActionView() {
                     <Select
                       value={basicXPCounts.spellFailure}
                       defaultValue={0}
-                      onChange={(e) => handleChange(e, 'spellFailure')}
+                      onChange={(e) => handleBasicXPChange(e, 'spellFailure')}
                       size="small"
                     >
                       {[...Array(21).keys()].map((i) => <MenuItem key={i} value={i}>{i}</MenuItem>)}
@@ -222,7 +300,7 @@ function AfterActionView() {
                     <Select
                       value={basicXPCounts.spellSuccess}
                       defaultValue={0}
-                      onChange={(e) => handleChange(e, 'spellSuccess')}
+                      onChange={(e) => handleBasicXPChange(e, 'spellSuccess')}
                       size="small"
                     >
                       {[...Array(21).keys()].map((i) => <MenuItem key={i} value={i}>{i}</MenuItem>)}
@@ -243,7 +321,7 @@ function AfterActionView() {
                     <Select
                       value={basicXPCounts.treasureFound}
                       defaultValue={0}
-                      onChange={(e) => handleChange(e, 'treasureFound')}
+                      onChange={(e) => handleBasicXPChange(e, 'treasureFound')}
                       size="small"
                     >
                       {[...Array(6).keys()].map((i) => <MenuItem key={i} value={i}>{i}</MenuItem>)}
@@ -264,7 +342,7 @@ function AfterActionView() {
                     <Select
                       value={basicXPCounts.creaturesKilled}
                       defaultValue={0}
-                      onChange={(e) => handleChange(e, 'creaturesKilled')}
+                      onChange={(e) => handleBasicXPChange(e, 'creaturesKilled')}
                       size="small"
                     >
                       {[...Array(21).keys()].map((i) => <MenuItem key={i} value={i}>{i}</MenuItem>)}
@@ -279,7 +357,7 @@ function AfterActionView() {
                 </TableCell>
               </TableRow>
 
-              <ScenarioXPTable setXpGained={setXpGained} />
+              <ScenarioXPRows setScenarioXPCounts={setScenarioXPCounts} handleScenarioXPChange={handleScenarioXPChange} currentScenario={currentScenario}/>
 
               <TableRow>
                 <TableCell colSpan={3} >
@@ -287,8 +365,6 @@ function AfterActionView() {
                 <p>** Up to a maximum of +50 per game. Does not apply to creatures that have a specific experience point reward given in a scenario, nor to creatures specifically created or summoned by a member the wizard's warband.</p>
                 </TableCell>
               </TableRow>
-
-              
 
             </TableBody>
           </Table>
@@ -300,11 +376,65 @@ function AfterActionView() {
   );
 }
 
-function ScenarioXPTable(setXpGained, refData) {
+function ScenarioXPRows( { scenarioXPCounts, setScenarioXPCounts, handleScenarioXPChange, currentScenario} ) {
+  if (!currentScenario) { 
+    return (
+      <TableRow >
+        <TableCell colSpan={3}><h3 style={{color: 'red'}}>Scenario Data Not Found</h3></TableCell>
+      </TableRow>
+    );
+  }
+
+  useEffect(() => {
+    let scenarioCounts = {};
+    currentScenario.experience.forEach((exp) => {
+      scenarioCounts[exp.id] = exp.type === 'checkbox' ? false : 0;
+    });
+    setScenarioXPCounts(scenarioCounts);
+    console.log(scenarioCounts)
+
+  });
+
+  console.log(currentScenario)
+  console.log(scenarioXPCounts)
 
   return (
-    <TableRow >
-      <TableCell colSpan={3}><h3 style={{color: 'red'}}>Reserved for Scenario Specific XP</h3></TableCell>
-    </TableRow>
+    <>
+      <TableRow >
+        <TableCell colSpan={3}>{currentScenario.name}</TableCell>
+        <TableCell>XP Gained</TableCell>
+        <TableCell>Description</TableCell>
+      </TableRow>
+      {currentScenario.experience.map((exp) => (
+        <TableRow key={exp.id}>
+          {exp.type==='checkbox' ?
+            <TableCell >
+              <FormControl sx={{ m: 1, minWidth: 60 }}>
+                <Checkbox 
+                  checked={scenarioXPCounts[exp.id]}
+                  onChange={(e) => handleScenarioXPChange(e, exp)}
+                  size="small"
+                />
+                </FormControl>
+            </TableCell>
+          :
+            <TableCell >
+              <FormControl sx={{ m: 1, minWidth: 60 }}>
+                <Select
+                  value={scenarioXPCounts[exp.id]}
+                  defaultValue={0}
+                  onChange={(e) => handleScenarioXPChange(e, exp)}
+                  size="small"
+                >
+                  {[...Array(11).keys()].map((i) => <MenuItem key={i} value={i}>{i}</MenuItem>)}
+                </Select>
+              </FormControl>
+            </TableCell>
+          }
+          <TableCell>+{exp.xp}</TableCell>
+          <TableCell>{exp.description}</TableCell>
+        </TableRow>
+      ))}
+    </>
   );
 }

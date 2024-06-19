@@ -7,6 +7,7 @@ import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHe
 import CancelIcon from '@mui/icons-material/Cancel';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
+import { TbRuler2Off } from 'react-icons/tb';
 
 
 // ExpandBox is deprecated
@@ -42,47 +43,85 @@ export function ExpandBox({title, children, className=''}) {
 }
 
 
-export function BasicStatCard({ name, stats, refData, show_costs=false, show_status=true, showItemSlots=true, showLevel=false, editMode=false }) {  
+export function BasicStatCard({ statsObj, refData, showCosts=false, showStatus=false, showItemSlots=false, showLevel=false, editMode=false }) {  
+  const ShowStatus = ({soldier}) => {
+    let statusColor;
+    if (soldier.status === 0) {
+        statusColor= 'red';
+    } else if (soldier.status === 2) {
+        statusColor = 'gray';
+    } else if (soldier.status === 8) {
+        statusColor = 'green';
+    } else if (soldier.status === 7) {
+        statusColor = 'darkgreen';
+    } else {
+        statusColor = 'lightblue'
+    }
+    return <b style={{color: statusColor}}>{getStatusFromId(soldier.status, refData)}</b>
+}
+  
   return (
     <div className="stat-card">
       <Paper className="generic-paper" sx={{ '& table': { width: '100%' }, display: 'flex', flexDirection: 'column', alignItems : 'center', overflow: 'hidden'}}>
         <TableContainer>
-          <Table className="stat-block-table">
-            {name &&
+          <Table className="stat-block-card">
+            {statsObj.name &&
               <TableHead >
                 <TableRow>
-                  <TableCell colSpan={3} sx={{textAlign: 'center'}}><h3>{name ? name : ''} {stats.status !== 1 && show_status ? `(${getStatusFromId(stats.status, refData)})` : ''}</h3></TableCell>
+                  <TableCell colSpan={3} sx={{textAlign: 'center'}}>
+                    <h3>
+                      {statsObj.name} {statsObj.status !== 1 && showStatus &&  (
+                        <>
+                          {' ('}
+                          <ShowStatus soldier={statsObj}/>
+                          {')'} 
+                        </>
+                      )}
+                    </h3>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+            }
+            {!statsObj.name &&
+              <TableHead >
+                <TableRow>
+                  <TableCell colSpan={2} sx={{textAlign: 'left'}}>
+                    <h3>{statsObj.class ? statsObj.class : ''} {statsObj.status !== 1 && showStatus ? `(${getStatusFromId(statsObj.status, refData)})` : ''}</h3>
+                  </TableCell>
+                  <TableCell>
+                    {showCosts && `${statsObj.cost > 0 ? `${statsObj.cost} gc` : 'Free'}`}
+                  </TableCell>
                 </TableRow>
               </TableHead>
             }
             <TableBody >
-            <TableRow>
-                <TableCell colSpan="2">{name ? stats.class : <h3>{stats.class}</h3>}</TableCell>
-                {!showLevel &&<TableCell>{show_costs && `${stats.cost > 0 ? `${stats.cost} gc` : 'Free'}`}</TableCell>}
-                {showLevel && <TableCell>Level {stats.level}</TableCell>}
+              {statsObj.name && <TableRow>
+                <TableCell colSpan="2" sx={{textAlign: 'left'}}>{statsObj.class}</TableCell>
+                  {!showLevel &&<TableCell>{showCosts && `${statsObj.cost > 0 ? `${statsObj.cost} gc` : 'Free'}`}</TableCell>}
+                  {showLevel && <TableCell>Level {statsObj.level}</TableCell>}
+              </TableRow>}
+              <TableRow>
+                <TableCell><img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move'/>{statsObj.move}</TableCell>
+                <TableCell><img src='src/assets/Game-Icons-net/axe-sword.svg' className="stat-icon" alt='Fight'/>{modSign(statsObj.fight)}</TableCell>
+                <TableCell><img src='src/assets/Game-Icons-net/high-shot.svg' className="stat-icon" alt='Shoot'/>{modSign(statsObj.shoot)}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell><img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move'/>{stats.move}</TableCell>
-                <TableCell><img src='src/assets/Game-Icons-net/axe-sword.svg' className="stat-icon" alt='Fight'/>{modSign(stats.fight)}</TableCell>
-                <TableCell><img src='src/assets/Game-Icons-net/high-shot.svg' className="stat-icon" alt='Shoot'/>{modSign(stats.shoot)}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell><img src='src/assets/Game-Icons-net/abdominal-armor.svg' className="stat-icon" alt='Armor'/>{stats.armor}</TableCell>
-                <TableCell><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will'/>{modSign(stats.will)}</TableCell>
-                <TableCell><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Health'/>{stats.health}</TableCell>
+                <TableCell><img src='src/assets/Game-Icons-net/abdominal-armor.svg' className="stat-icon" alt='Armor'/>{statsObj.armor}</TableCell>
+                <TableCell><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will'/>{modSign(statsObj.will)}</TableCell>
+                <TableCell><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Health'/>{statsObj.health}</TableCell>
               </TableRow>
               {showItemSlots && 
                 <TableRow>
                   <TableCell colSpan={3} sx={{textAlign: 'left'}}>
                     <h4>Slot items:</h4>
-                    {stats.itemSlots.map((itemId, index) => (
+                    {statsObj.itemSlots.map((itemId, index) => (
                       <p key= {'Item' + index}>{itemId !== 0 ? getItemFromId(itemId, refData).name : ''}</p>
                     ))}
                   </TableCell>
                 </TableRow>
               }
               <TableRow>
-                <TableCell colSpan={3}>{stats.notes}</TableCell>
+                <TableCell colSpan={3}>{statsObj.notes}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -92,15 +131,31 @@ export function BasicStatCard({ name, stats, refData, show_costs=false, show_sta
   )
 }
 
-export function BasicStatTableHeader({children, name='Name', showClass = true, showCosts=false, showStatus=true, showItemSlots=true, showLevel=false, showSource=false, editMode=false }) {
+export function BasicStatTableHeader({children, showName=false, showClass = false, showCosts=false, showStatus=false, showItemSlots=false, showLevel=false, showSource=false, showCurrentHealth=false }) {
   const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
+  const clonedChildren = React.Children.map(children, child => {
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child, {
+        ...child.props,
+        showName,
+        showClass,
+        showCosts,
+        showStatus,
+        showItemSlots,
+        showLevel,
+        showSource,
+        showCurrentHealth
+      });
+    }
+    return child;
+  })
   return (
     <Paper className="generic-paper" sx={{ width: '100%', overflow: 'hidden'}}>
       <TableContainer sx={{ maxHeight: 640 }}>
-        <Table aria-label="sticky table" size="small"> {/* make sticky?*/}
+        <Table stickyHeader aria-label="sticky table" size="small">
           <TableHead >
             <TableRow>
-              {name && <TableCell>{name}</TableCell>}
+              {showName && <TableCell>Name</TableCell>}
               {showClass && <TableCell>Class</TableCell>}
               {showLevel && <TableCell>Level</TableCell>}
               <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move'/></TableCell>
@@ -117,7 +172,7 @@ export function BasicStatTableHeader({children, name='Name', showClass = true, s
             </TableRow>
           </TableHead>
           <TableBody>
-            {children}
+            {clonedChildren}
           </TableBody>
         </Table>
       </TableContainer>
@@ -125,10 +180,61 @@ export function BasicStatTableHeader({children, name='Name', showClass = true, s
   )
 }
 
-export function BasicStatTableRow({name, stats, refData, showCosts=false, showStatus=true, showItemSlots=true, showLevel=false, showSource=false, showClass = true,editMode=false }) {
+export function BasicStatTableRow({statsObj, refData, showName, showCosts, showStatus, showItemSlots, showLevel, showSource, showClass, showCurrentHealth }) {
   const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
   
-  const ShowStatus = ({statsObj}) => {
+  const displayStatus = () => {
+    if (statsObj.status === 0) {
+        return <b style={{color: 'red'}}>Dead</b>
+    } else if (statsObj.status === 2) {
+        return <b style={{color: 'gray'}}>Badly Injured</b>
+    } else if (statsObj.status === 8) {
+        return <b style={{color: 'green'}}>For Hire</b>
+    } else if (statsObj.status === 7) {
+        return <b style={{color: 'green'}}>Hired</b>
+    } else {
+        return <b style={{color: 'lightblue'}}>{getStatusFromId(statsObj.status, refData)}</b>
+    }
+  }
+
+  const displayHealth = () => {
+    if (statsObj.currentHealth === 0) {
+        return <b style={{color: 'red'}}>Dead</b>
+    } else {
+        return statsObj.currentHealth
+    }
+  }
+
+  return (
+    <TableRow>
+      {showName && <TableCell>{statsObj.name}</TableCell>}
+      {showClass && <TableCell>{statsObj.class}</TableCell>}
+      {showLevel && <TableCell>{statsObj.level}</TableCell>}
+      <TableCell sx={{textAlign: 'center'}}>{statsObj.move}</TableCell>
+      <TableCell sx={{textAlign: 'center'}}>{modSign(statsObj.fight)}</TableCell>
+      <TableCell sx={{textAlign: 'center'}}>{modSign(statsObj.shoot)}</TableCell>
+      <TableCell sx={{textAlign: 'center'}}>{statsObj.armor}</TableCell>
+      <TableCell sx={{textAlign: 'center'}}>{modSign(statsObj.will)}</TableCell>
+      <TableCell sx={{textAlign: 'center'}}>{statsObj.health}</TableCell>
+      {showItemSlots && 
+        <TableCell sx={{textAlign: 'left'}}>
+          {statsObj.itemSlots.map((itemId, index) => (
+            <p key= {'Item' + index}>{itemId !== 0 ? getItemFromId(itemId, refData).name : ''}</p>
+          ))}
+        </TableCell>
+      }
+      <TableCell>{statsObj.notes}</TableCell>
+      {showStatus && <TableCell>{displayStatus()}</TableCell>}
+      {showCosts && <TableCell>{showCosts && `${statsObj.cost > 0 ? `${statsObj.cost} gc` : 'Free'}`}</TableCell>}
+      {!isPortrait && showSource && <TableCell>{statsObj.source}</TableCell>}
+    </TableRow>
+  )
+}
+
+export function OLDBasicStatTableRow({name, stats, refData, showCosts=false, showStatus=true, showItemSlots=true, showLevel=false, showSource=false, showClass = true,editMode=false }) {
+  const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
+  
+  const ShowStatus = () => {
 
     if (stats.status === 0) {
         return <b style={{color: 'red'}}>Dead</b>

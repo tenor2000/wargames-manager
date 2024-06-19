@@ -13,9 +13,13 @@ export function getSoldierFromId(soldierId, refData) {
   if (!refData || !refData.soldiers) {
     return { name: 'Unknown' }; // Default or fallback value
   }
-  soldierId = parseInt(soldierId);
+  const soldier = refData.soldiers.find(soldier => soldier.id === soldierId);
+
+  if (!soldier) {
+    return { name: 'Unknown' }; // Default or fallback value
+  }
   
-  return refData.soldiers.find(soldier => soldier.id === soldierId)
+  return { ...soldier };
 }
 
 export function getSchoolFromId(schoolId, refData) {
@@ -92,7 +96,7 @@ export function getItemFromId(itemId, refData) {
     // console.log(refData)
     // console.log(refData.arms)
     // console.log(refData.armor)
-    return { name: 'Unknown' }; // Default or fallback value
+    return { name: 'Unknown' }; 
   }
   let refList
 
@@ -113,14 +117,21 @@ export function rollD20() {
 
 export function getRandomSpell(refData) {
   if (!refData || !refData.spells) {
-    return { name: 'Unknown' }; // Default or fallback value
+    return { name: 'Unknown' }; 
   }
   return refData.spells[Math.floor(Math.random() * refData.spells.length)]
 }
 
 export function getCreatureFromId(creatureId, refData) { 
   if (!refData || !refData.creatures) {
-    return { name: 'Unknown Creature with ID ' + creatureId }; // Default or fallback value
+    return { name: 'Unknown Creature with ID ' + creatureId };
   }
   return refData.creatures.find(creature => creature.id === creatureId)
+}
+
+export function getScenarioFromId(scenarioId, refData) { 
+  if (!refData || !refData.scenarios) {
+    return { name: 'Unknown Scenario with ID ' + scenarioId }; 
+  }
+  return refData.scenarios.find(scenario => scenario.id === scenarioId)
 }
