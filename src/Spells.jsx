@@ -1,9 +1,8 @@
 import { useAppContext } from './AppContext.jsx';
 import { useState } from 'react';
-import { BasicSpellCard, SearchBar } from './BasicComponents.jsx';
+import { BasicAccordian, BasicSpellCard, SearchBar } from './BasicComponents.jsx';
 import { getSchoolFromId } from './HelperFunctions.js';
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Box, Button } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import './styles/Spells.css';
 
@@ -12,10 +11,8 @@ export function SpellView() {
     const { loading, error } = useAppContext();
     const [ searchText, setSearchText ] = useState('');
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
-    const isLandscape = useMediaQuery('(max-height: 768px) and (orientation: landscape)');
 
     if (loading) {
-        console.log('Loading...')
         return <div>Loading...</div>;
     }
     
@@ -31,14 +28,9 @@ export function SpellView() {
         }
 
         return sortedSpells.map(spell => (
-            <Accordion key={spell.id} sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="spell-summary" aria-controls="spell-details">
-                    <h3>{spell.name}</h3>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <BasicSpellCard spellId={spell.id} titlebar={false} refData={refData} />
-                </AccordionDetails>
-            </Accordion>
+            <BasicAccordian key={spell.id} title={spell.name} >
+                <BasicSpellCard spellId={spell.id} titlebar={false} refData={refData} />
+            </BasicAccordian>
         ))
     }
     function handleSearchFilter(text) {
@@ -69,9 +61,6 @@ export function SpellView() {
                     />
                 </div>
             }
-            <div className='spell-list-view'>
-                {spellsBySchool()}
-            </div>
             {isPortrait && 
                 <div className='center'>
                     <SearchBar 
@@ -82,6 +71,9 @@ export function SpellView() {
                     />
                 </div>
             }
+            <div className='spell-list-view'>
+                {spellsBySchool()}
+            </div>
         </>
     );
 }

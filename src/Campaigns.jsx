@@ -168,8 +168,7 @@ function BattleView({refData}) {
     const handleRandomGrimoire = () => {
       // This doesn't use the table in the rulebook because it's just random
       const spell = getRandomSpell(refData);
-      const spellId = spell.id
-      const message = `Grimoire: ${spell.name}! Spell ID: ${spellId}`;
+      const message = `Grimoire: ${spell.name}! Spell ID: ${spellI.id}`;
       setViewer(message);
     }
     

@@ -1,7 +1,7 @@
 import { useAppContext } from "./AppContext";
 import { useAuth } from "./AuthContext";
 import { useState, useEffect } from "react";
-import { BasicStatCard, BasicStatTableHeader, BasicStatTableRow } from "./BasicComponents";
+import { BasicStatCard, BasicStatTableHeader, BasicStatTableRow, DisplayStatus } from "./BasicComponents";
 import { getRandomName, getSoldierFromId, getStatusFromId, modSign } from "./HelperFunctions";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
@@ -37,12 +37,12 @@ export function SoldierRosterBlock() {
             {isPortrait &&
             <div className='soldier-card-view'>
                 {soldierList.map((soldier, index) => (
-                        <BasicStatCard key={index} statsObj={soldier} refData={refData} showStatus={true} showItemSlots={true} showCosts={true} />
+                        <BasicStatCard key={index} statsObj={soldier} refData={refData} showStatus={true} showItemSlots={true} />
                     ))}
             </div>
             }
             {!isPortrait && 
-                <BasicStatTableHeader showName={true} showClass={true} showCosts={true} showStatus={true} showItemSlots={true}>
+                <BasicStatTableHeader showName={true} showClass={true} showStatus={true} showItemSlots={true}>
                     {soldierList.map((soldier, index) => (
                         <BasicStatTableRow key={index} statsObj = {soldier} refData={refData} />
                     ))}
@@ -59,13 +59,18 @@ export function EditSoldiersView() {
     const [ editedWizard, setEditedWizard ] = useState({...currentWizard});
     const [ notesOpen, setNotesOpen ] = useState(false);
 
+    useEffect(() => {
+        setTotalEditedCost(0);
+        setEditedWizard({...currentWizard});
+    }, [currentWizard])
+
     const handleCancel = () => {
         const newEditMode = {...editMode};
         newEditMode['soldiers'] = false;
         const updateWizard = {...currentWizard};
         console.log(currentWizard.soldiers)
         console.log(editedWizard.soldiers)
-        // setCurrentWizard({...currentWizard});
+        setCurrentWizard({...currentWizard});
         setEditMode(newEditMode);
     }
 
@@ -143,22 +148,6 @@ export function EditSoldiersView() {
         setEditedWizard(updateWizard)
     }
 
-    const ShowStatus = ({soldier}) => {
-        let statusColor;
-        if (soldier.status === 0) {
-            statusColor= 'red';
-        } else if (soldier.status === 2) {
-            statusColor = 'gray';
-        } else if (soldier.status === 8) {
-            statusColor = 'green';
-        } else if (soldier.status === 7) {
-            statusColor = 'darkgreen';
-        } else {
-            statusColor = 'lightblue'
-        }
-        return <b style={{color: statusColor}}>{getStatusFromId(soldier.status, refData)}</b>
-    }
-
     const ShowCost = ({soldier}) => {
         if (soldier.status === 7) {
             return <b style={{color: 'red'}}>{soldier.cost === 0 ? 'Free' : `$${soldier.cost}`}</b>
@@ -182,7 +171,6 @@ export function EditSoldiersView() {
     }
 
     function ShowClassSelections({soldier}) {
-
         return (
             <>
                 <select 
@@ -210,7 +198,7 @@ export function EditSoldiersView() {
         // while (soldier.name in editedWizard.soldiers) {
         //     soldier.name = soldier.classId === 3 ? getRandomName(refData.nameGenerator.animal) : getRandomName(refData.nameGenerator.soldier);;
         // }
-        soldier.itemSlots = [0];
+        // soldier.itemSlots = [0];
       
         return soldier
     }
@@ -233,7 +221,7 @@ export function EditSoldiersView() {
     }
 
     return (
-        <Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
             <h3>Edit Roster</h3>
             <Paper className='generic-paper' sx={{ width: '100%', overflow: 'hidden' }}>
                 <TableContainer>
@@ -290,7 +278,7 @@ export function EditSoldiersView() {
                                             />
                                         </Tooltip>
                                     </TableCell>
-                                    <TableCell><ShowStatus soldier={soldier} /></TableCell>
+                                    <TableCell><DisplayStatus statsObj={soldier} refData={refData} /></TableCell>
                                     <TableCell><ShowCost soldier={soldier} /></TableCell>
                                     <TableCell><ShowAction soldier={soldier} /></TableCell>
                                 </TableRow>

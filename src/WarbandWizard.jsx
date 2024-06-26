@@ -10,7 +10,7 @@ export function WizardView() {
     const { currentWizard, refData } = useAppContext();
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
-    const wizardStats = currentWizard;
+    const wizardStats = {...currentWizard};
     wizardStats['class'] = getSchoolFromId(wizardStats.classId, refData).name;
 
     return (
@@ -121,18 +121,22 @@ export function ShowPotentialApprentices() {
     const apprenticeCost = (currentWizard.level - 6)*10 + 160;
 
     return (
-        <div>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
             <h3>You currently do not have an Apprentice.</h3>
             <p>You can hire one for <b style={{color: 'red'}}>{apprenticeCost} gold</b> from the list below.</p>
-            <div className='apprentice-hire-container'>
-            {apprenticeList(refData.nameGenerator.apprentice).map((apprenticeName) => 
-                <div key= {apprenticeName}>
-                    <BasicStatCard statsObj={apprenticeStats} />
-                    <Button onClick={() => hireApprentice(apprenticeName, apprenticeCost)} >Hire {apprenticeName}</Button>
-                </div>
-            )}
-            </div>
-        </div>
+            <Box className='apprentice-hire-container'>
+                {apprenticeList(refData.nameGenerator.apprentice).map((apprenticeName) => {
+                    const apprenticeObj = {...apprenticeStats}
+                    apprenticeObj.name = apprenticeName;
+                    return (
+                        <Box key= {apprenticeName} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                            <BasicStatCard statsObj={apprenticeObj} refData={refData}/>
+                            <Button onClick={() => hireApprentice(apprenticeName, apprenticeCost)} >Hire {apprenticeName}</Button>
+                        </Box>
+                    )
+                })}
+            </Box>
+        </Box>
     )
 }   
 

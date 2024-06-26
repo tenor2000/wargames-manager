@@ -1,13 +1,19 @@
 import { useState } from 'react';
 import { useAppContext } from './AppContext.jsx';
 import { getSpellFromId } from './HelperFunctions.js';
-import { Button } from '@mui/material';
+import { Box,Button } from '@mui/material';
 import { BasicSpellCard } from './BasicComponents.jsx';
+import { useMediaQuery } from '@mui/material';
 
 export function SpellBookBlock() {
     const { currentWizard, refData } = useAppContext();
     const [ spellViewObj, setSpellViewObj ] = useState('null')
     const [ spellSchoolMod, setSpellSchoolMod ] = useState(0)
+    const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
+
+    if (!currentWizard) {
+        return null
+    }
 
     const primarySpellArr = currentWizard.primarySpellIds;
     const alignedSpellArr = currentWizard.alignedSpellIds;
@@ -20,7 +26,7 @@ export function SpellBookBlock() {
         const varCast = spellMod ? <b style={{ color: 'green' }}>{spellViewObj.base_cast + spellMod + spellSchoolMod}</b> : spellViewObj.base_cast + spellSchoolMod;
 
         return (
-            <div>
+            <Box>
                 <BasicSpellCard spellId={spellViewObj.id} refData={refData} titlebar={true} castnum={varCast} spellSchoolMod={spellSchoolMod}/>
                 <Button 
                     sx={{ width: '100%' }} 
@@ -28,7 +34,7 @@ export function SpellBookBlock() {
                 >
                     Close Viewer
                 </Button>
-            </div>
+            </Box>
         )
     }
 
@@ -64,38 +70,38 @@ export function SpellBookBlock() {
     return (
         <>
             {spellViewObj !== 'null' && <SpellViewCard spell={spellViewObj}/>}
-            <div className='spellbutton-container'>
+            <Box className='spellbutton-container'>
                 <h4>Primary Spells </h4>
-                <div>
+                <Box sx={{ display: 'flex', flexDirection: isPortrait ? 'column' : 'row'}}>
                     {primarySpellArr.map((spellId) => (
                         <MySpellButton key={spellId} spellId={spellId} />
                     ))}
-                </div>
-            </div>
-            <div className="spellbutton-container">
+                </Box>
+            </Box>
+            <Box className="spellbutton-container">
                 <h4>Aligned Spells</h4> 
-                <div>
+                <Box sx={{ display: 'flex', flexDirection: isPortrait ? 'column' : 'row'}}>
                     {alignedSpellArr.map((spellId) => (
                         <MySpellButton key={spellId} spellId={spellId} schoolModifier={2} />
                     ))}
-                </div>
-            </div>
-            <div className="spellbutton-container">
+                </Box>
+            </Box>
+            <Box className="spellbutton-container">
                 <h4>Neutral Spells</h4> 
-                <div>
+                <Box sx={{ display: 'flex', flexDirection: isPortrait ? 'column' : 'row'}}>
                     {neutralSpellArr.map((spellId) => (
                         <MySpellButton key={spellId} spellId={spellId} schoolModifier={4}/>
                     ))}
-                </div>
-            </div>
-            <div className="spellbutton-container">
+                </Box>
+            </Box>
+            <Box className="spellbutton-container">
                 {currentWizard.opposedSpellIds.length > 0 ? <h4>Opposed Spells </h4> : null}
-                <div>
+                <Box sx={{ display: 'flex', flexDirection: isPortrait ? 'column' : 'row'}}>
                     {opposedSpellArr.map((spellId) => (
                         <MySpellButton key={spellId} spellId={spellId} schoolModifier={6}/>
                     ))}
-                </div>
-            </div>
+                </Box>
+            </Box>
         </>
     )
 }

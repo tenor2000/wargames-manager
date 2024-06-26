@@ -24,28 +24,6 @@
     padding: 5px;
 }
 
-/* .stat-block-table {
-    padding: 8px;
-    border-collapse: collapse;
-    border: var(--section-border);
-    width: 100%;
-    background-color: black;
-    height: 250px;
-}
-
-.stat-block-table tr {
-    border: var(--section-border);
-    padding: 8px;
-    width: 100%;
-}
-
-.stat-block-table td {
-    width: calc(100% / 3);
-    text-align: left;
-    border: var(--section-border);
-    padding: 8px;
-} */
-
 .spellbook-container {
     display: block;
     margin: 0 auto;

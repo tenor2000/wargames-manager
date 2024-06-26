@@ -51,6 +51,8 @@ export const userInfoData = {
             xpSpent: 0,
             vault: [],
             base: 'none',
+            currentScenario: null,
+            careerHistory: []
         },
         {
             id: 2,
@@ -99,7 +101,9 @@ export const userInfoData = {
             xp: 400,
             xpSpent: 200,
             vault: [],
-            base: 'none'
+            base: 104,
+            currentScenario: null,
+            careerHistory: []
         },
         {
             id: 3,
@@ -142,6 +146,8 @@ export const userInfoData = {
             xpSpent: 0,
             vault: [],
             base: 'none',
+            currentScenario: null,
+            careerHistory: []
         },
     ],
     myRecord: {

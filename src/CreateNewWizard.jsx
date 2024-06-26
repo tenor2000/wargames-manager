@@ -2,7 +2,7 @@ import { useAppContext } from './AppContext.jsx';
 import { useAuth } from './AuthContext.jsx';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getSchoolFromId, getSchoolFromSpellId } from './HelperFunctions.js';
+import { getSchoolFromId, getSchoolFromSpellId, getRandomName } from './HelperFunctions.js';
 import './styles/NewWizard.css';
 import { update } from 'firebase/database';
 import { useMediaQuery } from '@mui/material';
@@ -11,10 +11,18 @@ import { TextField, Button, InputLabel, Select, MenuItem, FormControl, Box } fro
 
 
 export function NewWizardSideDrawer() {
-  const { newWizard } = useAppContext();
+  const { loading, error } = useAppContext();
+
+    if (loading) {
+        return <div>Loading...</div>;
+      }
+    
+    if (error) {
+    return <div>Error loading data</div>;
+    }
   return (
     <>
-      <h3>{newWizard.name}</h3>
+      <h3>Building New Wizard...</h3>
     </>
   );
 }
@@ -23,6 +31,15 @@ export function CreateNewWizard() {
   const { refData, newWizard, setNewWizard } = useAppContext();
   const { userData, setUserData } = useAuth();
   const navigate = useNavigate();
+  const { loading, error } = useAppContext();
+  
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  
+  if (error) {
+    return <div>Error loading data</div>;
+  }
 
   const schoolList = refData.schoolsOfMagic.slice(1).map(school => (
     <option key={school.id} value={school.id}>{school.name}</option>
@@ -74,10 +91,10 @@ export function CreateNewWizard() {
     <div className="new-wizard-container">
         <h3>Create New Wizard</h3>
         <form onSubmit={handleSubmit} className='new-wizard-form'>
-          <NewWizardEdit />
-          {newWizard.stats.classId > 0 && <SpellSelection category='primary'/>}
-          {newWizard.stats.classId > 0 && <SpellSelection category='aligned'/>}
-          {newWizard.stats.classId > 0 && <SpellSelection category='neutral'/>}
+          <NewWizardEdit newWizard={newWizard} setNewWizard={setNewWizard} />
+          {newWizard.classId > 0 && <SpellSelection category='primary' newWizard={newWizard} setNewWizard={setNewWizard}/>}
+          {newWizard.classId > 0 && <SpellSelection category='aligned' newWizard={newWizard} setNewWizard={setNewWizard}/>}
+          {newWizard.classId > 0 && <SpellSelection category='neutral' newWizard={newWizard} setNewWizard={setNewWizard}/>}
           <section className='button-container center'>
             <Button type='cancel' onClick={handleCancel}>Cancel</Button>
             <Button type='submit'>Submit</Button>
@@ -96,7 +113,7 @@ function NewWizardEdit() {
     const updatedWizard = { ...newWizard };
     console.log(updatedWizard)
 
-    updatedWizard.stats.classId = selectedClassId;
+    updatedWizard.classId = selectedClassId;
 
     updatedWizard.primarySpellIds = [];
     updatedWizard.alignedSpellIds = [];
@@ -131,12 +148,12 @@ function NewWizardEdit() {
             size= "small"
             />
           <FormControl fullWidth sx={{ gap: 2, minWidth: 120}}>
-            <InputLabel id="class-label">Class</InputLabel>
+            <InputLabel id="class-label" >Class</InputLabel>
             <Select
               className='TextField'
               labelId="class-label"
               id="class-select"
-              value={newWizard.stats.classId}
+              value={newWizard.classId}
               label="Class"
               onChange={handleClassChange}
               size= "small"
@@ -150,12 +167,12 @@ function NewWizardEdit() {
   );
 }
 
-function SpellSelection({category}) {
-  const { refData, newWizard, currentWizard, setNewWizard } = useAppContext();
+function SpellSelection({category, newWizard, setNewWizard}) {
+  const { refData } = useAppContext();
   const [ selectedSpells, setSelectedSpells] = useState([])
   const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
-  const wizardClassId = newWizard.stats.classId
+  const wizardClassId = newWizard.classId
   const allSpellList = refData.spells;
 
   let schoolIdArray;

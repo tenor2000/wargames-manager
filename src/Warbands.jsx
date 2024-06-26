@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BasicStatCard  } from './BasicComponents.jsx';
+import { BasicStatCard, BasicAccordian } from './BasicComponents.jsx';
 import { getSchoolFromId, getRandomName } from './HelperFunctions.js';
 import { useAuth } from './AuthContext.jsx';
 import { useAppContext } from './AppContext.jsx';
@@ -8,6 +8,8 @@ import { CareerHistory } from './WarbandHistory.jsx';
 import { SpellBookBlock } from './WarbandSpellbook.jsx';
 import { SoldierRosterBlock, EditSoldiersView } from './WarbandSoldiers.jsx';
 import { ApprenticeView, WizardView } from './WarbandWizard.jsx';
+import { BaseView } from './WarbandBase.jsx';
+import { VaultView } from './WarbandVault.jsx';
 import { Accordion, AccordionDetails, AccordionSummary, Button, Box } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import Divider from '@mui/material/Divider';
@@ -99,16 +101,13 @@ export function WarbandSideDrawer() {
 
 function WarbandDash() {
     const { userData } = useAuth();
-    const { setNewWizard, refData } = useAppContext();
+    const { refData } = useAppContext();
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
     const navigate = useNavigate();
 
     const userWizards = userData.myWizards;
 
     function handleNewWizardClick() {
-        const starterWizard = {...refData.templates.wizard};
-        starterWizard.name = getRandomName(refData.nameGenerator.wizard);
-        setNewWizard(starterWizard);
         navigate('/new-wizard');
     }
     
@@ -161,73 +160,38 @@ function WarbandDetails() {
                     <Button onClick={handleWizardDeletion}>Retire Wizard</Button>
                 </Box>
             }
-            <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="wizard-stats" aria-controls="wizard-stats">
-                <h3>Wizard</h3>
-            </AccordionSummary>
-            <AccordionDetails className='center column'>
+
+            <BasicAccordian title={'Wizard'} >
                 <WizardView />
-            </AccordionDetails>
-            </Accordion>
+            </BasicAccordian>
 
-            <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="apprentice-stats" aria-controls="apprentice-stats">
-                    <h3>Apprentice</h3>
-                </AccordionSummary>
-                <AccordionDetails className='center column'>
-                    <ApprenticeView />
-                </AccordionDetails>
-            </Accordion>
+            <BasicAccordian title={'Apprentice'} >
+                <ApprenticeView />
+            </BasicAccordian>
 
-            <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="spell-book" aria-controls="spell-book-info">
-                    <h3>Spell Book</h3>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <SpellBookBlock/>
-                </AccordionDetails>
-            </Accordion>
+            <BasicAccordian title={'Spell Book'} >
+                <SpellBookBlock />
+            </BasicAccordian>
 
-            <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="hired-soldiers" aria-controls="hired-soldiers-info">
-                    <h3>Hired Soldiers</h3>
-                </AccordionSummary>
-                <AccordionDetails className='center column'>
-                    {Object.keys(currentWizard.soldiers).length > 0 && !editMode.soldiers && <SoldierRosterBlock/>}
-                    {Object.keys(currentWizard.soldiers).length === 0 && !editMode.soldiers && <p>There are no soldiers in {currentWizard.name}'s roster.</p>}
-                    {editMode.soldiers && <EditSoldiersView />}
-                    {!editMode.soldiers && <Button onClick={() => handleEditClick('soldiers')}>Edit Roster</Button>}
-                </AccordionDetails>
-            </Accordion>
+            <BasicAccordian title={'Soldiers'} >
+                {Object.keys(currentWizard.soldiers).length > 0 && !editMode.soldiers && <SoldierRosterBlock/>}
+                {Object.keys(currentWizard.soldiers).length === 0 && !editMode.soldiers && <p>There are no soldiers in {currentWizard.name}'s roster.</p>}
+                {editMode.soldiers && <EditSoldiersView />}
+                {!editMode.soldiers && <Button onClick={() => handleEditClick('soldiers')}>Edit Roster</Button>}
+            </BasicAccordian>
 
-            <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="vault" aria-controls="vault-info">
-                    <h3>Vault</h3>
-                </AccordionSummary>
-                <AccordionDetails className='center column'>
-                    <p>The Vault is where all treasure is stored</p>
-                    <p>Gold: {currentWizard.gold}</p>
-                    <p>XP: {currentWizard.xp}</p>
-                </AccordionDetails>
-            </Accordion>
+            <BasicAccordian title={'Vault'} >
+                <VaultView />
+            </BasicAccordian>
 
-            <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="base-of-operations" aria-controls="base-of-operations-info">
-                    <h3>Base of Operations</h3>
-                </AccordionSummary>
-                <AccordionDetails className='center column'>
-                    <p>Base of Operations Description</p>
-                </AccordionDetails>
-            </Accordion>
+            <BasicAccordian title={'Base of Operations'} >
+                <BaseView />
+            </BasicAccordian>
 
-            <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="base-of-operations" aria-controls="base-of-operations-info">
-                    <h3>Career History</h3>
-                </AccordionSummary>
-                <AccordionDetails className='center column'>
-                    <CareerHistory userData={userData}/>
-                </AccordionDetails>
-            </Accordion>
+            <BasicAccordian title={'Career History'} >
+                <CareerHistory userData={userData} />
+            </BasicAccordian>
+
             {isPortrait && 
                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                     

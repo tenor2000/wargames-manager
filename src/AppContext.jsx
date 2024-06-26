@@ -10,7 +10,7 @@ export function ContextProvider({ children }) {
     const [schoolFilterId, setSchoolFilterId] = useState(0);
     const [spellViewList, setSpellViewList] = useState(null);
     const [currentWizard, setCurrentWizard] = useState(null);
-    const [ newWizard, setNewWizard ] = useState(null);
+    const [newWizard, setNewWizard] = useState(null);
     const [refData, setRefData] = useState(null);
     const [ isSidebarVisible, setIsSidebarVisible ] = useState(false);
     const [ editMode, setEditMode ] = useState({'wizard': false, 
