@@ -99,6 +99,7 @@ function SoldierReference() {
             <BasicStatTableHeader
                 showClass={true}
                 showCosts={true}
+                showItemSlots={true}
                 showSource={true}
             >
                 {filteredList.map(soldier => (
@@ -118,6 +119,7 @@ function SoldierReference() {
                 key={`soldier-${soldier.id}`} 
                 statsObj = {soldier} 
                 showCosts={true}
+                showItemSlots={true}
             />
         ))
     }
@@ -166,7 +168,7 @@ function ArmsReference() {
                     {!isPortrait && <TableCell>{item.source}</TableCell>}
                 </TableRow>
                 {isPortrait && 
-                    <TableRow key={`${item.name}-${item.id}`}>
+                    <TableRow key={`${item.name}+${item.id}`}>
                          <TableCell colSpan={2}>{item.notes}</TableCell>
                     </TableRow>}
             </>
@@ -218,7 +220,7 @@ function ArmorReference() {
                     {!isPortrait && <TableCell>{item.source}</TableCell>}
                 </TableRow>
                 {isPortrait && 
-                    <TableRow key={`${item.name}-${item.id}`}>
+                    <TableRow key={`${item.name}+${item.id}`}>
                          <TableCell >{item.notes}</TableCell>
                     </TableRow>}
             </>

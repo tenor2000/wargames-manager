@@ -13,14 +13,31 @@ export function WizardView() {
     const wizardStats = {...currentWizard};
     wizardStats['class'] = getSchoolFromId(wizardStats.classId, refData).name;
 
+    const handleEdit =() => {
+        return null
+    }
+
+    const handleGainLevel = () => {
+        return null
+    }
+
+
     return (
         <>
-        {isPortrait && <BasicStatCard statsObj = {wizardStats} refData={refData} showLevel={true} showStatus={true} showClass={true}/>}
-        {!isPortrait && 
-            <BasicStatTableHeader showName={true} showClass={true} showLevel={true} showStatus={true} showItemSlots={true}>
-                <BasicStatTableRow statsObj = {wizardStats} refData={refData}/>
-            </BasicStatTableHeader>
-        }
+            {isPortrait && <BasicStatCard statsObj = {wizardStats} refData={refData} showLevel={true} showStatus={true} showClass={true}/>}
+            {!isPortrait && 
+                <BasicStatTableHeader showName={true} showClass={true} showLevel={true} showStatus={true} showItemSlots={true}>
+                    <BasicStatTableRow statsObj = {wizardStats} refData={refData}/>
+                </BasicStatTableHeader>
+            }
+            <Box sx={{width: '100%', textAlign: 'center' }}>
+                <p>Lifetime XP Earned: {currentWizard.xp + currentWizard.xpSpent}</p>
+                <p>Current XP: {currentWizard.xp}</p>
+                <p>Current Level: {currentWizard.level}</p>
+            </Box>
+            <Box sx={{width: '100%', textAlign: 'center' }}>
+                <Button onClick={() => window.location.href = '/apprentice'}>Apprentice</Button>
+            </Box>
         </>
     );
 }

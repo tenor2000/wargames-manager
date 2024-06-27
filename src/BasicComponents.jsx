@@ -1,9 +1,10 @@
 import React from 'react';
+import { useAppContext } from './AppContext.jsx';
 import { useState, Fragment } from 'react';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import { getStatusFromId, getSpellFromId, getItemFromId, modSign } from './HelperFunctions.js';
 import { Accordion, AccordionDetails, AccordionSummary, Box, TextField, InputAdornment, Button, useMediaQuery } from "@mui/material";
-import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
@@ -14,17 +15,25 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 
 export function BasicStatCard({ 
-                    statsObj, 
-                    refData, 
+                    statsObj,  
                     showCosts=false, 
                     showStatus=false, 
                     showItemSlots=false, 
                     showLevel=false, 
                     battleMode=false, 
-                    editMode=false }) 
-                  {  
+                    editMode=false }) {
+  const { refData } = useAppContext();
   const [ fullCard, setFullCard ] = useState(!battleMode);
   const [ currentHealth, setCurrentHealth ] = useState(statsObj.health);
+
+  // mainly used for references page, combines permanent items for soldiers with their one slot
+  let items = [];
+  if (!statsObj.itemSlots && statsObj.permItemSlots) {
+    items = [...statsObj.permItemSlots];
+  } else if (statsObj.itemSlots) {
+    items = [...statsObj.itemSlots];
+  }
+  // end
 
   function handleChange(type, max=statsObj.health) {
     if (type === '-') {
@@ -60,7 +69,7 @@ export function BasicStatCard({
                         </h3>
                       </Box>
                       {battleMode && (
-                        <Button onClick={() => setFullCard(!fullCard)}>
+                        <Button onClick={() => setFullCard(!fullCard)} sx={{ justifyContent:'right' }}>
                           {fullCard ? <MdExpandLess size= "2em"/> : <MdExpandMore size="2em"/>}
                         </Button>
                       )}
@@ -115,19 +124,23 @@ export function BasicStatCard({
                     <TableCell><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will'/>{modSign(statsObj.will)}</TableCell>
                     <TableCell><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Health'/>{statsObj.health}</TableCell>
                     </TableRow>
-                  { showItemSlots && 
+                  { showItemSlots && items.length > 0 &&
                     <TableRow>
-                      <TableCell colSpan={3} sx={{textAlign: 'left'}}>
-                        <h4>Slot items:</h4>
-                        {statsObj.itemSlots.map((itemId, index) => (
-                          <p key= {'Item' + index}>{itemId !== 0 ? getItemFromId(itemId, refData).name : ''}</p>
-                        ))}
+                      <TableCell colSpan={3} sx={{textAlign: 'center'}}>
+                        <p>
+                          {items
+                            .map((itemId) => itemId !== 0 ? getItemFromId(itemId, refData).name : null)
+                            .filter(itemName => itemName !== null)
+                            .join(', ')}
+                        </p>
                       </TableCell>
                     </TableRow>
                   }
-                  <TableRow>
-                    <TableCell colSpan={3}>{statsObj.notes}</TableCell>
-                  </TableRow>
+                  { statsObj.notes &&
+                    <TableRow>
+                      <TableCell colSpan={3}>{statsObj.notes}</TableCell>
+                    </TableRow>
+                  }
                 </>
               } 
             </TableBody>
@@ -138,7 +151,7 @@ export function BasicStatCard({
   )
 }
 
-export function BasicStatTableHeader({children, showName=false, showClass = false, showCosts=false, showStatus=false, showItemSlots=false, showLevel=false, showSource=false, showDamage=false }) {
+export function BasicStatTableHeader({children, showName=false, showClass = false, showCosts=false, showStatus=false, showItemSlots=false, showLevel=false, showSource=false, showDamage=false, editMode=false, cloning=true }) {
   const clonedChildren = React.Children.map(children, child => {
     if (React.isValidElement(child)) {
       return React.cloneElement(child, {
@@ -150,7 +163,8 @@ export function BasicStatTableHeader({children, showName=false, showClass = fals
         showItemSlots,
         showLevel,
         showSource,
-        showDamage
+        showDamage,
+        editMode
       });
     }
     return child;
@@ -175,10 +189,11 @@ export function BasicStatTableHeader({children, showName=false, showClass = fals
               {showStatus && <TableCell>Status</TableCell>}
               {showCosts && <TableCell>Cost</TableCell>}
               {showSource && <TableCell>Source</TableCell>}
+              {editMode && <TableCell>Action</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
-            {clonedChildren}
+            {cloning ? clonedChildren: children}
           </TableBody>
         </Table>
       </TableContainer>
@@ -186,10 +201,12 @@ export function BasicStatTableHeader({children, showName=false, showClass = fals
   )
 }
 
-export function BasicStatTableRow({statsObj, refData, showName, showCosts, showStatus, showItemSlots, showLevel, showSource, showClass, showDamage }) {
-  const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
-  const [ currentHealth, setCurrentHealth ] = useState(statsObj.health);
 
+
+export function BasicStatTableRow({statsObj, showName, showCosts, showStatus, showItemSlots, showLevel, showSource, showClass, showDamage, editMode }) {
+  const { refData } = useAppContext();
+  const [ currentHealth, setCurrentHealth ] = useState(statsObj.health);
+  
   function handleChange(type, max=statsObj.health) {
     if (type === '-') {
       if (currentHealth > 0) {
@@ -200,6 +217,13 @@ export function BasicStatTableRow({statsObj, refData, showName, showCosts, showS
         setCurrentHealth(currentHealth + 1);
       }
     }
+  }
+  // used in references page
+  let items = [];
+  if (!statsObj.itemSlots && statsObj.permItemSlots) {
+    items = [...statsObj.permItemSlots];
+  } else if (statsObj.itemSlots) {
+    items = [...statsObj.itemSlots];
   }
 
   return (
@@ -216,21 +240,37 @@ export function BasicStatTableRow({statsObj, refData, showName, showCosts, showS
       {showDamage && <TableCell sx={{textAlign: 'center'}}><HealthCounter statsObj={statsObj} currentHealth={currentHealth} handleChange={handleChange}/></TableCell>}
       {showItemSlots && 
         <TableCell sx={{textAlign: 'left'}}>
-          {statsObj.itemSlots.map((itemId, index) => (
-            <p key= {'Item' + index}>{itemId !== 0 ? getItemFromId(itemId, refData).name : ''}</p>
-          ))}
+          <p>
+            {items
+              .map((itemId) => itemId !== 0 ? getItemFromId(itemId, refData).name : null)
+              .filter(itemName => itemName !== null)
+              .join(', ')
+            }
+          </p>
         </TableCell>
+        
       }
-      <TableCell>{statsObj.notes}</TableCell>
+      <TableCell>
+        {showItemSlots && statsObj.notes ?
+          <Tooltip title={statsObj.notes}>
+            <img
+                src="src/assets/Game-Icons-net/stabbed-note.svg"
+                className="stat-icon"
+                alt="Notes Icon"
+            />
+          </Tooltip> :
+        statsObj.notes}
+      </TableCell>
       {showStatus && <TableCell><DisplayStatus statsObj={statsObj} refData={refData} /></TableCell>}
-      {showCosts && <TableCell>{showCosts && `${statsObj.cost > 0 ? `${statsObj.cost} gc` : 'Free'}`}</TableCell>}
-      {!isPortrait && showSource && <TableCell>{statsObj.source}</TableCell>}
+      {showCosts && <TableCell>{showCosts && `${statsObj.cost > 0 ? `${statsObj.cost}gc` : 'Free'}`}</TableCell>}
+      {showSource && <TableCell>{statsObj.source}</TableCell>}
     </TableRow>
   )
 }
 
 export function BasicSpellCard({spellId, refData, titlebar=true, castnum=false, spellSchoolMod=false}) {
   const spellViewObj = getSpellFromId(spellId, refData)
+  const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
   return (
     <Paper sx={{ width: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden'}}>
@@ -238,18 +278,25 @@ export function BasicSpellCard({spellId, refData, titlebar=true, castnum=false, 
         <TableHead >
             {titlebar && 
             <TableRow>
-             <TableCell colSpan={castnum ? 4 : 3} sx={{ textAlign: 'center'}}>
+             <TableCell colSpan={castnum ? 4 : 3} sx={{ textAlign: 'center', flex: 1}}>
               <h2>{spellViewObj.name ? spellViewObj.name : '--'}</h2>
             </TableCell>
           </TableRow>}
         </TableHead>
-        <TableBody sx={{ '& td': { textAlign: 'center' } }}>
+        <TableBody sx={{ '& td': { textAlign: 'center', flex: 1 } }}>
           <TableRow>
-            <TableCell>{spellViewObj.school}</TableCell>
-            {castnum && <TableCell>Cast Number: {castnum}</TableCell>}
-            <TableCell>Base Cast: {spellViewObj.base_cast} {spellSchoolMod ? `(+${spellSchoolMod})` : ''}</TableCell>
-            <TableCell>{spellViewObj.category}</TableCell>
+            <TableCell sx={{ flex: 1 }}>{spellViewObj.school}</TableCell>
+            {castnum && !isPortrait && <TableCell sx={{ flex: 1 }}>Cast Number: {castnum}</TableCell>}
+            {!isPortrait && <TableCell sx={{ flex: 1 }}>Base Cast: {spellViewObj.base_cast} {spellSchoolMod ? `(+${spellSchoolMod})` : ''}</TableCell>}
+            {isPortrait && !castnum &&<TableCell sx={{ flex: 1 }}>Base Cast: {spellViewObj.base_cast} {spellSchoolMod ? `(+${spellSchoolMod})` : ''}</TableCell>}
+            <TableCell sx={{ flex: 1 }}>{spellViewObj.category}</TableCell>
           </TableRow>
+          {isPortrait && castnum && 
+            <TableRow>
+              <TableCell sx={{ flex: 1 }}>Cast Number: {castnum}</TableCell>
+              <TableCell sx={{ flex: 1 }}>Base Cast: {spellViewObj.base_cast} {spellSchoolMod ? `(+${spellSchoolMod})` : ''}</TableCell>
+            </TableRow>
+          }
           <TableRow className='spellbook-description'>
             <TableCell colSpan={castnum ? 4 : 3}>{spellViewObj.description}</TableCell>
           </TableRow>
@@ -353,7 +400,7 @@ export function HealthCounter({statsObj, currentHealth, handleChange}) {
               sx={{ 
                 display: 'flex', 
                 alignItems: 'center', 
-                justifyContent: 'center', 
+                justifyContent: 'right', 
                 width: '100%' 
               }}
             >
@@ -383,7 +430,7 @@ export function HealthCounter({statsObj, currentHealth, handleChange}) {
       <Box sx={{ 
                 display: 'flex', 
                 alignItems: 'center', 
-                justifyContent: 'center', 
+                justifyContent: 'right', 
                 width: '100%' 
               }}
       >
