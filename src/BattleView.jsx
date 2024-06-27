@@ -9,10 +9,11 @@ import { SpellBookBlock } from './WarbandSpellbook.jsx';
 import { Box, Button } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 
-export function BattleView() {
+export function BattleView({handleView}) {
     const navigate = useNavigate();
     const { userData } = useAuth();
     const { refData, currentWizard, loading, error } = useAppContext();
+    
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
     if (loading) {
@@ -27,23 +28,30 @@ export function BattleView() {
         <>
             <h2>Battle View</h2>
             <BasicAccordian title="Roster" >
-                {!isPortrait && <BattleTable refData={refData} currentWizard={currentWizard} />}
-                {isPortrait && <BattleCardView refData={refData} currentWizard={currentWizard} />}
+                {!isPortrait && <RosterTableView refData={refData} currentWizard={currentWizard} />}
+                {isPortrait && <RosterCardView refData={refData} currentWizard={currentWizard} />}
             </BasicAccordian>
             <BasicAccordian title="Spell Book" >
                 <SpellBookBlock />
             </BasicAccordian>
+            <BasicAccordian title="Creatures" >
+                <CreatureRosterBlock />
+            </BasicAccordian>
+            <BasicAccordian title="Opponent's Warband" >
+                <OpponentRosterBlock />
+            </BasicAccordian>
             <BasicAccordian title="Toolbox" >
                 <ToolBox refData={refData} currentWizard={currentWizard} />
             </BasicAccordian>
+            <Button onClick={() => handleView('report')}>End Battle</Button>
         </>
     );
 }
 
-function BattleTable({refData, currentWizard}) {
+function RosterTableView({refData, currentWizard}) {
 
     if (!currentWizard) {
-        return null;
+        return <b>You must select a wizard</b>;
     }
 
     const wizardStats = {...currentWizard};
@@ -67,7 +75,7 @@ function BattleTable({refData, currentWizard}) {
     );
 }
 
-function BattleCardView({refData, currentWizard}) {
+function RosterCardView({refData, currentWizard}) {
 
     if (!currentWizard) {
         return null;
@@ -90,6 +98,14 @@ function BattleCardView({refData, currentWizard}) {
             ))}
         </>
     );
+}
+
+function CreatureRosterBlock() {
+    return "Coming Soon..."
+}
+
+function OpponentRosterBlock() {
+    return "Coming Soon..."
 }
 
 function ToolBox({refData, currentWizard}) {
@@ -177,3 +193,4 @@ function ToolBox({refData, currentWizard}) {
         </>
     );
 }
+
