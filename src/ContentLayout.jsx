@@ -81,6 +81,7 @@ export function MenuBar() {
             <Route path="/warbands" element={<MobileNavHelper page = 'warbands'/>} />
             <Route path="/campaigns" element='Campaigns' />
             <Route path="/new-wizard" element='Create New Wizard' />
+            <Route path="/battleview" element='Campaigns' />
             <Route path="/login" element='Log In' />
             {/* Add routes for other sidedrawer items */}
         </Routes>
@@ -256,7 +257,6 @@ export function SideBar () {
           <Route path="/reference" element={<ReferenceSideDrawer />} />
           <Route path="/new-wizard" element={<NewWizardSideDrawer />} />
           <Route path="/login" element={<LoginSideDrawer />} />
-          <Route path="/battleview" element={<CampaignSideDrawer />} />
           {/* Add routes for other sidebar items */}
       </Routes>
     </div>
@@ -282,7 +282,6 @@ export function ContentArea() {
             <Route path="/campaigns" element={<CampaignView />} />
             <Route path="/new-wizard" element={<CreateNewWizard />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/battleview" element={<BattleView />} />
             {/* Add routes for other pages */}
           </Routes>
         </div>
