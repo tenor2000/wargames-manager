@@ -4,7 +4,7 @@ import { useState, Fragment } from 'react';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import { getStatusFromId, getSpellFromId, getItemFromId, modSign } from './HelperFunctions.js';
 import { Accordion, AccordionDetails, AccordionSummary, Box, TextField, InputAdornment, Button, useMediaQuery } from "@mui/material";
-import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material';
+import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableFooter, TableRow, Tooltip } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
@@ -152,6 +152,9 @@ export function BasicStatCard({
 }
 
 export function BasicStatTableHeader({children, showName=false, showClass = false, showCosts=false, showStatus=false, showItemSlots=false, showLevel=false, showSource=false, showDamage=false, editMode=false, cloning=true }) {
+  // const [order, setOrder] = useState('asc');
+  // const [orderBy, setOrderBy] = useState('name');
+  
   const clonedChildren = React.Children.map(children, child => {
     if (React.isValidElement(child)) {
       return React.cloneElement(child, {
@@ -169,14 +172,46 @@ export function BasicStatTableHeader({children, showName=false, showClass = fals
     }
     return child;
   })
+
+  // const handleRequestSort = (property) => {
+  //   const isAsc = orderBy === property && order === 'asc';
+  //   setOrder(isAsc ? 'desc' : 'asc');
+  //   setOrderBy(property);
+  // };
+
+    // data needs to be defined maybe thorugh a useState outside of this function to coordinate the tablerows
+  // const sortedData = data.sort((a, b) => {
+  //   if (a[orderBy] < b[orderBy]) return order === 'asc' ? -1 : 1;
+  //   if (a[orderBy] > b[orderBy]) return order === 'asc' ? 1 : -1;
+  //   return 0;
+  // });
+
   return (
     <Paper className="generic-paper" sx={{ width: '100%', overflow: 'hidden'}}>
       <TableContainer sx={{ maxHeight: 640 }}>
         <Table stickyHeader aria-label="sticky table" size="small">
           <TableHead >
             <TableRow>
-              {showName && <TableCell>Name</TableCell>}
-              {showClass && <TableCell>Class</TableCell>}
+              {showName && 
+                <TableCell>
+                  {/* <TableSortLabel
+                    active={orderBy === 'name'}
+                    direction={orderBy === 'name' ? order : 'asc'}
+                    onClick={() => handleRequestSort('name')}
+                  > */}
+                    Name
+                  {/* </TableSortLabel> */}
+                </TableCell>}
+              {showClass && 
+                <TableCell>
+                  {/* <TableSortLabel
+                    active={orderBy === 'class'}
+                    direction={orderBy === 'class' ? order : 'asc'}
+                    onClick={() => handleRequestSort('class')}
+                  > */}
+                    Class
+                  {/* </TableSortLabel> */}
+                </TableCell>}
               {showLevel && <TableCell>Level</TableCell>}
               <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move'/></TableCell>
               <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/axe-sword.svg' className="stat-icon" alt='Fight'/></TableCell>
@@ -241,10 +276,11 @@ export function BasicStatTableRow({statsObj, showName, showCosts, showStatus, sh
       {showItemSlots && 
         <TableCell sx={{textAlign: 'left'}}>
           <p>
-            {items
-              .map((itemId) => itemId !== 0 ? getItemFromId(itemId, refData).name : null)
-              .filter(itemName => itemName !== null)
-              .join(', ')
+            { 
+              items
+                .map((itemId) => itemId !== 0 ? getItemFromId(itemId, refData).name : null)
+                .filter(itemName => itemName !== null)
+                .join(', ')
             }
           </p>
         </TableCell>
@@ -272,33 +308,80 @@ export function BasicSpellCard({spellId, refData, titlebar=true, castnum=false, 
   const spellViewObj = getSpellFromId(spellId, refData)
   const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
+  if (isPortrait) {
+    return (
+      <Paper sx={{ width: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden'}}>
+        <Table >
+          <TableHead >
+              {titlebar && 
+                <TableRow>
+                <TableCell colSpan={castnum ? 4 : 3} sx={{ textAlign: 'center'}}>
+                  <h2>{spellViewObj.name}</h2>
+                </TableCell>
+              </TableRow>}
+              {!titlebar &&
+                <TableRow>
+                  <TableCell colSpan={castnum ? 4 : 3} sx={{ textAlign: 'center'}}>
+                    <h3>School: {spellViewObj.school}</h3>
+                  </TableCell>
+                </TableRow>
+              }
+          </TableHead>
+          <TableBody sx={{ '& td': { textAlign: 'center', flex: 1 } }}>
+            <TableRow>
+              {titlebar && <TableCell sx={{ width: '50%' }}>{spellViewObj.school}</TableCell>}
+              {!castnum && <TableCell sx={{ width: '50%'}}>Base Cast: {spellViewObj.base_cast} {spellSchoolMod ? `(+${spellSchoolMod})` : ''}</TableCell>}
+              <TableCell sx={{ width: '50%' }}>{spellViewObj.category}</TableCell>
+            </TableRow>
+            {castnum && 
+              <TableRow>
+                <TableCell sx={{ width: '50%' }}>Cast Number: {castnum}</TableCell>
+                <TableCell sx={{ width: '50%' }}>Base Cast: {spellViewObj.base_cast} {spellSchoolMod ? `(+${spellSchoolMod})` : ''}</TableCell>
+              </TableRow>
+            }
+            <TableRow>
+              <TableCell colSpan={castnum ? 2 : 3}>{spellViewObj.description}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </Paper>
+    );
+  }
+
   return (
     <Paper sx={{ width: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden'}}>
-      <Table >
+      <Table size='small' >
         <TableHead >
-            {titlebar && 
+          {titlebar && 
             <TableRow>
-             <TableCell colSpan={castnum ? 4 : 3} sx={{ textAlign: 'center', flex: 1}}>
-              <h2>{spellViewObj.name ? spellViewObj.name : '--'}</h2>
-            </TableCell>
-          </TableRow>}
-        </TableHead>
-        <TableBody sx={{ '& td': { textAlign: 'center', flex: 1 } }}>
-          <TableRow>
-            <TableCell sx={{ flex: 1 }}>{spellViewObj.school}</TableCell>
-            {castnum && !isPortrait && <TableCell sx={{ flex: 1 }}>Cast Number: {castnum}</TableCell>}
-            {!isPortrait && <TableCell sx={{ flex: 1 }}>Base Cast: {spellViewObj.base_cast} {spellSchoolMod ? `(+${spellSchoolMod})` : ''}</TableCell>}
-            {isPortrait && !castnum &&<TableCell sx={{ flex: 1 }}>Base Cast: {spellViewObj.base_cast} {spellSchoolMod ? `(+${spellSchoolMod})` : ''}</TableCell>}
-            <TableCell sx={{ flex: 1 }}>{spellViewObj.category}</TableCell>
-          </TableRow>
-          {isPortrait && castnum && 
-            <TableRow>
-              <TableCell sx={{ flex: 1 }}>Cast Number: {castnum}</TableCell>
-              <TableCell sx={{ flex: 1 }}>Base Cast: {spellViewObj.base_cast} {spellSchoolMod ? `(+${spellSchoolMod})` : ''}</TableCell>
+              <TableCell sx={{ textAlign: 'center', width: '25%'}}>
+                <h2>{spellViewObj.name ? spellViewObj.name : '--'}</h2>
+              </TableCell>
+              <TableCell sx={{ textAlign: 'center', width: '75%'}}>Description</TableCell>
             </TableRow>
           }
-          <TableRow className='spellbook-description'>
-            <TableCell colSpan={castnum ? 4 : 3}>{spellViewObj.description}</TableCell>
+          {!titlebar && 
+            <TableRow>
+              <TableCell sx={{ textAlign: 'center', width: '25%'}}></TableCell>
+              <TableCell sx={{ textAlign: 'center', width: '75%'}}>Description</TableCell>
+            </TableRow>
+          }
+        </TableHead>
+        <TableBody sx={{ '& td': { textAlign: 'left'} }}>
+          <TableRow>
+            <TableCell sx={{ width: '25%' }}>School: {spellViewObj.school}</TableCell>
+            <TableCell rowSpan={4} sx={{ width: '75%' }}>{spellViewObj.description}</TableCell>
+          </TableRow>
+          {castnum && 
+            <TableRow>
+              <TableCell >Cast Number: {castnum}</TableCell>
+            </TableRow>
+          }
+          <TableRow>
+            <TableCell >Base Cast: {spellViewObj.base_cast} {spellSchoolMod ? `(+${spellSchoolMod})` : ''}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell >Category: {spellViewObj.category}</TableCell>
           </TableRow>
         </TableBody>
       </Table>
