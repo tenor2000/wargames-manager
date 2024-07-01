@@ -18,8 +18,11 @@ import './styles/Warbands.css';
 
 
 export function WarbandView() {
-    const { currentWizard } = useAppContext();
-    const { loading, error } = useAppContext();
+    const { userData } = useAuth();
+    const { currentWizard, setNewWizard } = useAppContext();
+    const { loading, error, refData } = useAppContext();
+    const navigate = useNavigate();
+    const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
     if (loading) {
         return <div>Loading...</div>;
@@ -29,11 +32,39 @@ export function WarbandView() {
     return <div>Error loading data</div>;
     }
 
+    const userWizards = userData.myWizards;
+
+    function handleNewWizardClick() {
+        const newName = getRandomName(refData.nameGenerator.wizard);
+        console.log(newName)
+        const updatedWizards = { ...refData.templates.wizard, name: newName };
+        setNewWizard(updatedWizards);
+        navigate('/new-wizard');
+    }
+
     return (
-        <div className="warband-view">
-            {!currentWizard && <WarbandDash />}
+        <>
+            {!currentWizard && 
+                <>
+                    <Box className ='center column' style={{width: '100%'}}>
+                        <div>
+                            {!isPortrait && <h2>Warband Manager</h2>}
+                        </div>
+                        <div>
+                            <p>Here you can edit, create, and delete your warbands.</p>
+                            <p>Here are some of your warband statistics:</p>
+                            <p>Total Wizards: {userWizards.length}</p>
+                            <p>Total Level Gained: {userWizards.reduce((total, wizard) => total + wizard.level, 0)}</p>
+                            <p>Total XP Gained: {userWizards.reduce((total, wizard) => total + wizard.xp + wizard.xpSpent, 0)}</p>
+                            <p>Total Soldiers Lost: {userWizards.reduce((total, wizard) => total + wizard.soldiersLost, 0)}</p>
+                        </div>
+                        <div className="button-container center">
+                            <Button onClick={handleNewWizardClick}>Start New Wizard</Button>
+                        </div>
+                    </Box>
+                </>}
             {currentWizard && <WarbandDetails />}
-        </div>
+        </>
     );
 }
 
@@ -74,7 +105,10 @@ export function WarbandSideDrawer() {
     }
 
     function handleNewWizardClick() {
-        setNewWizard(refData.templates.wizard);
+        const newName = getRandomName(refData.nameGenerator.wizard);
+        console.log(newName)
+        const updatedWizards = { ...refData.templates.wizard, name: newName };
+        setNewWizard(updatedWizards);
         navigate('/new-wizard');
     }
 
@@ -93,39 +127,6 @@ export function WarbandSideDrawer() {
             <Button onClick={() => handleNewWizardClick()}>
                 + New Wizard
             </Button>
-            </div>
-        </div>
-    );
-}
-
-
-function WarbandDash() {
-    const { userData } = useAuth();
-    const { refData } = useAppContext();
-    const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
-    const navigate = useNavigate();
-
-    const userWizards = userData.myWizards;
-
-    function handleNewWizardClick() {
-        navigate('/new-wizard');
-    }
-    
-    return (
-        <div className ='center column' style={{width: '100%'}}>
-            <div>
-                {!isPortrait && <h2>Warband Manager</h2>}
-            </div>
-            <div>
-                <p>Here you can edit, create, and delete your warbands.</p>
-                <p>Here are some of your warband statistics:</p>
-                <p>Total Wizards: {userWizards.length}</p>
-                <p>Total Level Gained: {userWizards.reduce((total, wizard) => total + wizard.level, 0)}</p>
-                <p>Total XP Gained: {userWizards.reduce((total, wizard) => total + wizard.xp + wizard.xpSpent, 0)}</p>
-                <p>Total Soldiers Lost: {userWizards.reduce((total, wizard) => total + wizard.soldiersLost, 0)}</p>
-            </div>
-            <div className="button-container center">
-                <Button onClick={handleNewWizardClick}>Start New Wizard</Button>
             </div>
         </div>
     );

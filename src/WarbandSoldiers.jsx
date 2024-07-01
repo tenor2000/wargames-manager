@@ -91,6 +91,11 @@ export function EditSoldiersView() {
             alert('Not enough gold')
             return
         }
+        const totalSpecialists = editedWizard.soldiers.filter(soldier => getSoldierFromId(soldier.classId, refData).type === 'Specialist' && soldier.status !== 8);
+        if (totalSpecialists.length > 4) {
+            alert('Too many specialists')
+            return
+        }
 
         // POST request to update the soldier roster
         updateWizard.soldiers.forEach((soldier) => {
@@ -118,10 +123,6 @@ export function EditSoldiersView() {
     }
 
     const handleNameChange = (index, newName) => {
-        // const updateWizard = {...editedWizard};
-        // updateWizard.soldiers[index].name = newName
-        // setEditedWizard(updateWizard)
-
         const updatedSoldiers = editedWizard.soldiers.map((soldier, i) => {
             if (i === index) {
                 return { ...soldier, name: newName };
@@ -132,14 +133,6 @@ export function EditSoldiersView() {
     }
 
     const handleClassChange = (soldier, newClassId) => {
-        // soldierRoster = soldierRoster.map((mySoldier) => {
-        //     if (mySoldier.name === soldier.name) {
-        //         mySoldier.id = parseInt(newClassId);
-        //     }
-        //     return mySoldier
-        // })
-        // setEditedWizard(soldierRoster)
-
         const updatedSoldiers = editedWizard.soldiers.map((mySoldier) => {
             if (mySoldier.name === soldier.name) {
                 return { ...mySoldier, classId: parseInt(newClassId) };
@@ -179,34 +172,34 @@ export function EditSoldiersView() {
     }
 
     const ShowCost = ({soldier}) => {
-        if (soldier.status === 7) {
-            return <b style={{color: 'red'}}>{soldier.cost === 0 ? 'Free' : `${soldier.cost} gc`}</b>
-        } else if (soldier.status === 8) {
-            return <b style={{color: 'green'}}>{soldier.cost === 0 ? 'Free' : `${soldier.cost} gc`}</b>
-        } else {
-            return <b>--</b>
+        switch (soldier.status) {
+            case 7: // 7 = 'Hired'
+                return <b style={{color: 'red'}}>{soldier.cost === 0 ? 'Free' : `${soldier.cost}gc`}</b>
+            case 8: // 8 = 'For Hire'
+                return <b style={{color: 'green'}}>{soldier.cost === 0 ? 'Free' : `${soldier.cost}gc`}</b>
+            default:
+                return <b>--</b>
         }
     }
 
     const ShowAction = ({soldier}) => {
-        if (soldier.status === 0) {
-            return <Button onClick={() => handleRemove(soldier)}><b style={{color: 'red'}}>Dump</b></Button>
-        } else if (soldier.status === 8) {
-            return <Button onClick={() => handleHire(soldier)}><b style={{color: 'green'}}>Hire</b></Button>;
-        } else if (soldier.status === 7) {
-            return <Button onClick={() => handleRemove(soldier)}><b style={{color: 'grey'}}>Remove</b></Button>;
-        } else {
-            return <Button onClick={() => handleRemove(soldier)}><b style={{color: 'red'}}>Fire</b></Button>;
+        switch (soldier.status) {
+            case 0: // 0 = 'Dead'
+                return <Button onClick={() => handleRemove(soldier)}><b style={{color: 'red'}}>Dump</b></Button>
+            case 7: // 7 = 'Hired'
+                return <Button onClick={() => handleRemove(soldier)}><b style={{color: 'grey'}}>Remove</b></Button>;
+            case 8: // 8 = 'For Hire'
+                return <Button onClick={() => handleHire(soldier)}><b style={{color: 'green'}}>Hire</b></Button>;
+            default:
+                return <Button onClick={() => handleRemove(soldier)}><b style={{color: 'red'}}>Fire</b></Button>;
         }
     }
 
     function ShowClassSelections({soldier}) {
         const handleChange = (e) => {
-            console.log(e.target.value)
             handleClassChange(soldier, e.target.value);
         };
 
-        console.log(soldier.id)
         return (
             <>
                 <select 
@@ -246,91 +239,95 @@ export function EditSoldiersView() {
     }
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-            <h3>Edit Roster</h3>
-            <BasicStatTableHeader 
-                showName={true} 
-                showClass={true} 
-                showStatus={true} 
-                showItemSlots={true}
-                showCosts={true}
-                editMode={true}
-                cloning={false}
-            >
-                {formSoldierStats(editedWizard.soldiers, refData).map((soldier, index) => {
-                    let items = []
-                    soldier.itemSlots.forEach((itemId) => {
-                        const item = getItemFromId(itemId, refData)
-                        if (item) {
-                            items.push(getItemFromId(itemId, refData).name)
-                        }
-                    })
-                    
-                    return (
-                        <TableRow key={`soldier-${index}`}>
-                            <TableCell>
-                                <TextField
-                                    value={soldier.name} 
-                                    onChange={(e) => handleNameChange(index, e.target.value)}
-                                    variant='standard' 
-                                    sx={{
-                                        '& .MuiInputBase-input': {
-                                            color: 'white', 
-                                            fontSize: '16px', 
-                                            fontWeight: 'bold', 
-                                            minWidth: '100px',
-                                            width: '10vw',
-                                        }
-                                    }}
-                                    />
-                            </TableCell>
-                            <TableCell>{soldier.status === 8 ? <ShowClassSelections soldier={soldier} soldierRoster={soldierRoster}/> : soldier.class}</TableCell>
-                            <TableCell sx={{textAlign: 'center'}}>{soldier.move}</TableCell>
-                            <TableCell sx={{textAlign: 'center'}}>{modSign(soldier.fight)}</TableCell>
-                            <TableCell sx={{textAlign: 'center'}}>{modSign(soldier.shoot)}</TableCell>
-                            <TableCell sx={{textAlign: 'center'}}>{soldier.armor}</TableCell>
-                            <TableCell sx={{textAlign: 'center'}}>{modSign(soldier.will)}</TableCell>
-                            <TableCell sx={{textAlign: 'center'}}>{soldier.health}</TableCell>
-                            <TableCell sx={{textAlign: 'center'}}>
-                                {soldier.itemSlots.length > 0 ?
-                                    <Tooltip title={items.join(', ')}>
-                                        <img
-                                            src="src/assets/Game-Icons-net/stabbed-note.svg"
-                                            className="stat-icon"
-                                            alt="Notes Icon"
+        <>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <h3>Edit Roster</h3>
+                <BasicStatTableHeader 
+                    showName={true} 
+                    showClass={true} 
+                    showStatus={true} 
+                    showItemSlots={true}
+                    showCosts={true}
+                    editMode={true}
+                    cloning={false}
+                >
+                    {formSoldierStats(editedWizard.soldiers, refData).map((soldier, index) => {
+                        let items = []
+                        soldier.itemSlots.forEach((itemId) => {
+                            const item = getItemFromId(itemId, refData)
+                            if (item) {
+                                items.push(getItemFromId(itemId, refData).name)
+                            }
+                        })
+                        
+                        return (
+                            <TableRow key={`soldier-${index}`}>
+                                <TableCell>
+                                    <TextField
+                                        value={soldier.name} 
+                                        onChange={(e) => handleNameChange(index, e.target.value)}
+                                        variant='standard' 
+                                        sx={{
+                                            '& .MuiInputBase-input': {
+                                                color: 'white', 
+                                                fontSize: '16px', 
+                                                fontWeight: 'bold', 
+                                                minWidth: '100px',
+                                                width: '10vw',
+                                            }
+                                        }}
                                         />
-                                    </Tooltip>
-                                    :
-                                    '--'
-                                }   
-                            </TableCell>
-                            <TableCell>
-                                <Tooltip title={soldier.notes ? soldier.notes : '--'} placement="top">
-                                    <img
-                                        src="src/assets/Game-Icons-net/stabbed-note.svg"
-                                        className="stat-icon"
-                                        alt="Notes Icon"
-                                    />
-                                </Tooltip>
-                            </TableCell>
-                            <TableCell><DisplayStatus statsObj={soldier} refData={refData} /></TableCell>
-                            <TableCell><ShowCost soldier={soldier} /></TableCell>
-                            <TableCell><ShowAction soldier={soldier} /></TableCell>
-                        </TableRow>
+                                </TableCell>
+                                <TableCell>{soldier.status === 8 ? <ShowClassSelections soldier={soldier} soldierRoster={soldierRoster}/> : soldier.class}</TableCell>
+                                <TableCell sx={{textAlign: 'center'}}>{soldier.move}</TableCell>
+                                <TableCell sx={{textAlign: 'center'}}>{modSign(soldier.fight)}</TableCell>
+                                <TableCell sx={{textAlign: 'center'}}>{modSign(soldier.shoot)}</TableCell>
+                                <TableCell sx={{textAlign: 'center'}}>{soldier.armor}</TableCell>
+                                <TableCell sx={{textAlign: 'center'}}>{modSign(soldier.will)}</TableCell>
+                                <TableCell sx={{textAlign: 'center'}}>{soldier.health}</TableCell>
+                                <TableCell sx={{textAlign: 'center'}}>
+                                    {items.length > 0 ?
+                                        <Tooltip title={items.join(', ')}>
+                                            <img
+                                                src="src/assets/Game-Icons-net/stabbed-note.svg"
+                                                className="stat-icon"
+                                                alt="Notes Icon"
+                                            />
+                                        </Tooltip>
+                                        :
+                                        '--'
+                                    }   
+                                </TableCell>
+                                <TableCell>
+                                    {soldier.notes ?
+                                        <Tooltip title={soldier.notes ? soldier.notes : '--'} placement="top">
+                                            <img
+                                                src="src/assets/Game-Icons-net/stabbed-note.svg"
+                                                className="stat-icon"
+                                                alt="Notes Icon"
+                                            />
+                                        </Tooltip>
+                                        :
+                                        '--'
+                                    }
+                                </TableCell>
+                                <TableCell><DisplayStatus statsObj={soldier} refData={refData} /></TableCell>
+                                <TableCell><ShowCost soldier={soldier} /></TableCell>
+                                <TableCell><ShowAction soldier={soldier} /></TableCell>
+                            </TableRow>
+                        )}
                     )}
-                )}
-                <TableRow>
-                    <TableCell colSpan="12" sx={{textAlign: 'center'}}>
-                        <ResourceTally/>
-                    </TableCell>
-                </TableRow>
-                <TableRow>
-                    <TableCell colSpan="12" sx={{textAlign: 'center'}}>
-                        <Button onClick={handleCancel}>Cancel</Button>
-                        <Button onClick={handleSave}>Save</Button>
-                    </TableCell>
-                </TableRow>
-            </BasicStatTableHeader>
-        </Box>
+                    <TableRow>
+                        <TableCell colSpan="13" sx={{textAlign: 'center'}}>
+                            <ResourceTally/>
+                        </TableCell>
+                    </TableRow>
+                </BasicStatTableHeader>
+            </Box>
+            <Box sx={{textAlign: 'center'}}>
+                <Button onClick={handleCancel}>Cancel</Button>
+                <Button onClick={handleSave}>Save</Button>
+            </Box>
+        </>
     )
 }

@@ -59,7 +59,7 @@ export function getMyWizardFromId(wizardId, userData) {
 
 export function getSchoolFromSpellId(spellId, refData) {
   if (!refData || !refData.schoolsOfMagic) {
-    return { name: 'Unknown' }; // Default or fallback value
+    return { name: 'Unknown' };
   }
 
   const schoolId = Math.floor(spellId / 100)

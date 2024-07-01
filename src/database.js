@@ -150,13 +150,84 @@ export const userInfoData = {
             careerHistory: []
         },
     ],
+    myCampaigns: [
+        {
+            id: 1,
+            name: 'Return of the Wizard',
+            wizardId: 1,
+            scenarios: [
+                { 
+                    id: 1, 
+                    scenarioId: 101, 
+                    opponents: [{ playerId: 1 }],
+                    completionStatus: 'complete',
+                    createDate: '2023-04-01T00:00:00.000Z',
+                    completeDate: '2023-04-08T00:00:00.000Z'
+                },
+                { 
+                    id: 2, 
+                    scenarioId: 102, 
+                    opponents: [{ playerId: 1 }],
+                    completionStatus: 'complete',
+                    createDate: '2023-04-01T00:00:00.000Z',
+                    completeDate: '2023-04-08T00:00:00.000Z'
+                },
+                { 
+                    id: 3, 
+                    scenarioId: 103, 
+                    opponents: [{ playerId: 1 }],
+                    completionStatus: 'complete',
+                    createDate: '2023-04-01T00:00:00.000Z',
+                    completeDate: '2023-04-08T00:00:00.000Z'
+                },
+            ],
+        },
+        {
+            id: 2,
+            name: 'Frozen Throne',
+            wizardId: 3,
+            scenarios: [
+                { 
+                    id: 1,
+                    scenarioId: 106, 
+                    opponents: [{ playerId: 1 }],
+                    completionStatus: 'complete',
+                    createDate: '2023-04-01T00:00:00.000Z',
+                    completeDate: '2023-04-08T00:00:00.000Z'
+                },
+                { 
+                    id: 2, 
+                    scenarioId: 107, 
+                    opponents: [{ playerId: 1 }],
+                    completionStatus: 'complete',
+                    createDate: '2023-04-01T00:00:00.000Z',
+                    completeDate: '2023-04-08T00:00:00.000Z'
+                },
+                { 
+                    id: 3, 
+                    scenarioId: 108, 
+                    opponents: [{ playerId: 1 }],
+                    completionStatus: 'in progress',
+                    createDate: '2023-04-01T00:00:00.000Z',
+                    completeDate: '2023-04-08T00:00:00.000Z'
+                },
+                { 
+                    id: 4, 
+                    scenarioId: 109, 
+                    opponents: [{ playerId: 1 }],
+                    completionStatus: 'incomplete',
+                    createDate: '2023-04-01T00:00:00.000Z',
+                    completeDate: '2023-04-08T00:00:00.000Z'
+                },
+            ],
+        }
+    ],
     myRecord: {
         wins: 0,
         losses: 0,
-
     },
     myPreferences: {
-        theme: 'light',
+        theme: 'dark',
     }
 }
 

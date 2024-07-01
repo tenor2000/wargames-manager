@@ -7,20 +7,64 @@ import { useMediaQuery } from '@mui/material';
 
 
 export function WizardView() {
-    const { currentWizard, refData } = useAppContext();
+    const { currentWizard, editMode, setEditMode, refData } = useAppContext();
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
     const wizardStats = {...currentWizard};
     wizardStats['class'] = getSchoolFromId(wizardStats.classId, refData).name;
 
-    const handleEdit =() => {
-        return null
+    const handleButton = (type) => {
+        switch (type) {
+            case 'edit':
+                setEditMode({...editMode, wizard: true});
+                break;
+            case 'level':
+                return null;
+        }
+        
     }
 
-    const handleGainLevel = () => {
+    return (
+        
+        <>
+            {!editMode.wizard &&
+                <>
+                    {isPortrait && <BasicStatCard statsObj = {wizardStats} refData={refData} showLevel={true} showStatus={true} showClass={true}/>}
+                    {!isPortrait && 
+                        <BasicStatTableHeader showName={true} showClass={true} showLevel={true} showStatus={true} showItemSlots={true}>
+                            <BasicStatTableRow statsObj = {wizardStats} refData={refData}/>
+                        </BasicStatTableHeader>
+                    }
+                    <Box sx={{width: '100%', textAlign: 'center' }}>
+                        <p>Total XP Earned: {currentWizard.xp + currentWizard.xpSpent}</p>
+                        <p>Current XP: {currentWizard.xp}</p>
+                        <p>Current Level: {currentWizard.level}</p>
+                    </Box>
+                    <Box sx={{width: '100%', textAlign: 'center' }}>
+                        <Button onClick={() => handleButton('edit')}>Edit</Button>
+                        <Button onClick={() => handleButton('level')}>Gain Level</Button>
+                    </Box>
+                </>
+            }
+            {editMode.wizard && <WizardEdit wizardStats={wizardStats} editMode={editMode} setEditMode={setEditMode} refData={refData}/>}
+        </>
+    );
+}
+
+function WizardEdit({wizardStats, editMode, setEditMode, refData}) {
+    const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
+
+    const handleButton = (type) => {
+        switch (type) {
+            case 'cancel':
+                setEditMode({...editMode, wizard: false});
+                break;
+            case 'save':
+                setEditMode({...editMode, wizard: false});
+                break;
+        }
         return null
     }
-
 
     return (
         <>
@@ -31,15 +75,14 @@ export function WizardView() {
                 </BasicStatTableHeader>
             }
             <Box sx={{width: '100%', textAlign: 'center' }}>
-                <p>Lifetime XP Earned: {currentWizard.xp + currentWizard.xpSpent}</p>
-                <p>Current XP: {currentWizard.xp}</p>
-                <p>Current Level: {currentWizard.level}</p>
+                
             </Box>
             <Box sx={{width: '100%', textAlign: 'center' }}>
-                <Button onClick={() => window.location.href = '/apprentice'}>Apprentice</Button>
+                <Button onClick={() => handleButton('cancel')}>Cancel</Button>
+                <Button onClick={() => handleButton('save')}>Save</Button>
             </Box>
         </>
-    );
+    )
 }
 
 export function ApprenticeView() {
@@ -50,18 +93,22 @@ export function ApprenticeView() {
     const apprenticeStats = deriveApprenticeStats(currentWizard, currentWizard.apprentice);
     apprenticeStats.cost = (currentWizard.level-6)*10 + 160;
 
-    const handleEditClick = (editMode) => {
-        const newEditMode = {...editMode};
-        newEditMode['apprentice'] = true;
-        setEditMode(newEditMode);
+    const handleButton = (type) => {
+        switch (type) {
+            case 'edit':
+                setEditMode({...editMode, apprentice: true});
+                break;
+            case 'remove':
+                removeApprentice();
+                break;
+        }
     }
 
-    const handleRemoval = () => {
+    const removeApprentice = () => {
         const goodbyeText = currentWizard.apprentice.status === 0 ? `dump ${currentWizard.apprentice.name}'s body in a ditch somewhere`  : `fire your apprentice, ${currentWizard.apprentice.name}`;
 
         if (window.confirm(`Are you sure you want to ${goodbyeText}?`)) {
             const newUserData = {...userData}
-            console.log(userData)
             newUserData.myWizards = userData.myWizards.map(wizard => 
                 wizard.id === currentWizard.id ? 
                 {...wizard, apprentice: { ...wizard.apprentice, name: '', status: 9, itemSlots: [0,0,0,0] }} : 
@@ -88,8 +135,8 @@ export function ApprenticeView() {
                     </BasicStatTableHeader>
                 }
                 <Box>
-                    <Button onClick={() => handleEditClick('apprentice')}>Edit</Button>
-                    <Button onClick={() => handleRemoval('apprentice')}>{apprenticeStats.status === 0 ? 'Dump' : 'Fire'}</Button>
+                    <Button onClick={() => handleButton('edit')}>Edit</Button>
+                    <Button onClick={() => handleButton('remove')}>{apprenticeStats.status === 0 ? 'Dump' : 'Fire'}</Button>
                 </Box>
             </>
             }
@@ -99,7 +146,7 @@ export function ApprenticeView() {
     )
 }
 
-export function ShowPotentialApprentices() {
+function ShowPotentialApprentices() {
     const { refData, currentWizard, setCurrentWizard } = useAppContext();
     const { userData, setUserData } = useAuth();
 

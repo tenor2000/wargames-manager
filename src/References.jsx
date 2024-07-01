@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from 'react';
 import { useAppContext } from './AppContext.jsx';
 import { modSign, getCreatureFromId } from './HelperFunctions';
 import { useNavigate } from 'react-router-dom';
@@ -143,14 +143,15 @@ function ArmsReference() {
     const { refData, sourceFilter } = useAppContext();
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
-    const HeaderRow = ({type}) => {
+    const HeaderRow = () => {
         return (
             <TableRow>
-                <TableCell >Weapon</TableCell>
-                <TableCell sx={{textAlign: 'center'}}>Damage Modifier</TableCell>
-                <TableCell sx={{textAlign: 'center'}}>Maximum Range</TableCell>
+                <TableCell>Weapon</TableCell>
+                {!isPortrait && <TableCell sx={{textAlign: 'center'}}>Damage Modifier</TableCell>}
+                {!isPortrait && <TableCell sx={{textAlign: 'center'}}>Maximum Range</TableCell>}
                 {!isPortrait && <TableCell>Notes</TableCell>}
                 {!isPortrait && <TableCell>Source</TableCell>}
+                {isPortrait && <TableCell >Description</TableCell>}
             </TableRow>
         );
     };
@@ -159,19 +160,26 @@ function ArmsReference() {
         const filteredList = sourceFilter.includes('all') ? list : list.filter(item => sourceFilter.includes(item.source))
 
         return filteredList.map(item => (
-            <>
-                <TableRow key={`${item.name}-${item.id}`}>
-                    <TableCell rowSpan = {isPortrait ? 2 : 1}>{item.name}</TableCell>
-                    <TableCell sx={{textAlign: 'center'}}>{modSign(item.damageMod)}</TableCell>
-                    <TableCell sx={{textAlign: 'center'}}>{item.maxRange > 0 ? `${item.maxRange}"` : "--"}</TableCell>
-                    {!isPortrait && <TableCell>{item.notes}</TableCell>}
+            <React.Fragment key={item.id}>
+                <TableRow key={`${item.id}-${item.name}`} sx={{borderBottom: '1px solid #ccc'}}  id={item.id}>
+                    <TableCell rowSpan = {isPortrait ? 3 : 1} sx={{textAlign: 'left'}}>{item.name}</TableCell>
+                    <TableCell sx={{textAlign: isPortrait ? 'left' : 'center'}}>{isPortrait ? 'Damage Mod: ' : null}{modSign(item.damageMod)}</TableCell>
+                    {!isPortrait && <TableCell sx={{textAlign: 'center'}}>{item.maxRange > 0 ? `${item.maxRange}"` : "-"}</TableCell>}
+                    {!isPortrait && <TableCell sx={{textAlign: 'left'}}>{item.notes}</TableCell>}
                     {!isPortrait && <TableCell>{item.source}</TableCell>}
                 </TableRow>
                 {isPortrait && 
-                    <TableRow key={`${item.name}+${item.id}`}>
-                         <TableCell colSpan={2}>{item.notes}</TableCell>
-                    </TableRow>}
-            </>
+                    <>
+                        <TableRow key={`${item.id}-${item.name}-Portrait1`}>
+                            <TableCell sx={{textAlign: 'left'}}>Range: {item.maxRange > 0 ? `${item.maxRange}"` : "--"}</TableCell>
+                        </TableRow>
+                        {item.notes &&
+                        <TableRow key={`${item.id}-${item.name}-Portrait2`}>
+                            <TableCell sx={{textAlign: 'left'}}>{item.notes === '--' ? 'Notes: --' : item.notes}</TableCell>
+                        </TableRow>}
+                    </>
+                }
+            </React.Fragment>
         ))
     }
 
@@ -181,7 +189,7 @@ function ArmsReference() {
                 <TableContainer sx={{ maxHeight: 640 }}>
                     <Table stickyHeader aria-label="sticky table" size="small">
                         <TableHead>
-                            <HeaderRow type='arms' />
+                            <HeaderRow />
                         </TableHead>
                         <TableBody>
                             <RenderTableRows list={refData.arms} />
@@ -201,9 +209,10 @@ function ArmorReference() {
         return (
             <TableRow>
                 <TableCell >Armor</TableCell>
-                <TableCell sx={{textAlign: 'center'}}>Armor Modifier</TableCell>
+                {!isPortrait && <TableCell sx={{textAlign: 'center'}}>Armor Modifier</TableCell>}
                 {!isPortrait && <TableCell>Notes</TableCell>}
                 {!isPortrait && <TableCell>Source</TableCell>}
+                {isPortrait && <TableCell>Description</TableCell>}
             </TableRow>
         );
     };
@@ -212,18 +221,18 @@ function ArmorReference() {
         const filteredList = sourceFilter.includes('all') ? list : list.filter(item => sourceFilter.includes(item.source))
 
         return filteredList.map(item => (
-            <>
-                <TableRow key={`${item.name}-${item.id}`}>
-                    <TableCell rowSpan = {isPortrait ? 2 : 1}>{item.name}</TableCell>
-                    <TableCell sx={{textAlign: 'center'}}>{modSign(item.armorMod)}</TableCell>
-                    {!isPortrait && <TableCell>{item.notes}</TableCell>}
+            <React.Fragment key={item.id}>
+                <TableRow key={`${item.id}-main`}>
+                    <TableCell rowSpan = {isPortrait ? 2 : 1} sx={{textAlign: 'left'}}>{item.name}</TableCell>
+                    <TableCell sx={{textAlign: 'center'}}>{isPortrait ? `Armor Mod: ${modSign(item.armorMod)}` : modSign(item.armorMod)}</TableCell>
+                    {!isPortrait && <TableCell sx={{textAlign: 'left'}}>{item.notes}</TableCell>}
                     {!isPortrait && <TableCell>{item.source}</TableCell>}
                 </TableRow>
                 {isPortrait && 
-                    <TableRow key={`${item.name}+${item.id}`}>
+                    <TableRow key={`${item.name}-notes`}>
                          <TableCell >{item.notes}</TableCell>
                     </TableRow>}
-            </>
+            </React.Fragment>
         ))
     }
     
@@ -297,7 +306,6 @@ function RandomEncounterReference() {
                 </TableRow>
             )
         }
-
 
         return (
             <>
@@ -378,15 +386,15 @@ function BaseReference() {
         const filteredList = sourceFilter.includes('all') ? list : list.filter(item => sourceFilter.includes(item.source))
 
         return filteredList.map(item => (
-            <>
-                {!isPortrait && <TableRow key={`${item.name}-${item.id}`} >
+            <React.Fragment key={`${item.name}-${item.id}`}>
+                {!isPortrait && <TableRow key={`${item.name}-${item.id}-1`} >
                     <TableCell>{item.name}</TableCell>
                     {type!=='locations' && <TableCell sx={{textAlign: 'center'}}>{item.cost}gc</TableCell>}
                     <TableCell>{item.effects}</TableCell>
                     <TableCell>{item.source}</TableCell>
                 </TableRow>
                 }
-                {isPortrait && <TableRow key={`${item.name}-${item.id}`} >
+                {isPortrait && <TableRow key={`${item.name}-${item.id}-2`} >
                     <TableCell>
                         <BasicAccordian title={type!==false ? item.name : `${item.name} - ${item.cost}gc`} >
                             {item.effects}
@@ -394,7 +402,7 @@ function BaseReference() {
                     </TableCell>
                 </TableRow>
                 }
-            </>
+            </ React.Fragment>
         ))
     }
 
@@ -449,26 +457,18 @@ function TreasureReference() {
     const HeaderRow = ({type}) => {
         return (
             <TableRow>
-                <TableCell >{type==='arms' ? 'Weapon' : 'Armor'}</TableCell>
-                <TableCell sx={{textAlign: 'center'}}>{type==='arms' ? 'Damage' : 'Armor'} Modifier</TableCell>
-                {type==='arms' && <TableCell sx={{textAlign: 'center'}}>Maximum Range</TableCell>}
-                <TableCell>Notes</TableCell>
-                <TableCell>Source</TableCell>
+                <TableCell >{type==='locations' ? 'Location' : 'Resource'}</TableCell>
             </TableRow>
         );
     };
 
     function RenderTableRows({list}) {
         const filteredList = sourceFilter.includes('all') ? list : list.filter(item => sourceFilter.includes(item.source))
+        return null;
 
         return filteredList.map(item => (
             <TableRow key={`${item.name}-${item.id}`}>
                 <TableCell>{item.name}</TableCell>
-                {item.damageMod && <TableCell sx={{textAlign: 'center'}}>{modSign(item.damageMod)}</TableCell>}
-                {item.armorMod && <TableCell sx={{textAlign: 'center'}}>{modSign(item.armorMod)}</TableCell>}
-                {item.maxRange && <TableCell sx={{textAlign: 'center'}}>{item.maxRange > 0 ? `${item.maxRange}"` : "--"}</TableCell>}
-                <TableCell>{item.notes}</TableCell>
-                <TableCell>{item.source}</TableCell>
             </TableRow>
         ))
     }
