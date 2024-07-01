@@ -208,9 +208,11 @@ export function MenuBar() {
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
           >
-            <IconButton onClick={toggleDrawer(false)} aria-label="back">
-              <ArrowBackIcon />
-            </IconButton>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <IconButton onClick={toggleDrawer(false)} aria-label="back">
+                <ArrowBackIcon />
+              </IconButton>
+            </Box>
             <Divider />
             <SideDrawer />
           </Box>
@@ -266,26 +268,25 @@ export function SideBar () {
 export function ContentArea() {
   const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
   const {isSidebarVisible, setSidebarVisible} = useAppContext();
-  const contentStyle = {
-    marginBottom: isPortrait ? '15%' : '0',
-  };
 
     return (
-      <div className='content-container'>
+      <Box className='content-container' sx={{ display: 'flex', height: '100vh' }}>
         {!isPortrait && isSidebarVisible && <SideBar />}
-        <div>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/reference" element={<ReferenceView />} />
-            <Route path="/spells" element={<SpellView />} />
-            <Route path="/warbands" element={<WarbandView />} />
-            <Route path="/campaigns" element={<CampaignView />} />
-            <Route path="/new-wizard" element={<CreateNewWizard />} />
-            <Route path="/login" element={<Login />} />
-            {/* Add routes for other pages */}
-          </Routes>
-        </div>
-      </div>
+        <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', overflow: 'auto', height: '100%' }}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/reference" element={<ReferenceView />} />
+              <Route path="/spells" element={<SpellView />} />
+              <Route path="/warbands" element={<WarbandView />} />
+              <Route path="/campaigns" element={<CampaignView />} />
+              <Route path="/new-wizard" element={<CreateNewWizard />} />
+              <Route path="/login" element={<Login />} />
+              {/* Add routes for other pages */}
+            </Routes>
+          </Box>
+        </Box>
+      </Box>
     );
 } 
 
@@ -335,11 +336,11 @@ export function MobileBottomNav() {
         zIndex: 1000,
       }}
     >
-        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', filter: theme.palette.mode === 'light' ? 'invert(100%)' : 'invert(0%)'}} src={('src/assets/Game-Icons-net/castle.svg')} alt="Spells" />} />
-        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', filter: theme.palette.mode === 'light' ? 'invert(100%)' : 'invert(0%)'}} src={('src/assets/Game-Icons-net/bookshelf.svg')} alt="Spells" />} />
+        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', filter: theme.palette.mode === 'light' ? 'invert(100%)' : 'invert(0%)'}} src={('src/assets/Game-Icons-net/castle.svg')} alt="Home" />} />
+        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', filter: theme.palette.mode === 'light' ? 'invert(100%)' : 'invert(0%)'}} src={('src/assets/Game-Icons-net/bookshelf.svg')} alt="Reference" />} />
         <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', filter: theme.palette.mode === 'light' ? 'invert(100%)' : 'invert(0%)'}} src={('src/assets/Game-Icons-net/book-cover.svg')} alt="Spells" />} />
-        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', filter: theme.palette.mode === 'light' ? 'invert(100%)' : 'invert(0%)'}} src={('src/assets/Game-Icons-net/axe-sword.svg')} alt="Spells" />} />
-        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', filter: theme.palette.mode === 'light' ? 'invert(100%)' : 'invert(0%)'}} src={('src/assets/Game-Icons-net/rule-book.svg')} alt="Spells" />} />
+        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', filter: theme.palette.mode === 'light' ? 'invert(100%)' : 'invert(0%)'}} src={('src/assets/Game-Icons-net/axe-sword.svg')} alt="Warband" />} />
+        <BottomNavigationAction icon={<img style={{width: '30px', height: '30px', filter: theme.palette.mode === 'light' ? 'invert(100%)' : 'invert(0%)'}} src={('src/assets/Game-Icons-net/rule-book.svg')} alt="Campaign" />} />
     </BottomNavigation>
   );
 }

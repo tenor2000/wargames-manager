@@ -10,7 +10,9 @@ export function ContextProvider({ children }) {
     const [schoolFilterId, setSchoolFilterId] = useState(0);
     const [spellViewList, setSpellViewList] = useState(null);
     const [currentWizard, setCurrentWizard] = useState(null);
+    const [currentCampaign, setCurrentCampaign] = useState(null);
     const [newWizard, setNewWizard] = useState(null);
+    const [newCampaign, setNewCampaign] = useState(null);
     const [refData, setRefData] = useState(null);
     const [ isSidebarVisible, setIsSidebarVisible ] = useState(false);
     const [ editMode, setEditMode ] = useState({'wizard': false, 
@@ -30,7 +32,9 @@ export function ContextProvider({ children }) {
         schoolFilterId, setSchoolFilterId,
         spellViewList, setSpellViewList,
         currentWizard, setCurrentWizard,
+        currentCampaign, setCurrentCampaign,
         newWizard, setNewWizard,
+        newCampaign, setNewCampaign,
         refData, setRefData,
         isSidebarVisible, setIsSidebarVisible,
         editMode, setEditMode,

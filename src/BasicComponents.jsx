@@ -35,6 +35,23 @@ export function BasicStatCard({
   }
   // end
 
+  const StatsLine = () => {
+    return (
+      <>
+        <TableRow>
+          <TableCell sx={{ width: '33%' }}><img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move'/>{statsObj.move}</TableCell>
+          <TableCell sx={{ width: '33%' }}><img src='src/assets/Game-Icons-net/axe-sword.svg' className="stat-icon" alt='Fight'/>{modSign(statsObj.fight)}</TableCell>
+          <TableCell sx={{ width: '33%' }}><img src='src/assets/Game-Icons-net/high-shot.svg' className="stat-icon" alt='Shoot'/>{modSign(statsObj.shoot)}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell><img src='src/assets/Game-Icons-net/abdominal-armor.svg' className="stat-icon" alt='Armor'/>{statsObj.armor}</TableCell>
+          <TableCell><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will'/>{modSign(statsObj.will)}</TableCell>
+          <TableCell><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Health'/>{statsObj.health}</TableCell>
+        </TableRow>
+      </>
+    );
+  }
+
   function handleChange(type, max=statsObj.health) {
     if (type === '-') {
       if (currentHealth > 0) {
@@ -81,13 +98,15 @@ export function BasicStatCard({
             {!statsObj.name &&
               <TableHead >
                 <TableRow>
-                  <TableCell colSpan={2} sx={{textAlign: 'left'}}>
+                  <TableCell colSpan={3}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: showCosts ? 'space-between' : 'center' }}>
                     <h3>{statsObj.class ? statsObj.class : ''} {statsObj.status !== 1 && showStatus ? `(${getStatusFromId(statsObj.status, refData)})` : ''}</h3>
-                  </TableCell>
-                  <TableCell>
                     {showCosts && 
-                      `${statsObj.cost > 0 ? `${statsObj.cost} gc` : 'Free'}`
+                      <span>
+                        {statsObj.cost > 0 ? `${statsObj.cost} gc` : 'Free'}
+                      </span>
                     }
+                    </Box>
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -114,16 +133,7 @@ export function BasicStatCard({
               }
               {fullCard &&
                 <>
-                  <TableRow>
-                    <TableCell sx={{ width: '33%' }}><img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move'/>{statsObj.move}</TableCell>
-                    <TableCell sx={{ width: '33%' }}><img src='src/assets/Game-Icons-net/axe-sword.svg' className="stat-icon" alt='Fight'/>{modSign(statsObj.fight)}</TableCell>
-                    <TableCell sx={{ width: '33%' }}><img src='src/assets/Game-Icons-net/high-shot.svg' className="stat-icon" alt='Shoot'/>{modSign(statsObj.shoot)}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell><img src='src/assets/Game-Icons-net/abdominal-armor.svg' className="stat-icon" alt='Armor'/>{statsObj.armor}</TableCell>
-                    <TableCell><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will'/>{modSign(statsObj.will)}</TableCell>
-                    <TableCell><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Health'/>{statsObj.health}</TableCell>
-                    </TableRow>
+                  <StatsLine />
                   { showItemSlots && items.length > 0 &&
                     <TableRow>
                       <TableCell colSpan={3} sx={{textAlign: 'center'}}>
@@ -263,8 +273,8 @@ export function BasicStatTableRow({statsObj, showName, showCosts, showStatus, sh
 
   return (
     <TableRow>
-      {showName && <TableCell>{statsObj.name}</TableCell>}
-      {showClass && <TableCell>{statsObj.class}</TableCell>}
+      {showName && <TableCell sx={{textAlign: 'left'}}>{statsObj.name}</TableCell>}
+      {showClass && <TableCell sx={{textAlign: 'left'}}>{statsObj.class}</TableCell>}
       {showLevel && <TableCell>{statsObj.level}</TableCell>}
       <TableCell sx={{textAlign: 'center'}}>{statsObj.move}</TableCell>
       <TableCell sx={{textAlign: 'center'}}>{modSign(statsObj.fight)}</TableCell>
@@ -286,7 +296,7 @@ export function BasicStatTableRow({statsObj, showName, showCosts, showStatus, sh
         </TableCell>
         
       }
-      <TableCell>
+      <TableCell sx={{textAlign: showItemSlots && statsObj.notes ? 'center' :'left'}}>
         {showItemSlots && statsObj.notes ?
           <Tooltip title={statsObj.notes}>
             <img

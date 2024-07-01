@@ -10,18 +10,26 @@ import { Box, Button } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 
 export function BattleView({handleView}) {
-    const navigate = useNavigate();
-    const { userData } = useAuth();
-    const { refData, currentWizard, loading, error } = useAppContext();
+    const { userData, setUserData } = useAuth();
+    const { refData, currentWizard, currentCampaign,loading, error } = useAppContext();
     
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    // if (loading) {
+    //     return <div>Loading...</div>;
+    // }
     
-    if (error) {
-        return <div>Error loading data</div>;
+    // if (error) {
+    //     return <div>Error loading data</div>;
+    // }
+
+    const handleSave = (scenarioId) => {
+        let currentScenario = currentCampaign.scenarios.find(scenario => scenario.id === scenarioId);
+        // currentScenario.
+
+        // POST goes here
+        setUserData((prev) => ({ ...prev,  }));
+        handleView(null);
     }
     
     return (
@@ -43,7 +51,10 @@ export function BattleView({handleView}) {
             <BasicAccordian title="Toolbox" >
                 <ToolBox refData={refData} currentWizard={currentWizard} />
             </BasicAccordian>
-            <Button onClick={() => handleView('report')}>End Battle</Button>
+            <Box sx={{textAlign: 'center'}}>
+                <Button onClick={() => handleSave(null)}>Save</Button>
+                <Button onClick={() => handleView('report')}>End Battle</Button>
+            </Box>
         </>
     );
 }

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { getCreatureFromId, getScenarioFromId } from './HelperFunctions.js';
 import { Box, Button, Checkbox, FormControl, Select, MenuItem, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, useMediaQuery } from '@mui/material';
 
-export function AfterActionView({refData}) {
+export function AfterActionView({refData, handleView}) {
   const { userData, setUserData } = useAuth();
   const [ xpGained, setXpGained ] = useState(0);
   const [ basicXPCounts, setBasicXPCounts ] = useState({ spellFailures: 0, spellSuccesses: 0, treasuresSecured: 0, creaturesKilled: 0, wizardParticipation: false });
@@ -57,14 +57,24 @@ export function AfterActionView({refData}) {
     }));
   }
 
-  const handleCancel = () => {
+  const handleButton = (type) => {
+    switch (type) {
+      case 'continue':
+        handleSubmitReport();
+        break;
+      case 'cancel':
+
+        break;
+      default:
+        break;
+    }
     return null
   }
 
   const handleSubmitReport = () => {
     const updatedUserData = { ...userData };
 
-    updatedUserData.mywizards.find = basicXPCounts;
+    updatedUserData.mywizards = basicXPCounts;
     // updatedUserData.scenarioXPCounts = scenarioXPCounts;
     setUserData(updatedUserData);
   }
@@ -74,11 +84,13 @@ export function AfterActionView({refData}) {
     setXpGained(total);
   }, [ basicXPCounts ]);
 
-  
-  
   return (
     <>
-      <h2>After Action Report</h2>
+      <Box sx={{ textAlign: 'center'}}>
+        <h2>{currentScenario.name}</h2>
+        <h3>After Action Report</h3>
+      </Box>
+      <Box sx={{ textAlign: 'center', overflowX: 'auto'}}>
         <TableContainer>
           <Table size="small">
             <TableHead>
@@ -105,11 +117,13 @@ export function AfterActionView({refData}) {
           </Table>
           
         </TableContainer>
-        
-      <h3>XP Gained: {xpGained <= 300 ? <b style={{color: 'green'}}>{xpGained}</b> : <b style={{color: 'red'}}>300 (Limit Reached)</b>}</h3>
-      <Box>
-        <Button onClick={handleCancel}>Cancel</Button>
-        <Button  onClick={handleSubmitReport}>Submit</Button>
+      </Box>
+      <Box sx={{ textAlign: 'center'}}>
+        <h3>XP Gained: {xpGained <= 300 ? <b style={{color: 'green'}}>{xpGained}</b> : <b style={{color: 'red'}}>300 (Limit Reached)</b>}</h3>
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+          <Button onClick={() => handleView('battle')}>Cancel</Button>
+          <Button  onClick={() => handleButton('continue')}>Submit</Button>
+        </Box>
       </Box>
     </>
   );
