@@ -2,7 +2,7 @@ import { useAppContext } from './AppContext.jsx';
 import { useAuth } from './AuthContext.jsx';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getSchoolFromId, getSchoolFromSpellId, getRandomName } from './HelperFunctions.js';
+import { getSchoolFromId, getSchoolFromSpellId, getRandomName, getSpellFromId } from './HelperFunctions.js';
 import './styles/NewWizard.css';
 import { update } from 'firebase/database';
 import { useMediaQuery } from '@mui/material';
@@ -11,7 +11,7 @@ import { TextField, Button, InputLabel, Select, MenuItem, FormControl, Box } fro
 
 
 export function NewWizardSideDrawer() {
-  const { loading, error } = useAppContext();
+  const { loading, error, newWizard, refData } = useAppContext();
 
     if (loading) {
         return <div>Loading...</div>;
@@ -20,18 +20,30 @@ export function NewWizardSideDrawer() {
     if (error) {
     return <div>Error loading data</div>;
     }
+
+    console.log(newWizard)
+    console.log(getSchoolFromSpellId(newWizard.primarySpellIds[0]))
+
   return (
-    <>
+    <Box sx ={{width: '100%', textAlign: 'left' }}>
       <h3>Building New Wizard...</h3>
-    </>
+      <p>Wizard Name: {newWizard.name}</p>
+      <p>School: {getSchoolFromId(newWizard.classId, refData).name}</p>
+      <p>Primary Spells: {newWizard.primarySpellIds.map(spellId => getSpellFromId(spellId, refData).name).join(', ')}</p>
+      <p>Secondary Spells: {newWizard.alignedSpellIds.map(spellId => getSpellFromId(spellId, refData).name).join(', ')}</p>
+      <p>Neutral Spells: {newWizard.neutralSpellIds.map(spellId => getSpellFromId(spellId, refData).name).join(', ')}</p>
+    </ Box>
   );
 }
 
 export function CreateNewWizard() {
-  const { refData, newWizard, setNewWizard } = useAppContext();
+  const { refData, setCurrentWizard, newWizard, setNewWizard } = useAppContext();
   const { userData, setUserData } = useAuth();
   const navigate = useNavigate();
   const { loading, error } = useAppContext();
+
+  //for form validation
+  const [errors, setErrors] = useState({});
   
   if (loading) {
     return <div>Loading...</div>;
@@ -41,21 +53,46 @@ export function CreateNewWizard() {
     return <div>Error loading data</div>;
   }
 
-  const schoolList = refData.schoolsOfMagic.slice(1).map(school => (
-    <option key={school.id} value={school.id}>{school.name}</option>
-  ))
+  function validateForm() {
+    const newErrors = {};
+    if (!newWizard.name ||newWizard.name.trim() =='') {
+      newErrors.name = 'Name is required';
+    }
+    if (userData.myWizards.some(wizard => wizard.name.toLowerCase() === newWizard.name.toLowerCase())) {
+      newErrors.name = 'Name already exists';
+    }
+    if (newWizard.schoolId === 0) {
+      newErrors.schoolId = 'School is required';
+    }
+    if (newWizard.primarySpellIds.length !== 3) {
+      newErrors.primarySpells = 'You must select 3 primary spells';
+    }
+  
+    if (newWizard.alignedSpellIds.length !== 3) {
+      newErrors.alignedSpells = 'You must select 3 aligned spells';
+    }
+  
+    if (newWizard.neutralSpellIds.length !== 2) {
+      newErrors.neutralSpells = 'You must select 2 neutral spells';
+    }
+    return newErrors
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
-    // TODO: add validation
-    // TODO: add error handling
-  
+    console.log("Form Submitted")
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      console.log(validationErrors)
+      setErrors(validationErrors);
+      return;
+    }
 
     const updatedWizard = { ...newWizard };
 
     let currWizList = userData.myWizards;
 
-    // Find the highest ID used so far
+    // Find the next available ID
     let highestId = 0;
     currWizList.forEach(wizard => {
       if (wizard.id > highestId) {
@@ -63,7 +100,6 @@ export function CreateNewWizard() {
       }
     });
 
-    // Find the first available ID after any gaps
     let newId = highestId + 1;
     for (let i = 1; i <= highestId; i++) {
       if (!currWizList.some(wizard => wizard.id === i)) {
@@ -72,18 +108,23 @@ export function CreateNewWizard() {
       }
     }
 
-    // Assign the new ID to the updated wizard
     updatedWizard.id = newId;
 
-    // Add the updated wizard to the list of wizards
+    // Add the updated wizard to the list of wizards, will need to be a POST in future
     currWizList.push(updatedWizard);
     const updatedUserData = { ...userData, myWizards: currWizList };
     setUserData(updatedUserData);
-
+    setCurrentWizard(updatedWizard);
+    console.log('navigating to warbands')
     navigate('/warbands');
   }
 
   function handleCancel() {
+    navigate('/warbands');
+    setNewWizard(refData.templates.wizard);
+    setErrors({});
+    setUserData({ ...userData });
+    setCurrentWizard(null);
     console.log('cancel')
   }
 
@@ -91,21 +132,25 @@ export function CreateNewWizard() {
     <div className="new-wizard-container">
         <h3>Create New Wizard</h3>
         <form onSubmit={handleSubmit} className='new-wizard-form'>
-          <NewWizardEdit newWizard={newWizard} setNewWizard={setNewWizard} />
+          <NewWizardEdit refData={refData} newWizard={newWizard} setNewWizard={setNewWizard} />
+          {errors.name && <div className="error"><b style={{color: 'red'}}>{errors.name}</b></div>}
+          {errors.schoolId && <div className="error"><b style={{color: 'red'}}>{errors.schoolId}</b></div>}
           {newWizard.classId > 0 && <SpellSelection category='primary' newWizard={newWizard} setNewWizard={setNewWizard}/>}
+          {errors.primarySpells && <div className="error"><b style={{color: 'red'}}>{errors.primarySpells}</b></div>}
           {newWizard.classId > 0 && <SpellSelection category='aligned' newWizard={newWizard} setNewWizard={setNewWizard}/>}
+          {errors.alignedSpells && <div className="error"><b style={{color: 'red'}}>{errors.alignedSpells}</b></div>}
           {newWizard.classId > 0 && <SpellSelection category='neutral' newWizard={newWizard} setNewWizard={setNewWizard}/>}
+          {errors.neutralSpells && <div className="error"><b style={{color: 'red'}}>{errors.neutralSpells}</b></div>}
           <section className='button-container center'>
-            <Button type='cancel' onClick={handleCancel}>Cancel</Button>
-            <Button type='submit'>Submit</Button>
+            <Button type='button' onClick={handleCancel}>Cancel</Button>
+            <Button disabled={!newWizard.classId} type='submit'>Submit</Button>
           </section>
         </form>
     </div>
   );
 }
 
-function NewWizardEdit() {
-  const { refData, newWizard, setNewWizard } = useAppContext();
+function NewWizardEdit({refData, newWizard, setNewWizard}) {
   const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
   const handleClassChange = (event) => {
@@ -158,6 +203,7 @@ function NewWizardEdit() {
               onChange={handleClassChange}
               size= "small"
             >
+              <MenuItem key={0} value={0}>--</MenuItem>
               {schoolList}
             </Select>
           </FormControl>
@@ -277,3 +323,4 @@ function SpellSelection({category, newWizard, setNewWizard}) {
     </section>
   );
 }
+
