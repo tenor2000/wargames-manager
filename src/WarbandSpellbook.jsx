@@ -5,7 +5,7 @@ import { Box,Button } from '@mui/material';
 import { BasicSpellCard } from './BasicComponents.jsx';
 import { useMediaQuery } from '@mui/material';
 
-export function SpellBookBlock() {
+export function SpellBookView() {
     const { currentWizard, refData } = useAppContext();
     const [ spellViewObj, setSpellViewObj ] = useState('null')
     const [ spellSchoolMod, setSpellSchoolMod ] = useState(0)

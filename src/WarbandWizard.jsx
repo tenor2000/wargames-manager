@@ -6,22 +6,18 @@ import { Button, Box, Paper, Table, TableBody, TableCell, TableContainer, TableF
 import { useMediaQuery } from '@mui/material';
 
 
-export function WizardView() {
+export function WizardView({handleButton}) {
     const { currentWizard, editMode, setEditMode, refData } = useAppContext();
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
     const wizardStats = {...currentWizard};
     wizardStats['class'] = getSchoolFromId(wizardStats.classId, refData).name;
 
-    const handleButton = (type) => {
+    const handleLevel = (type) => {
         switch (type) {
-            case 'edit':
-                setEditMode({...editMode, wizard: true});
-                break;
             case 'level':
                 return null;
         }
-        
     }
 
     return (
@@ -41,8 +37,8 @@ export function WizardView() {
                         <p>Current Level: {currentWizard.level}</p>
                     </Box>
                     <Box sx={{width: '100%', textAlign: 'center' }}>
-                        <Button onClick={() => handleButton('edit')}>Edit</Button>
-                        <Button onClick={() => handleButton('level')}>Gain Level</Button>
+                        <Button onClick={() => handleButton('edit', 'wizard')}>Edit</Button>
+                        <Button onClick={() => handleLevel('level')}>Gain Level</Button>
                     </Box>
                 </>
             }
@@ -85,24 +81,13 @@ function WizardEdit({wizardStats, editMode, setEditMode, refData}) {
     )
 }
 
-export function ApprenticeView() {
+export function ApprenticeView({handleButton}) {
     const { currentWizard, setCurrentWizard,editMode, setEditMode, refData } = useAppContext();
     const { userData, setUserData } = useAuth();
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
     
     const apprenticeStats = deriveApprenticeStats(currentWizard, currentWizard.apprentice);
     apprenticeStats.cost = (currentWizard.level-6)*10 + 160;
-
-    const handleButton = (type) => {
-        switch (type) {
-            case 'edit':
-                setEditMode({...editMode, apprentice: true});
-                break;
-            case 'remove':
-                removeApprentice();
-                break;
-        }
-    }
 
     const removeApprentice = () => {
         const goodbyeText = currentWizard.apprentice.status === 0 ? `dump ${currentWizard.apprentice.name}'s body in a ditch somewhere`  : `fire your apprentice, ${currentWizard.apprentice.name}`;
@@ -135,13 +120,13 @@ export function ApprenticeView() {
                     </BasicStatTableHeader>
                 }
                 <Box>
-                    <Button onClick={() => handleButton('edit')}>Edit</Button>
-                    <Button onClick={() => handleButton('remove')}>{apprenticeStats.status === 0 ? 'Dump' : 'Fire'}</Button>
+                    <Button onClick={() => handleButton('edit', 'apprentice')}>Edit</Button>
+                    <Button onClick={() => removeApprentice()}>{apprenticeStats.status === 0 ? 'Dump' : 'Fire'}</Button>
                 </Box>
             </>
             }
-            {apprenticeStats.status === 9 && <ShowPotentialApprentices/>}
-            {editMode.apprentice && <EditApprentice />}
+            {apprenticeStats.status !== 9 && editMode.apprentice && <EditApprentice />}
+            {apprenticeStats.status === 9 && <ShowPotentialApprentices/>} 
         </>
     )
 }

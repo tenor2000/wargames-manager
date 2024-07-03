@@ -1,6 +1,6 @@
 
 
-export function CareerHistory({userData}) {
+export function CareerHistoryView({userData}) {
     if (userData)
     return (
         <div>

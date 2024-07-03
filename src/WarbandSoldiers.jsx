@@ -28,12 +28,16 @@ export const formSoldierStats = (mySoldierArray, refData) => {
     return soldierList
 }
 
-export function SoldierRosterBlock() {
-    const { currentWizard, refData } = useAppContext();
+export function SoldierRosterView({handleButton}) {
+    const { currentWizard, editMode, refData } = useAppContext();
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
     if (currentWizard.soldiers.length === 0) {
-        return null;
+        return <p>There are no soldiers in {currentWizard.name}'s roster.</p>
+    }
+
+    if (editMode.soldiers) {
+        return <EditSoldiersView />
     }
 
     const soldierList = formSoldierStats(currentWizard.soldiers, refData);
@@ -54,6 +58,7 @@ export function SoldierRosterBlock() {
                     ))}
                 </BasicStatTableHeader>
             }
+            {!editMode.soldiers && <Button onClick={() => handleButton('edit', 'soldiers')}>Edit Roster</Button>}
         </>
     );
 }
