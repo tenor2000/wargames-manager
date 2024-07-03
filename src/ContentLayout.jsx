@@ -73,7 +73,7 @@ export function MenuBar() {
 
   const MobileNavHeading = () => {
     return (
-      <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+      <Typography variant="h5" sx={{ flexGrow: 1 }}>
         <Routes>
             <Route path="/" element='Home' />
             <Route path="/reference" element='Reference' />
@@ -94,8 +94,8 @@ export function MenuBar() {
 
     if (page === 'warbands') {
       return (
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          {currentWizard && isPortrait ? currentWizard.name : 'Warband Manager'}
+        <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
+          {currentWizard && isPortrait ? currentWizard.name : 'Manager'}
         </Typography>
       )
     } else if (page === 'spells') {
@@ -145,7 +145,7 @@ export function MenuBar() {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
-            onClick={isPortrait ? toggleDrawer(true) : toggleSideBar}  // Open the drawer on click
+            onClick={isPortrait ? toggleDrawer(true) : toggleSideBar}
           >
             <MenuIcon />
           </IconButton>
@@ -224,21 +224,23 @@ export function MenuBar() {
 
 export function SideDrawer () {
   return (
-    <Paper className="generic-paper">
-      <div className="side-drawer">
-        <Routes>
-            <Route path="/" element={<HomeSideDrawer />} />
-            <Route path="/reference" element={<ReferenceSideDrawer />} />
-            <Route path="/spells" element={<SpellSideDrawer />} />
-            <Route path="/warbands" element={<WarbandSideDrawer />} />
-            <Route path="/campaigns" element={<CampaignSideDrawer />} />
-            <Route path="/reference" element={<ReferenceSideDrawer />} />
-            <Route path="/new-wizard" element={<NewWizardSideDrawer />} />
-            <Route path="/login" element={<LoginSideDrawer />} />
-            <Route path="/battleview" element={<CampaignSideDrawer />} />
-            {/* Add routes for other sidebar items */}
-        </Routes>
-        </div>
+    <Paper 
+      elevation={1}
+      className={'sidebar'}
+      sx={{width: '100%', padding: '5px', height: '100%', overflow: 'auto'}}
+    >
+      <Routes>
+          <Route path="/" element={<HomeSideDrawer />} />
+          <Route path="/reference" element={<ReferenceSideDrawer />} />
+          <Route path="/spells" element={<SpellSideDrawer />} />
+          <Route path="/warbands" element={<WarbandSideDrawer />} />
+          <Route path="/campaigns" element={<CampaignSideDrawer />} />
+          <Route path="/reference" element={<ReferenceSideDrawer />} />
+          <Route path="/new-wizard" element={<NewWizardSideDrawer />} />
+          <Route path="/login" element={<LoginSideDrawer />} />
+          <Route path="/battleview" element={<CampaignSideDrawer />} />
+          {/* Add routes for other sidebar items */}
+      </Routes>
     </Paper>
   )
 }
@@ -249,7 +251,10 @@ export function SideBar () {
   if (isPortrait) return null
 
   return (
-    <div className={'sidebar ${isSidebarVisible ? "" : "hidden"}'}>
+    <Paper 
+      elevation={1}
+      className={'sidebar'}
+    >
       <Routes>
           <Route path="/" element={<HomeSideDrawer />} />
           <Route path="/reference" element={<ReferenceSideDrawer />} />
@@ -261,7 +266,7 @@ export function SideBar () {
           <Route path="/login" element={<LoginSideDrawer />} />
           {/* Add routes for other sidebar items */}
       </Routes>
-    </div>
+    </Paper>
   )
 }
 

@@ -2,7 +2,7 @@ import { useAppContext } from './AppContext.jsx';
 import { useState } from 'react';
 import { BasicAccordian, BasicSpellCard, SearchBar } from './BasicComponents.jsx';
 import { getSchoolFromId } from './HelperFunctions.js';
-import { Box, Button } from '@mui/material';
+import { Avatar, List, ListItem, ListItemText, ListItemAvatar, IconButton, Paper, Button, Box, Typography } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import './styles/Spells.css';
 
@@ -62,18 +62,18 @@ export function SpellView() {
                 </div>
             }
             {isPortrait && 
-                <div className='center'>
+                <Box sx={{ textAlign: 'center'}}>
                     <SearchBar 
                         searchText={searchText}
                         setSearchText={setSearchText}
                         handleSearchFilter={handleSearchFilter}
                         clearSearch={clearSearch}
                     />
-                </div>
+                </Box>
             }
-            <div className='spell-list-view'>
+            <Box>
                 {spellsBySchool()}
-            </div>
+            </Box>
         </>
     );
 }
@@ -102,16 +102,40 @@ export function SpellSideDrawer() {
     }
 
 
-    const spellSchools = magicSchools.map(school => (
-        <Button key={school.id} onClick={() => handleSchoolClick(school.name)}>{school.name}</Button>
+    const spellSchoolsList = magicSchools.map(school => (
+        <ListItem 
+            key={school.id}
+            onClick={() => handleSchoolClick(school.name)}
+            style={{cursor: 'pointer'}}
+            sx={{
+                cursor: 'pointer',
+                padding: '5px',
+                transition: 'color 0.3s ease',
+                '&:hover .MuiListItemText-primary': {
+                  color: 'lightblue',
+                },}}
+        >
+            <ListItemAvatar>
+                <Avatar sx={{ width: 25, height: 25 }}>
+                    <img src={'src/assets/Game-Icons-net/wizard-face.svg'} alt={school.name} />
+                </Avatar>
+            </ListItemAvatar>
+            <ListItemText
+                primary={school.name}
+            />
+        </ListItem>
     ))
 
     return (
-        <div className="spells-sidebar-view">
-            <h3>Schools of Magic</h3>
-            <div className="spells-sidebar-item">
-                {spellSchools}
-            </div>
-        </div>
+        <>
+            <Typography variant="h5">
+                Schools of Magic
+            </Typography>
+            <Paper elevation={5} sx={{width: '100%', paddingLeft: '5px'}}>
+                <List >
+                    {spellSchoolsList}
+                </List>
+            </Paper>
+        </>
     );
 }

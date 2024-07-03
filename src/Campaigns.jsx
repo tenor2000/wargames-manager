@@ -1,4 +1,4 @@
-import { Box, Button, Paper } from '@mui/material';
+import { Box, Button, IconButton, List, ListItem, ListItemText, ListItemAvatar, Avatar, Paper, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext.jsx'
 import { AfterActionView } from './AfterActionReport.jsx';
@@ -7,6 +7,7 @@ import { getCreatureFromId, rollD20, getRandomSpell, getScenarioFromId, getSchoo
 import { useAppContext } from './AppContext.jsx';
 import { BattleView } from './BattleView.jsx';
 import { CreateNewCampaign } from './CreateNewCampaign.jsx';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 export function CampaignView() {
@@ -26,7 +27,7 @@ export function CampaignView() {
       console.log(location)
       setCurrentWizard(getMyWizardFromId(currentCampaign.wizardId, userData));
       setCampaignView(location);
-      location === null ? setCurrentWizard(null) : null;
+      location === 'base' ? setCurrentWizard(null) : null;
     }
 
     const handleButton = (type, target=null) => {
@@ -68,7 +69,7 @@ export function CampaignView() {
 }
 
 export function CampaignSideDrawer() {
-    const { userData } = useAuth();
+    const { userData, setUserData } = useAuth();
     const { refData, loading, error, setCurrentCampaign, setCurrentWizard } = useAppContext();
 
     if (loading) {
@@ -79,18 +80,41 @@ export function CampaignSideDrawer() {
         return <div>Error loading data</div>;
     }
 
+    const handleCampaignDeletion = (campaignId) => {
+      if (window.confirm('Are you sure you want to DELETE this campaign?')) {
+        const newUserData = {...userData};
+        newUserData.myCampaigns = newUserData.myCampaigns.filter(campaign => campaign.id !== campaignId);
+        setUserData(newUserData);
+        setCurrentCampaign(null)
+      };
+    }
+
     const campaignList = userData.myCampaigns
         .slice()
         .sort((a, b) => a.name.localeCompare(b.name))
         .map(campaign => (
-        <Button key={campaign.id} 
+          <ListItem 
+            key={campaign.id} 
             onClick={() => handleButton('campaign', campaign)} 
-            style = {{cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}
-        >
-            <h3>{campaign.name}</h3>
-            ({getMyWizardFromId(campaign.wizardId, userData).name})
-        </Button>
-    ));
+            sx={{cursor: 'pointer', paddingLeft: '10px'}}
+            secondaryAction={
+              <IconButton
+                aria-label="delete"
+                edge="end"
+                size="small"
+                onClick={() => handleCampaignDeletion(campaign.id)}
+              >
+                <DeleteIcon />
+              </IconButton> 
+            }
+          >
+            <ListItemText 
+              primary={campaign.name} 
+              secondary={`${getMyWizardFromId(campaign.wizardId, userData).name}`}
+            />
+          </ListItem>
+        )
+    );
     
     const handleButton = (type, target=null) => {
       switch (type) {
@@ -112,20 +136,20 @@ export function CampaignSideDrawer() {
     };
 
     return (
-        <>
-            <Box sx={{width: '100%', textAlign: 'left'}}>
-                <h3 onClick={() => handleButton('null')} style={{cursor: 'pointer'}}>My Campaigns</h3>
-                {campaignList}
-                <Button onClick={() => handleButton('newCampaign')}> + New Campaign</Button>
-            </Box>
-            <Box sx={{width: '100%', textAlign: 'left'}}>
-                <h3>Tools</h3>
-                <p>Coming Soon...</p>
-            </Box>
+      <>
+        <Typography variant="h5" onClick={() => handleButton('base')} style={{cursor: 'pointer'}} >My Campaigns</Typography>
+        <Paper elevation={5} sx={{width: '100%'}}>
+            <List>
+              {campaignList}
+            </List>
+          <Button onClick={() => handleButton('newCampaign')}> + New Campaign</Button>
+        </Paper>
 
-            
-
-        </>
+        <Typography variant="h5" onClick={() => handleButton('base')} style={{cursor: 'pointer'}}>My Tools</Typography>
+        <Paper elevation={5} sx={{width: '100%'}}>
+          <p>Coming Soon...</p>
+        </Paper>
+      </>
     );
 }
 
@@ -145,6 +169,7 @@ function CampaignDetailsView({handleButton, handleView, campaignView}) {
     return <CreateNewCampaign handleView={handleView}/>
   }
 
+  const isAllComplete = currentCampaign.scenarios.every(scenario => scenario.completionStatus === 'complete');
 
   return (
     <>
@@ -156,7 +181,7 @@ function CampaignDetailsView({handleButton, handleView, campaignView}) {
 
       <Box sx={{width: '100%', textAlign: 'center' }}>
         <Button onClick={() => handleButton(null)}>Back</Button>
-        <Button onClick={() => handleButton('new campaign')}> + New Campaign</Button>
+        <Button disabled={!isAllComplete} onClick={() => handleView('addScenario')}>Add Scenario</Button>
       </Box>
 
     </>
@@ -224,16 +249,13 @@ function ScenarioCards({currentCampaign, handleView}) {
     )
   }
 
-  const isAllComplete = currentCampaign.scenarios.every(scenario => scenario.isComplete)
+  
 
   return (
     <>
       <Box sx={{display: 'flex', width: '100%', justifyContent: 'center', flexWrap: 'wrap' }}>
         {currentCampaign.scenarios.map(scenario => <ScenarioCard key={scenario.id} scenario={scenario}/>)}
       </Box>
-      {isAllComplete && 
-        <Button onClick={() => handleView('add scenario')}>+ Scenario</Button>
-      }
     </>
   );
 }

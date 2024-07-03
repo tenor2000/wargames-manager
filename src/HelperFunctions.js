@@ -26,17 +26,13 @@ export function getRandomSoldier(refData) {
   const soldier = {name: null, status: 8, classId: null, itemSlots: [0]};
   soldier.classId = parseInt(Math.floor(Math.random() * refData.soldiers.length) + 1, 10);
   soldier.name = soldier.classId === 3 ? getRandomName(refData.nameGenerator.animal) : getRandomName(refData.nameGenerator.soldier);
-  // while (soldier.name in editedWizard.soldiers) {
-  //     soldier.name = soldier.classId === 3 ? getRandomName(refData.nameGenerator.animal) : getRandomName(refData.nameGenerator.soldier);;
-  // }
-  // soldier.itemSlots = [0];
 
   return soldier
 }
 
 export function getSchoolFromId(schoolId, refData) {
   if (!refData || !refData.schoolsOfMagic) {
-    return { name: 'Unknown' }; // Default or fallback value
+    return { name: 'Unknown' };
   }
 
   try {
@@ -51,7 +47,7 @@ export function getSchoolFromId(schoolId, refData) {
 
 export function getMyWizardFromId(wizardId, userData) {
   if (!userData || !userData.myWizards) {
-    return { name: 'Unknown' }; // Default or fallback value
+    return { name: 'Unknown' };
   }
 
   return userData.myWizards.find(wizard => wizard.id === wizardId)

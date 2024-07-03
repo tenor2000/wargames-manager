@@ -2,10 +2,10 @@ import React from 'react';
 import { useAppContext } from './AppContext.jsx';
 import { modSign, getCreatureFromId } from './HelperFunctions';
 import { useNavigate } from 'react-router-dom';
-import { useMediaQuery } from '@mui/material';
+import { Typography, useMediaQuery } from '@mui/material';
 import { BasicAccordian, BasicStatCard, BasicStatTableHeader, BasicStatTableRow } from './BasicComponents.jsx';
 import { Accordion, AccordionDetails, AccordionSummary, Button, Box, Checkbox, FormGroup, FormControlLabel } from '@mui/material';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { List, ListItem, ListItemText, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import './styles/Reference.css';
 
@@ -43,22 +43,45 @@ export function ReferenceView() {
 export function ReferenceSideDrawer() {
     const { refData, currRefTable, setCurrRefTable } = useAppContext();
 
+    // title: refTable
+    const refTableObj = {
+        'All': 'all', 
+        'Soldiers': 'soldiers', 
+        'General Arms and Armor': 'armsandarmor', 
+        'Creatures': 'creatures', 
+        'Random Encounters': 'randomencounters', 
+        'Base': 'base', 
+        'Vault': 'vault'
+    };
+
     return (
         <>
-            <Box className="spells-sidebar-view">
-                <h3>Reference Data</h3>
-                <Button onClick={() => setCurrRefTable('all')}>All</Button>
-                <Button onClick={() => setCurrRefTable('soldiers')}>Soldiers</Button>
-                <Button onClick={() => setCurrRefTable('armsandarmor')}>General Arms and Armor</Button>
-                <Button onClick={() => setCurrRefTable('creatures')}>Creatures</Button>
-                <Button onClick={() => setCurrRefTable('randomencounters')}>Random Encounters</Button>
-                <Button onClick={() => setCurrRefTable('base')}>Base Stats</Button>
-                <Button onClick={() => setCurrRefTable('vault')}>Vault</Button>
-            </Box>
-            <Box>
-                <h4>Filter</h4>
+            <Typography variant="h6">Reference</Typography>
+            <Paper elevation={5} sx={{width: '100%', paddingLeft: '10px'}}>
+                <List>
+                    {Object.entries(refTableObj).map(([title, value]) => (
+                        <ListItem 
+                            key={value}
+                            onClick={() => setCurrRefTable(value)}
+                            style = {{cursor: 'pointer'}}
+                            sx={{
+                                cursor: 'pointer',
+                                padding: '5px',
+                                transition: 'color 0.3s ease',
+                                '&:hover .MuiListItemText-primary': {
+                                  color: 'lightblue',
+                                },
+                            }}
+                        >
+                            <ListItemText primary={title} />
+                        </ListItem>
+                    ))}
+                </List>
+            </Paper>
+            <Typography variant="h6">Source Filter</Typography>
+            <Paper elevation={5} sx={{paddingLeft: '10px', width: '100%'}}>
                 <SourceFilter />
-            </Box>
+            </Paper>
         </>
     );
 }

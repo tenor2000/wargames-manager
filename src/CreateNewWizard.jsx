@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { getSchoolFromId, getSchoolFromSpellId, getRandomName, getSpellFromId } from './HelperFunctions.js';
 import './styles/NewWizard.css';
 import { update } from 'firebase/database';
-import { useMediaQuery } from '@mui/material';
+import { Paper, Typography, useMediaQuery } from '@mui/material';
 import { TextField, Button, InputLabel, Select, MenuItem, FormControl, Box } from '@mui/material';
 
 
@@ -21,18 +21,32 @@ export function NewWizardSideDrawer() {
     return <div>Error loading data</div>;
     }
 
-    console.log(newWizard)
-    console.log(getSchoolFromSpellId(newWizard.primarySpellIds[0]))
+    const schoolName = getSchoolFromId(newWizard.classId, refData).name;
 
   return (
-    <Box sx ={{width: '100%', textAlign: 'left' }}>
-      <h3>Building New Wizard...</h3>
-      <p>Wizard Name: {newWizard.name}</p>
-      <p>School: {getSchoolFromId(newWizard.classId, refData).name}</p>
-      <p>Primary Spells: {newWizard.primarySpellIds.map(spellId => getSpellFromId(spellId, refData).name).join(', ')}</p>
-      <p>Secondary Spells: {newWizard.alignedSpellIds.map(spellId => getSpellFromId(spellId, refData).name).join(', ')}</p>
-      <p>Neutral Spells: {newWizard.neutralSpellIds.map(spellId => getSpellFromId(spellId, refData).name).join(', ')}</p>
-    </ Box>
+    <>
+      <Typography variant="h5">Building New Wizard...</Typography>
+      <Paper elevation={5} sx={{ paddingLeft: 5, w: '100%', textAlign: 'left' }}>
+        <p>Wizard Name: {newWizard.name}</p>
+        <p>School: {schoolName === 'All' ? '' : schoolName}</p>
+      </Paper>
+
+      <Typography variant="h5">Spells</Typography>
+      <Paper>
+        <p>Primary Spells:</p>
+        <ol>
+          {newWizard.primarySpellIds.map(spellId => <li>{getSpellFromId(spellId, refData).name}</li>)}
+        </ol>
+        <p>Secondary Spells:</p>
+        <ol>
+          {newWizard.alignedSpellIds.map(spellId => <li>{getSpellFromId(spellId, refData).name}</li>)}
+        </ol>
+        <p>Neutral Spells:</p>
+        <ol>
+          {newWizard.neutralSpellIds.map(spellId => <li>{getSpellFromId(spellId, refData).name}</li>)}
+        </ol> 
+      </Paper>
+    </>
   );
 }
 
@@ -57,6 +71,9 @@ export function CreateNewWizard() {
     const newErrors = {};
     if (!newWizard.name ||newWizard.name.trim() =='') {
       newErrors.name = 'Name is required';
+    }
+    if (newWizard.name.length > 20) {
+      newErrors.name = 'Name is too long. Limit of 20 characters.';
     }
     if (userData.myWizards.some(wizard => wizard.name.toLowerCase() === newWizard.name.toLowerCase())) {
       newErrors.name = 'Name already exists';
@@ -185,13 +202,13 @@ function NewWizardEdit({refData, newWizard, setNewWizard}) {
         >
           <TextField 
             className='TextField'
-            required
             id="name" 
             label="Name" 
             value={newWizard.name} 
             onChange={(e) => setNewWizard({ ...newWizard, name: e.target.value })}
             size= "small"
-            />
+            required
+          />
           <FormControl fullWidth sx={{ gap: 2, minWidth: 120}}>
             <InputLabel id="class-label" >Class</InputLabel>
             <Select
@@ -202,6 +219,7 @@ function NewWizardEdit({refData, newWizard, setNewWizard}) {
               label="Class"
               onChange={handleClassChange}
               size= "small"
+              inputProps={{ maxLength: 20 }}
             >
               <MenuItem key={0} value={0}>--</MenuItem>
               {schoolList}

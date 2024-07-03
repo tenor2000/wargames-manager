@@ -5,7 +5,7 @@ import { useAuth } from './AuthContext.jsx';
 import { deriveApprenticeStats, getCreatureFromId, rollD20, getRandomSpell, getScenarioFromId, getSchoolFromId  } from './HelperFunctions.js';
 import { formSoldierStats } from './WarbandSoldiers.jsx';
 import { BasicAccordian, BasicStatCard, BasicStatTableHeader, BasicStatTableRow } from './BasicComponents.jsx';
-import { SpellBookBlock } from './WarbandSpellbook.jsx';
+import { SpellBookView } from './WarbandSpellbook.jsx';
 import { Box, Button } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 
@@ -40,7 +40,7 @@ export function BattleView({handleView}) {
                 {isPortrait && <RosterCardView refData={refData} currentWizard={currentWizard} />}
             </BasicAccordian>
             <BasicAccordian title="Spell Book" >
-                <SpellBookBlock />
+                <SpellBookView />
             </BasicAccordian>
             <BasicAccordian title="Creatures" >
                 <CreatureRosterBlock />

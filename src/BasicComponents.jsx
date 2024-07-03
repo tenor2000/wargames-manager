@@ -476,14 +476,13 @@ export function SimpleSnackbar(message) {
 export function BasicAccordian({title, children}) {
   return (
     <Accordion sx={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', color: 'white' }}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} id="hired-soldiers" aria-controls="hired-soldiers-info">
-                    <h3>{title}</h3>
-                </AccordionSummary>
-                {/* <AccordionDetails className='center column'> */}
-                <AccordionDetails sx={{display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center', alignItems: 'center'}}>
-                    {children}
-                </AccordionDetails>
-            </Accordion>
+      <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }}/>} aria-controls={`${title}-info`}>
+          <h3>{title}</h3>
+      </AccordionSummary>
+      <AccordionDetails sx={{display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center', alignItems: 'center'}}>
+          {children}
+      </AccordionDetails>
+    </Accordion>
   )
 }
 

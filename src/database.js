@@ -5,7 +5,7 @@ export const userInfoData = {
     myWizards: [
         {
             id: 1,
-            name: 'Ivan the Illusionator',
+            name: 'Tim',
             classId: 4,
             level: 0,
             health: 14,
@@ -56,7 +56,7 @@ export const userInfoData = {
         },
         {
             id: 2,
-            name: 'David the Enchanter',
+            name: 'Dave',
             classId: 3,
             level: 4,
             health: 14,
@@ -107,7 +107,7 @@ export const userInfoData = {
         },
         {
             id: 3,
-            name: 'Homer the Warlock',
+            name: 'Homer',
             classId: 10,
             level: 0,
             health: 14,
