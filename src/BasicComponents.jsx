@@ -39,14 +39,14 @@ export function BasicStatCard({
     return (
       <>
         <TableRow>
-          <TableCell sx={{ width: '33%' }}><img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move'/>{statsObj.move}</TableCell>
-          <TableCell sx={{ width: '33%' }}><img src='src/assets/Game-Icons-net/axe-sword.svg' className="stat-icon" alt='Fight'/>{modSign(statsObj.fight)}</TableCell>
-          <TableCell sx={{ width: '33%' }}><img src='src/assets/Game-Icons-net/high-shot.svg' className="stat-icon" alt='Shoot'/>{modSign(statsObj.shoot)}</TableCell>
+          <TableCell sx={{ width: '33%' }}><img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move'/> {statsObj.move}</TableCell>
+          <TableCell sx={{ width: '33%' }}><img src='src/assets/Game-Icons-net/axe-sword.svg' className="stat-icon" alt='Fight'/> {modSign(statsObj.fight)}</TableCell>
+          <TableCell sx={{ width: '33%' }}><img src='src/assets/Game-Icons-net/high-shot.svg' className="stat-icon" alt='Shoot'/> {modSign(statsObj.shoot)}</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell><img src='src/assets/Game-Icons-net/abdominal-armor.svg' className="stat-icon" alt='Armor'/>{statsObj.armor}</TableCell>
-          <TableCell><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will'/>{modSign(statsObj.will)}</TableCell>
-          <TableCell><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Health'/>{statsObj.health}</TableCell>
+          <TableCell><img src='src/assets/Game-Icons-net/abdominal-armor.svg' className="stat-icon" alt='Armor'/> {statsObj.armor}</TableCell>
+          <TableCell><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will'/> {modSign(statsObj.will)}</TableCell>
+          <TableCell><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Health'/> {statsObj.health}</TableCell>
         </TableRow>
       </>
     );
@@ -164,6 +164,13 @@ export function BasicStatCard({
 export function BasicStatTableHeader({children, showName=false, showClass = false, showCosts=false, showStatus=false, showItemSlots=false, showLevel=false, showSource=false, showDamage=false, editMode=false, cloning=true }) {
   // const [order, setOrder] = useState('asc');
   // const [orderBy, setOrderBy] = useState('name');
+  const isLandscape = useMediaQuery('(max-width: 768px) and (orientation: landscape)');
+  
+  if (showSource) {
+    if (isLandscape) {
+      showSource = false;
+    }
+  }
   
   const clonedChildren = React.Children.map(children, child => {
     if (React.isValidElement(child)) {

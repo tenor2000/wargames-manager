@@ -142,3 +142,10 @@ export function getScenarioFromId(scenarioId, refData) {
   }
   return refData.scenarios.find(scenario => scenario.id === scenarioId)
 }
+
+export function getBaseFromId(baseId, refData) { 
+  if (!refData || !refData.baseLocations) {
+    return { name: 'Unknown Base with ID ' + baseId }; 
+  }
+  return refData.baseLocations.find(base => base.id === baseId)
+}
