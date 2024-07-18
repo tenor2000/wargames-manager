@@ -1,8 +1,9 @@
-import { useAppContext } from "./AppContext";
-import { useAuth } from "./AuthContext";
+import { useAppContext } from "../contexts/AppContext.jsx";
+import { useAuth } from "../contexts/AuthContext.jsx";
+import { useAlert } from "../contexts/AlertContext.jsx";
 import { useState, useEffect } from "react";
-import { BasicStatCard, BasicStatTableHeader, BasicStatTableRow, DisplayStatus } from "./BasicComponents";
-import { getSoldierFromId, getRandomSoldier, getStatusFromId, modSign, getItemFromId } from "./HelperFunctions";
+import { BasicStatCard, BasicStatTableHeader, BasicStatTableRow, DisplayStatus } from "../basicComponents/BasicComponents.jsx";
+import { getSoldierFromId, getRandomSoldier, getStatusFromId, modSign, getItemFromId } from "../helperFuncs/HelperFunctions.js";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import { Box, Tooltip, TextField, Button, Snackbar } from "@mui/material";
@@ -30,20 +31,29 @@ export const formSoldierStats = (mySoldierArray, refData) => {
 
 export function SoldierRosterView({handleButton}) {
     const { currentWizard, editMode, refData } = useAppContext();
+    const { alert, showAlert, hideAlert } = useAlert();
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
-    if (currentWizard.soldiers.length === 0) {
-        return <p>There are no soldiers in {currentWizard.name}'s roster.</p>
+    if (currentWizard.soldiers.length === 0 && !editMode.soldiers) {
+        return (
+            <>
+                <p>There are no soldiers in {currentWizard.name}'s roster.</p>
+                <Button onClick={() => handleButton('edit', 'soldiers')}>Hire Soldiers</Button>
+            </>
+        )
     }
 
     if (editMode.soldiers) {
-        return <EditSoldiersView />
+        return (
+                <EditSoldiersView />
+        )
     }
 
     const soldierList = formSoldierStats(currentWizard.soldiers, refData);
 
     return (
         <>
+            
             {isPortrait &&
             <div className='soldier-card-view'>
                 {soldierList.map((soldier, index) => (
@@ -63,9 +73,10 @@ export function SoldierRosterView({handleButton}) {
     );
 }
 
-export function EditSoldiersView() {
+export function EditSoldiersView({alertObj, setAlertObj}) {
     const { currentWizard, setCurrentWizard, editMode, setEditMode, refData} = useAppContext();
     const { userData, setUserData } = useAuth();
+    const { alert, showAlert, hideAlert } = useAlert();
     const [ totalEditedCost, setTotalEditedCost ] = useState(0);
     const [ editedWizard, setEditedWizard ] = useState({...currentWizard});
 
@@ -75,15 +86,6 @@ export function EditSoldiersView() {
     }, [currentWizard])
 
     const handleCancel = () => {
-        //WIP
-        // const newEditMode = {...editMode};
-        // newEditMode['soldiers'] = false;
-        // const updateWizard = {...currentWizard};
-        // console.log(currentWizard.soldiers)
-        // console.log(editedWizard.soldiers)
-        // setCurrentWizard({...currentWizard});
-        // setEditMode(newEditMode);
-
         const newEditMode = { ...editMode };
         newEditMode['soldiers'] = false;
         setCurrentWizard({ ...currentWizard });
@@ -93,12 +95,12 @@ export function EditSoldiersView() {
     const handleSave = () => {
         const updateWizard = {...editedWizard};
         if (updateWizard.gold - totalEditedCost < 0) {
-            alert('Not enough gold')
+            showAlert('You do not have enough gold')
             return
         }
         const totalSpecialists = editedWizard.soldiers.filter(soldier => getSoldierFromId(soldier.classId, refData).type === 'Specialist' && soldier.status !== 8);
         if (totalSpecialists.length > 4) {
-            alert('Too many specialists')
+            showAlert('Too many specialists')
             return
         }
 
@@ -122,7 +124,7 @@ export function EditSoldiersView() {
         );
         
         const updatedWizard = newUserData.myWizards.find(wizard => wizard.id === currentWizard.id);
-
+        showAlert('Soldier roster updated', 'success');
         setCurrentWizard(updatedWizard);
         setUserData(newUserData);
     }

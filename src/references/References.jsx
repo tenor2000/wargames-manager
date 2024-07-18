@@ -1,13 +1,13 @@
 import React from 'react';
-import { useAppContext } from './AppContext.jsx';
-import { modSign, getCreatureFromId } from './HelperFunctions';
+import { useAppContext } from '../contexts/AppContext.jsx';
+import { modSign, getCreatureFromId } from '../helperFuncs/HelperFunctions.js';
 import { useNavigate } from 'react-router-dom';
 import { Typography, useMediaQuery } from '@mui/material';
-import { BasicAccordian, BasicStatCard, BasicStatTableHeader, BasicStatTableRow } from './BasicComponents.jsx';
+import { BasicAccordian, BasicStatCard, BasicStatTableHeader, BasicStatTableRow } from '../basicComponents/BasicComponents.jsx';
 import { Accordion, AccordionDetails, AccordionSummary, Button, Box, Checkbox, FormGroup, FormControlLabel } from '@mui/material';
-import { List, ListItem, ListItemText, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { List, ListItem, ListItemButton, ListItemText, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import './styles/Reference.css';
+import '../styles/Reference.css';
 
 export function ReferenceView() {
     const { currRefTable } = useAppContext();
@@ -62,18 +62,13 @@ export function ReferenceSideDrawer() {
                     {Object.entries(refTableObj).map(([title, value]) => (
                         <ListItem 
                             key={value}
-                            onClick={() => setCurrRefTable(value)}
-                            style = {{cursor: 'pointer'}}
-                            sx={{
-                                cursor: 'pointer',
-                                padding: '5px',
-                                transition: 'color 0.3s ease',
-                                '&:hover .MuiListItemText-primary': {
-                                  color: 'lightblue',
-                                },
-                            }}
+                            disablePadding
+                            disableGutters
                         >
-                            <ListItemText primary={title} />
+                            <ListItemButton
+                                onClick={() => setCurrRefTable(value)}>
+                                <ListItemText primary={title} />
+                            </ListItemButton>
                         </ListItem>
                     ))}
                 </List>

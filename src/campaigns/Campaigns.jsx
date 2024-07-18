@@ -1,13 +1,14 @@
-import { Box, Button, IconButton, List, ListItem, ListItemText, ListItemAvatar, Avatar, Paper, Typography } from '@mui/material';
+import { Box, Button, IconButton, List, ListItem, ListItemText, ListItemAvatar, Avatar, Paper, Typography, ListItemButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from './AuthContext.jsx'
+import { useAuth } from '../contexts/AuthContext.jsx'
 import { AfterActionView } from './AfterActionReport.jsx';
 import { useState, useEffect } from 'react';
-import { getCreatureFromId, rollD20, getRandomSpell, getScenarioFromId, getSchoolFromId, getMyWizardFromId } from './HelperFunctions.js';
-import { useAppContext } from './AppContext.jsx';
+import { getCreatureFromId, rollD20, getRandomSpell, getScenarioFromId, getSchoolFromId, getMyWizardFromId } from '../helperFuncs/HelperFunctions.js';
+import { useAppContext } from '../contexts/AppContext.jsx';
 import { BattleView } from './BattleView.jsx';
 import { CreateNewCampaign } from './CreateNewCampaign.jsx';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 
 
 export function CampaignView() {
@@ -94,9 +95,7 @@ export function CampaignSideDrawer() {
         .sort((a, b) => a.name.localeCompare(b.name))
         .map(campaign => (
           <ListItem 
-            key={campaign.id} 
-            onClick={() => handleButton('campaign', campaign)} 
-            sx={{cursor: 'pointer', paddingLeft: '10px'}}
+            key={campaign.id}
             secondaryAction={
               <IconButton
                 aria-label="delete"
@@ -107,11 +106,17 @@ export function CampaignSideDrawer() {
                 <DeleteIcon />
               </IconButton> 
             }
+            disablePadding
+            disableGutters
           >
-            <ListItemText 
-              primary={campaign.name} 
-              secondary={`${getMyWizardFromId(campaign.wizardId, userData).name}`}
-            />
+            <ListItemButton
+              onClick={() => handleButton('campaign', campaign)}
+            >
+              <ListItemText 
+                primary={campaign.name} 
+                secondary={`${getMyWizardFromId(campaign.wizardId, userData).name}`}
+              />
+            </ListItemButton>
           </ListItem>
         )
     );
@@ -141,13 +146,31 @@ export function CampaignSideDrawer() {
         <Paper elevation={5} sx={{width: '100%'}}>
             <List>
               {campaignList}
+              <ListItem disableGutters disablePadding>
+                        <ListItemButton
+                            autoFocus
+                            onClick={() => handleButton('new-wizard')}
+                        >
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <AddIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Add Campaign" />
+                        </ListItemButton>
+                    </ListItem>
             </List>
           <Button onClick={() => handleButton('newCampaign')}> + New Campaign</Button>
         </Paper>
 
         <Typography variant="h5" onClick={() => handleButton('base')} style={{cursor: 'pointer'}}>My Tools</Typography>
         <Paper elevation={5} sx={{width: '100%'}}>
-          <p>Coming Soon...</p>
+          <List>
+            <ListItem disableGutters disablePadding>
+              <p>Coming Soon...</p>
+            </ListItem>
+          </List>
+          
         </Paper>
       </>
     );
@@ -231,7 +254,7 @@ function ScenarioCards({currentCampaign, handleView}) {
     const scenarioInfoObj = getScenarioFromId(scenario.scenarioId, refData)
 
     return (
-      <Paper sx={{display: 'flex', flexDirection: 'column', width: '300px', height : '350px', textAlign: 'center', border: '2px solid black', margin: '10px', padding: '10px'}}>
+      <Paper sx={{display: 'flex', flexDirection: 'column', width: '250px', height : '350px', textAlign: 'center', border: '2px solid black', margin: '10px', padding: '10px'}}>
         <Box sx={{display: 'flex', flexDirection: 'column', width: '100%', textAlign: 'center', justifyContent: 'center', borderBottom: '2px solid black', flex: 1 }}>
           <h3>{scenarioInfoObj.name}</h3>
           <p>Image goes here</p>

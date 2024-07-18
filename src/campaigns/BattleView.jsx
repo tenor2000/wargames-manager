@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppContext } from './AppContext.jsx';
-import { useAuth } from './AuthContext.jsx';
-import { deriveApprenticeStats, getCreatureFromId, rollD20, getRandomSpell, getScenarioFromId, getSchoolFromId  } from './HelperFunctions.js';
-import { formSoldierStats } from './WarbandSoldiers.jsx';
-import { BasicAccordian, BasicStatCard, BasicStatTableHeader, BasicStatTableRow } from './BasicComponents.jsx';
-import { SpellBookView } from './WarbandSpellbook.jsx';
+import { useAppContext } from '../contexts/AppContext.jsx';
+import { useAuth } from '../contexts/AuthContext.jsx';
+import { deriveApprenticeStats, getCreatureFromId, rollD20, getRandomSpell, getScenarioFromId, getSchoolFromId  } from '../helperFuncs/HelperFunctions.js';
+import { formSoldierStats } from '../warbands/WarbandSoldiers.jsx';
+import { BasicAccordian, BasicStatCard, BasicStatTableHeader, BasicStatTableRow } from '../basicComponents/BasicComponents.jsx';
+import { SpellBookView } from '../warbands/WarbandSpellbook.jsx';
 import { Box, Button } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 

@@ -1,10 +1,10 @@
-import { useAppContext } from './AppContext.jsx';
+import { useAppContext } from '../contexts/AppContext.jsx';
 import { useState } from 'react';
-import { BasicAccordian, BasicSpellCard, SearchBar } from './BasicComponents.jsx';
-import { getSchoolFromId } from './HelperFunctions.js';
-import { Avatar, List, ListItem, ListItemText, ListItemAvatar, IconButton, Paper, Button, Box, Typography } from '@mui/material';
+import { BasicAccordian, BasicSpellCard, SearchBar } from '../basicComponents/BasicComponents.jsx';
+import { getSchoolFromId } from '../helperFuncs/HelperFunctions.js';
+import { Avatar, List, ListItem, ListItemButton, ListItemText, ListItemAvatar, IconButton, Paper, Button, Box, Typography } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
-import './styles/Spells.css';
+import '../styles/Spells.css';
 
 export function SpellView() {
     const { schoolFilterId, setSchoolFilterId, spellViewList, setSpellViewList, refData} = useAppContext();
@@ -49,9 +49,9 @@ export function SpellView() {
     const schoolname = getSchoolFromId(schoolFilterId, refData).name;
  
     return (
-        <>
+        <Box>
             {!isPortrait && 
-                <div className='center row'>
+                <Box sx={{ textAlign: 'center'}}>
                     <h2>{schoolname} {schoolname === 'All' ? 'Spells' : 'Spellbook'}</h2>
                     <SearchBar 
                         searchText={searchText}
@@ -59,7 +59,7 @@ export function SpellView() {
                         handleSearchFilter={handleSearchFilter}
                         clearSearch={clearSearch}
                     />
-                </div>
+                </Box>
             }
             {isPortrait && 
                 <Box sx={{ textAlign: 'center'}}>
@@ -74,7 +74,7 @@ export function SpellView() {
             <Box>
                 {spellsBySchool()}
             </Box>
-        </>
+        </Box>
     );
 }
 
@@ -105,24 +105,22 @@ export function SpellSideDrawer() {
     const spellSchoolsList = magicSchools.map(school => (
         <ListItem 
             key={school.id}
-            onClick={() => handleSchoolClick(school.name)}
-            style={{cursor: 'pointer'}}
-            sx={{
-                cursor: 'pointer',
-                padding: '5px',
-                transition: 'color 0.3s ease',
-                '&:hover .MuiListItemText-primary': {
-                  color: 'lightblue',
-                },}}
+            disablePadding
+            disableGutters
         >
-            <ListItemAvatar>
-                <Avatar sx={{ width: 25, height: 25 }}>
-                    <img src={'src/assets/Game-Icons-net/wizard-face.svg'} alt={school.name} />
-                </Avatar>
-            </ListItemAvatar>
-            <ListItemText
-                primary={school.name}
-            />
+            <ListItemButton
+                onClick={() => handleSchoolClick(school.name)}
+                disableGutters
+            >
+                <ListItemAvatar>
+                    <Avatar sx={{ width: 25, height: 25 }}>
+                        <img src={'src/assets/Game-Icons-net/wizard-face.svg'} alt={school.name} />
+                    </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                    primary={school.name}
+                />
+            </ListItemButton>
         </ListItem>
     ))
 

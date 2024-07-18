@@ -1,4 +1,4 @@
-import { useAppContext } from './AppContext.jsx';
+import { useAppContext } from '../contexts/AppContext.jsx';
 
 export function VaultView() {
     const { currentWizard } = useAppContext();

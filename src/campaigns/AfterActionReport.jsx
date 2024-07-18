@@ -1,7 +1,7 @@
-import { useAuth } from './AuthContext.jsx';
-import { useAppContext } from './AppContext.jsx';
+import { useAuth } from '../contexts/AuthContext.jsx';
+import { useAppContext } from '../contexts/AppContext.jsx';
 import { useEffect, useState } from 'react';
-import { getCreatureFromId, getScenarioFromId } from './HelperFunctions.js';
+import { getCreatureFromId, getScenarioFromId } from '../helperFuncs/HelperFunctions.js';
 import { Box, Button, Checkbox, FormControl, Select, MenuItem, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, useMediaQuery } from '@mui/material';
 
 export function AfterActionView({refData, handleView}) {

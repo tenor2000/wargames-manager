@@ -18,7 +18,14 @@ export const userInfoData = {
             cost: 0,
             status: 1,
             itemSlots: [101, 0, 0, 0, 0],
-            statMods: [],
+            statMods: {
+                move: 0,
+                fight: 0,
+                shoot: 0,
+                armor: 0,
+                will: 0,
+                health: 0
+            },
             gold: 400,
             apprentice: {
                 name: "Jim",
@@ -26,7 +33,14 @@ export const userInfoData = {
                 status: 1,
                 armor: 10,
                 itemSlots: [101, 202, 0, 0],
-                statMods: [],
+                statMods: {
+                    move: 0,
+                    fight: 0,
+                    shoot: 0,
+                    armor: 0,
+                    will: 0,
+                    health: 0
+                },
                 cost: 100, // It actually calculated (level-6)*10 + 160
             },
             primarySpellIds: [401, 402, 403],
@@ -49,8 +63,8 @@ export const userInfoData = {
             soldiersLost: 0,
             xp: 0,
             xpSpent: 0,
-            vault: [],
-            base: 'none',
+            vaultItems: [],
+            base: 1001,
             currentScenario: null,
             careerHistory: []
         },
@@ -69,7 +83,14 @@ export const userInfoData = {
             cost: 0,
             status: 1,
             itemSlots: [105, 0, 0, 0, 0],
-            statMods: [],
+            statMods: {
+                move: 0,
+                fight: 0,
+                shoot: 0,
+                armor: 0,
+                will: 0,
+                health: 0
+            },
             gold: 400,
             apprentice: {
                 name: "Ted",
@@ -77,7 +98,14 @@ export const userInfoData = {
                 status: 1,
                 armor: 10,
                 itemSlots: [101, 0, 0, 0],
-                statMods: [],
+                statMods: {
+                    move: 0,
+                    fight: 0,
+                    shoot: 0,
+                    armor: 0,
+                    will: 0,
+                    health: 0
+                },
                 cost: 100,
             },
             primarySpellIds: [301, 302, 303],
@@ -100,8 +128,8 @@ export const userInfoData = {
             soldiersLost: 0,
             xp: 400,
             xpSpent: 200,
-            vault: [],
-            base: 104,
+            vaultItems: [],
+            base: 1004,
             currentScenario: null,
             careerHistory: []
         },
@@ -120,7 +148,14 @@ export const userInfoData = {
             cost: 0,
             status: 1,
             itemSlots: [101, 0, 0, 0, 0],
-            statMods: [],
+            statMods: {
+                move: 0,
+                fight: 0,
+                shoot: 0,
+                armor: 0,
+                will: 0,
+                health: 0
+            },
             gold: 400,
             apprentice: {
                 name: "",
@@ -128,7 +163,14 @@ export const userInfoData = {
                 status: 9,
                 armor: 10,
                 itemSlots: [0, 0, 0, 0],
-                statMods: [],
+                statMods: {
+                    move: 0,
+                    fight: 0,
+                    shoot: 0,
+                    armor: 0,
+                    will: 0,
+                    health: 0
+                },
                 cost: 100,
             },
             primarySpellIds: [1001, 1002, 1003],
@@ -144,8 +186,8 @@ export const userInfoData = {
             soldiersLost: 0,
             xp: 0,
             xpSpent: 0,
-            vault: [],
-            base: 'none',
+            vaultItems: [],
+            base: 1003,
             currentScenario: null,
             careerHistory: []
         },

@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useAppContext } from './AppContext.jsx';
-import { getSpellFromId } from './HelperFunctions.js';
+import { useAppContext } from '../contexts/AppContext.jsx';
+import { getSpellFromId } from '../helperFuncs/HelperFunctions.js';
 import { Box,Button } from '@mui/material';
-import { BasicSpellCard } from './BasicComponents.jsx';
+import { BasicSpellCard } from '../basicComponents/BasicComponents.jsx';
 import { useMediaQuery } from '@mui/material';
 
 export function SpellBookView() {

@@ -1,5 +1,5 @@
-import { useAppContext } from './AppContext';
-import { useAuth } from './AuthContext';
+import { useAppContext } from '../contexts/AppContext';
+import { useAuth } from '../contexts/AuthContext';
 
 export function getSpellFromId(spellId, refData) {
   if (!refData || !refData.schoolsOfMagic) {
@@ -71,6 +71,7 @@ export function deriveApprenticeStats(wizStats, apprentice) {
   return {
     name: apprentice.name,
     class: apprentice.class,
+    level: wizStats.level - 6,
     move: wizStats.move,
     fight: wizStats.fight - 2,
     shoot: wizStats.shoot,
@@ -107,12 +108,12 @@ export function getItemFromId(itemId, refData) {
   }
   let refList
 
-  if (itemId > 100 && itemId < 200) {
+  if (itemId === 0) {
+    return { id: 0, name: '--' }
+  } else if (itemId > 100 && itemId < 200) {
     refList = refData.arms
   } else if (itemId > 200 && itemId < 300) {
     refList = refData.armor
-  } else {
-    return null
   }
 
   return refList.find(item => item.id === itemId)
@@ -147,5 +148,10 @@ export function getBaseFromId(baseId, refData) {
   if (!refData || !refData.baseLocations) {
     return { name: 'Unknown Base with ID ' + baseId }; 
   }
+
+  if (baseId === 0) {
+    return { id: 0, name: '--' }
+  }
+  
   return refData.baseLocations.find(base => base.id === baseId)
 }

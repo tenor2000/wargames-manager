@@ -1,8 +1,8 @@
 import React from 'react';
-import { useAppContext } from './AppContext.jsx';
+import { useAppContext } from '../contexts/AppContext.jsx';
 import { useState, Fragment } from 'react';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
-import { getStatusFromId, getSpellFromId, getItemFromId, modSign } from './HelperFunctions.js';
+import { getStatusFromId, getSpellFromId, getItemFromId, modSign } from '../helperFuncs/HelperFunctions.js';
 import { Accordion, AccordionDetails, AccordionSummary, Box, TextField, InputAdornment, Button, useMediaQuery } from "@mui/material";
 import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableFooter, TableRow, Tooltip } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -36,23 +36,58 @@ export function BasicStatCard({
   // end
 
   const StatsLine = () => {
+    
+    calcEquipmentMods(statsObj, refData);
+
     return (
       <>
         <TableRow>
-          <TableCell sx={{ width: '33%' }}><img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move'/> {statsObj.move}</TableCell>
-          <TableCell sx={{ width: '33%' }}><img src='src/assets/Game-Icons-net/axe-sword.svg' className="stat-icon" alt='Fight'/> {modSign(statsObj.fight)}</TableCell>
-          <TableCell sx={{ width: '33%' }}><img src='src/assets/Game-Icons-net/high-shot.svg' className="stat-icon" alt='Shoot'/> {modSign(statsObj.shoot)}</TableCell>
+          <TableCell sx={{ width: '33%' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move'/> 
+              {statsObj.statMods ? statsObj.statMods.move + statsObj.move : statsObj.move}
+            </Box>
+          </TableCell>
+          <TableCell sx={{ width: '33%' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <img src='src/assets/Game-Icons-net/axe-sword.svg' className="stat-icon" alt='Fight'/> 
+              {modSign(statsObj.statMods ? statsObj.statMods.fight + statsObj.fight : statsObj.fight)}
+            </Box>
+          </TableCell>
+          <TableCell sx={{ width: '33%' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <img src='src/assets/Game-Icons-net/high-shot.svg' className="stat-icon" alt='Shoot'/> 
+              {modSign(statsObj.statMods ? statsObj.statMods.shoot + statsObj.shoot : statsObj.shoot)}
+            </Box>
+          </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell><img src='src/assets/Game-Icons-net/abdominal-armor.svg' className="stat-icon" alt='Armor'/> {statsObj.armor}</TableCell>
-          <TableCell><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will'/> {modSign(statsObj.will)}</TableCell>
-          <TableCell><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Health'/> {statsObj.health}</TableCell>
+          <TableCell sx={{ width: '33%' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <img src='src/assets/Game-Icons-net/abdominal-armor.svg' className="stat-icon" alt='Armor'/>
+              {statsObj.statMods ? statsObj.statMods.armor + statsObj.armor : statsObj.armor}
+            </Box>
+          </TableCell>
+          <TableCell sx={{ width: '33%' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will'/>
+              {modSign(statsObj.statMods ? statsObj.statMods.will + statsObj.will : statsObj.will)}
+            </Box>
+          </TableCell>
+          <TableCell sx={{ width: '33%' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Health'/> 
+              {statsObj.statMods ? statsObj.statMods.health + statsObj.health : statsObj.health}
+            </Box>
+          </TableCell>
         </TableRow>
       </>
     );
   }
 
-  function handleChange(type, max=statsObj.health) {
+  function handleChange(type) {
+    const max = statsObj.statMods.health ? statsObj.statMods.health + statsObj.health : statsObj.health
+
     if (type === '-') {
       if (currentHealth > 0) {
         setCurrentHealth(currentHealth - 1);
@@ -127,7 +162,7 @@ export function BasicStatCard({
                     <TableCell>{statsObj.cost > 0 ? `${statsObj.cost} gc` : 'Free'}</TableCell>
                   }
                   {showLevel && 
-                    <TableCell>Level {statsObj.level}</TableCell>
+                    <TableCell>Level {statsObj.level > 0 ? statsObj.level : 0}</TableCell>
                   }
                 </TableRow>
               }
@@ -210,7 +245,7 @@ export function BasicStatTableHeader({children, showName=false, showClass = fals
           <TableHead >
             <TableRow>
               {showName && 
-                <TableCell>
+                <TableCell sx={{textAlign: 'left'}}>
                   {/* <TableSortLabel
                     active={orderBy === 'name'}
                     direction={orderBy === 'name' ? order : 'asc'}
@@ -220,7 +255,7 @@ export function BasicStatTableHeader({children, showName=false, showClass = fals
                   {/* </TableSortLabel> */}
                 </TableCell>}
               {showClass && 
-                <TableCell>
+                <TableCell sx={{textAlign: 'left'}}>
                   {/* <TableSortLabel
                     active={orderBy === 'class'}
                     direction={orderBy === 'class' ? order : 'asc'}
@@ -229,19 +264,19 @@ export function BasicStatTableHeader({children, showName=false, showClass = fals
                     Class
                   {/* </TableSortLabel> */}
                 </TableCell>}
-              {showLevel && <TableCell>Level</TableCell>}
+              {showLevel && <TableCell sx={{textAlign: 'center'}}>Level</TableCell>}
               <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/move.svg' className="stat-icon" alt='Move'/></TableCell>
               <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/axe-sword.svg' className="stat-icon" alt='Fight'/></TableCell>
               <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/high-shot.svg' className="stat-icon" alt='Shoot'/></TableCell>
               <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/abdominal-armor.svg' className="stat-icon" alt='Armor'/></TableCell>
               <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/brain.svg' className="stat-icon" alt='Will'/></TableCell>
               <TableCell sx={{textAlign: 'center'}}><img src='src/assets/Game-Icons-net/health-normal.svg' className="stat-icon" alt='Health'/></TableCell>
-              {showItemSlots && <TableCell>Items</TableCell>}
+              {showItemSlots && <TableCell sx={{textAlign: 'left'}}>Items</TableCell>}
               <TableCell>Notes</TableCell>
-              {showStatus && <TableCell>Status</TableCell>}
-              {showCosts && <TableCell>Cost</TableCell>}
-              {showSource && <TableCell>Source</TableCell>}
-              {editMode && <TableCell>Action</TableCell>}
+              {showStatus && <TableCell sx={{textAlign: 'left'}}>Status</TableCell>}
+              {showCosts && <TableCell sx={{textAlign: 'left'}}>Cost</TableCell>}
+              {showSource && <TableCell sx={{textAlign: 'left'}}>Source</TableCell>}
+              {editMode && <TableCell sx={{textAlign: 'left'}}>Action</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -278,17 +313,19 @@ export function BasicStatTableRow({statsObj, showName, showCosts, showStatus, sh
     items = [...statsObj.itemSlots];
   }
 
+  calcEquipmentMods(statsObj, refData);
+
   return (
     <TableRow>
       {showName && <TableCell sx={{textAlign: 'left'}}>{statsObj.name}</TableCell>}
       {showClass && <TableCell sx={{textAlign: 'left'}}>{statsObj.class}</TableCell>}
-      {showLevel && <TableCell>{statsObj.level}</TableCell>}
-      <TableCell sx={{textAlign: 'center'}}>{statsObj.move}</TableCell>
-      <TableCell sx={{textAlign: 'center'}}>{modSign(statsObj.fight)}</TableCell>
-      <TableCell sx={{textAlign: 'center'}}>{modSign(statsObj.shoot)}</TableCell>
-      <TableCell sx={{textAlign: 'center'}}>{statsObj.armor}</TableCell>
-      <TableCell sx={{textAlign: 'center'}}>{modSign(statsObj.will)}</TableCell>
-      {!showDamage && <TableCell sx={{textAlign: 'center'}}>{statsObj.health}</TableCell>}
+      {showLevel && <TableCell sx={{textAlign: 'center'}}>{statsObj.level > 0 ? statsObj.level : 0}</TableCell>}
+      <TableCell sx={{textAlign: 'center'}}>{statsObj.move + (statsObj.statMods ? statsObj.statMods.move : 0)}</TableCell>
+      <TableCell sx={{textAlign: 'center'}}>{modSign(statsObj.fight + (statsObj.statMods ? statsObj.statMods.fight : 0))}</TableCell>
+      <TableCell sx={{textAlign: 'center'}}>{modSign(statsObj.shoot + (statsObj.statMods ? statsObj.statMods.shoot : 0))}</TableCell>
+      <TableCell sx={{textAlign: 'center'}}>{statsObj.armor + (statsObj.statMods ? statsObj.statMods.armor : 0)}</TableCell>
+      <TableCell sx={{textAlign: 'center'}}>{modSign(statsObj.will + (statsObj.statMods ? statsObj.statMods.will : 0))}</TableCell>
+      {!showDamage && <TableCell sx={{textAlign: 'center'}}>{statsObj.health + (statsObj.statMods ? statsObj.statMods.health : 0)}</TableCell>}
       {showDamage && <TableCell sx={{textAlign: 'center'}}><HealthCounter statsObj={statsObj} currentHealth={currentHealth} handleChange={handleChange}/></TableCell>}
       {showItemSlots && 
         <TableCell sx={{textAlign: 'left'}}>
@@ -499,7 +536,7 @@ export function HealthCounter({statsObj, currentHealth, handleChange}) {
               sx={{ 
                 display: 'flex', 
                 alignItems: 'center', 
-                justifyContent: 'right', 
+                justifyContent: 'center', 
                 width: '100%' 
               }}
             >
@@ -512,12 +549,12 @@ export function HealthCounter({statsObj, currentHealth, handleChange}) {
   let healthColor = 'inherit';
   if (currentHealth === 0) {
     healthColor = 'red';
-  } else if (currentHealth === statsObj.health) {
+  } else if (currentHealth === statsObj.statMods ? statsObj.statMods.health + statsObj.health : statsObj.health) {
     healthColor = 'green';
   }
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', gap:0 }}>
       <IconButton
         size="small"
         aria-label="close"
@@ -529,17 +566,19 @@ export function HealthCounter({statsObj, currentHealth, handleChange}) {
       <Box sx={{ 
                 display: 'flex', 
                 alignItems: 'center', 
-                justifyContent: 'right', 
-                width: '100%' 
+                justifyContent: 'center',
+                width: '100%',
+                padding: '0px 0px 0px 0px',
               }}
       >
-        <b style={{ color: healthColor}}>{currentHealth}</b>
+        <b style={{ color: healthColor }}>{currentHealth}</b>
       </Box>
       <IconButton
         size="small"
         aria-label="close"
         color="inherit"
         onClick={() => handleChange('+')}
+
       >
         <ArrowRightIcon />
       </IconButton>
@@ -558,5 +597,39 @@ export function DisplayStatus({ statsObj, refData }) {
       return <b style={{color: 'darkgreen'}}>Hired</b>
   } else {
       return <b style={{color: 'lightblue'}}>{getStatusFromId(statsObj.status, refData)}</b>
+  }
+}
+
+export function calcEquipmentMods(statsObj, refData) {
+  if (statsObj.statMods) {
+    // reset to 0s
+    for (let key in statsObj.statMods) {
+      if (statsObj.statMods.hasOwnProperty(key)) {
+        statsObj.statMods[key] = 0;
+      }
+    }
+
+    // calculate mods
+    statsObj.itemSlots.forEach((itemId) => {
+      const itemObj = getItemFromId(itemId, refData);
+      if (itemObj.moveMod) {
+        statsObj.statMods.move += itemObj.moveMod;
+      }
+      if (itemObj.armorMod) {
+        statsObj.statMods.armor += itemObj.armorMod;
+      }
+      if (itemObj.fightMod) {
+        statsObj.statMods.fight += itemObj.fightMod;
+      }
+      if (itemObj.shootMod) {
+        statsObj.statMods.shoot += itemObj.shootMod;
+      }
+      if (itemObj.willMod) {
+        statsObj.statMods.will += itemObj.willMod;
+      }
+      if (itemObj.healthMod) {
+        statsObj.statMods.health += itemObj.healthMod;
+      }
+    })
   }
 }

@@ -1,20 +1,20 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BasicStatCard, BasicAccordian } from './BasicComponents.jsx';
-import { getSchoolFromId, getRandomName } from './HelperFunctions.js';
-import { useAuth } from './AuthContext.jsx';
-import { useAppContext } from './AppContext.jsx';
+import { BasicStatCard, BasicAccordian } from '../basicComponents/BasicComponents.jsx';
+import { getSchoolFromId, getRandomName } from '../helperFuncs/HelperFunctions.js';
+import { useAuth } from '../contexts/AuthContext.jsx';
+import { useAppContext } from '../contexts/AppContext.jsx';
 import { CareerHistoryView } from './WarbandHistory.jsx';
 import { SpellBookView } from './WarbandSpellbook.jsx';
 import { SoldierRosterView } from './WarbandSoldiers.jsx';
 import { ApprenticeView, WizardView } from './WarbandWizard.jsx';
 import { BaseView } from './WarbandBase.jsx';
 import { VaultView } from './WarbandVault.jsx';
-import { Avatar, List, ListItem, ListItemText, ListItemAvatar, IconButton, Paper, Button, Box, Typography } from '@mui/material';
+import { Avatar, List, ListItem, ListItemButton, ListItemText, ListItemAvatar, IconButton, Paper, Button, Box, Typography } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import Divider from '@mui/material/Divider';
-import DeleteIcon from '@mui/icons-material/Delete';
-import './styles/Warbands.css';
+import AddIcon from '@mui/icons-material/Add';
+import '../styles/Warbands.css';
 
 
 export function WarbandView() {
@@ -80,43 +80,11 @@ export function WarbandSideDrawer() {
         return <div>Error loading data</div>;
     }
 
-    const wizardsList = userData.myWizards
-        .slice()
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .map(wizard => (
-            <ListItem
-                key={wizard.id} 
-                onClick={() => handleButton('wizard', wizard)} 
-                style = {{cursor: 'pointer'}}
-                sx={{padding: '5px'}}
-                secondaryAction={
-                    <IconButton
-                        aria-label="delete"
-                        edge="end"
-                        size="small"
-                        onClick={() => handleButton('wizard-delete', wizard.id)}
-                    >
-                        <DeleteIcon />
-                    </IconButton>
-                }
-            >
-                <ListItemAvatar>
-                    <Avatar >
-                      <img src={'src/assets/Game-Icons-net/wizard-face.svg'} alt={wizard.name} />
-                    </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                    primary={wizard.name}
-                    secondary={getSchoolFromId(wizard.classId, refData).name}
-                />
-            </ListItem>
-        )
-    );
-
     function handleButton(type, target=null) {
         switch (type) {
             case 'wizard':
                 setEditMode({wizards: false, apprentice: false, spellbook: false, soldier: false, vault: false, base: false});
+                
                 setCurrentWizard(target)
                 break;
             case 'new-wizard':
@@ -125,19 +93,35 @@ export function WarbandSideDrawer() {
                 setNewWizard(updatedWizards);
                 navigate('/new-wizard');
                 break
-            case 'delete-wizard':
-                if (window.confirm('Are you sure you want to \'retire\' this wizard?')) {
-                    const newUserData = {...userData};
-                    newUserData.myWizards = newUserData.myWizards.filter(wizard => wizard.id !== target);
-                    setUserData(newUserData);
-                    setCurrentWizard(null)
-                };
-                break
             default:
                 setCurrentWizard(null)
                 break;
         }
     }
+
+    const wizardsList = userData.myWizards
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map(wizard => (
+            <ListItem key={wizard.id} disableGutters disablePadding>
+                <ListItemButton
+                    onClick={() => handleButton('wizard', wizard)}
+                >
+                    <ListItemAvatar>
+                        <Avatar >
+                            <img src={'src/assets/Game-Icons-net/wizard-face.svg'} alt={wizard.name} />
+                        </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                        primary={wizard.name}
+                        secondary={getSchoolFromId(wizard.classId, refData).name}
+                    />
+                </ListItemButton>
+            </ListItem>
+        )
+    );
+
+    
 
     return (
         <>
@@ -152,14 +136,22 @@ export function WarbandSideDrawer() {
                 elevation={5} 
                 sx={{width: '100%'}}
             >
-                <List>
+                <List sx={{padding: '0px', margin: '0px'}}>
                     {wizardsList}
+                    <ListItem disableGutters disablePadding>
+                        <ListItemButton
+                            autoFocus
+                            onClick={() => handleButton('new-wizard')}
+                        >
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <AddIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Add Wizard" />
+                        </ListItemButton>
+                    </ListItem>
                 </List>
-                <Box className="button-container center">
-                    <Button onClick={() => handleButton('new-wizard')}>
-                        + New Wizard
-                    </Button>
-                </Box>
             </Paper>
         </>
     );
@@ -190,7 +182,7 @@ function WarbandDetails() {
         }
     }
 
-    const getWizardHonorific = () => {
+    const getWizardNickname = () => {
         const school = getSchoolFromId(currentWizard.classId, refData);
         const honorific = school.nicknames[Math.floor(Math.random() * school.nicknames.length)];
         return `the ${honorific}`;
@@ -201,19 +193,19 @@ function WarbandDetails() {
         'Apprentice': <ApprenticeView handleButton={handleButton}/>,
         'Spell Book': <SpellBookView />,
         'Soldiers': <SoldierRosterView handleButton={handleButton}/>,
-        'Vault': <VaultView />,
-        'Base of Operations': <BaseView />,
-        'Career History': <CareerHistoryView />
+        'Base of Operations': <BaseView handleButton={handleButton}/>,
+        'Vault and Treasury': <VaultView handleButton={handleButton}/>,
+        'Career History': <CareerHistoryView userData={userData}/>
     }
 
     return (
         <>
             {!isPortrait && 
                 <Box sx={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
-                    <Typography variant="h4">{currentWizard.name} {getWizardHonorific()}</Typography>
+                    <Typography variant="h4">{currentWizard.name} {getWizardNickname()}</Typography>
                 </Box>
             }
-            
+
             {Object.keys(categories).map((key, index) => (
                 <BasicAccordian key={index} title={key} >
                     {categories[key]}
@@ -221,7 +213,8 @@ function WarbandDetails() {
             ))}
 
             <Box sx={{ textAlign: 'center' }}>
-                <Button onClick={() => handleButton('retire')}>Retire Wizard</Button>
+                <Button onClick={() => handleButton('print')} disabled>Print</Button>
+                <Button onClick={() => handleButton('retire')}>Retire</Button>
             </Box>
         </>
     );

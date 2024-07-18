@@ -1,9 +1,9 @@
-import { useAppContext } from './AppContext.jsx';
-import { useAuth } from './AuthContext.jsx';
+import { useAppContext } from '../contexts/AppContext.jsx';
+import { useAuth } from '../contexts/AuthContext.jsx';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getSchoolFromId, getSchoolFromSpellId, getRandomName, getSpellFromId } from './HelperFunctions.js';
-import './styles/NewWizard.css';
+import { getSchoolFromId, getSchoolFromSpellId, getRandomName, getSpellFromId } from '../helperFuncs/HelperFunctions.js';
+import '../styles/NewWizard.css';
 import { update } from 'firebase/database';
 import { Paper, Typography, useMediaQuery } from '@mui/material';
 import { TextField, Button, InputLabel, Select, MenuItem, FormControl, Box } from '@mui/material';
@@ -25,25 +25,25 @@ export function NewWizardSideDrawer() {
 
   return (
     <>
-      <Typography variant="h5">Building New Wizard...</Typography>
-      <Paper elevation={5} sx={{ paddingLeft: 5, w: '100%', textAlign: 'left' }}>
+      <Typography variant="h6">Building New Wizard...</Typography>
+      <Paper elevation={5} sx={{ p: 2, w: '100%', textAlign: 'left' }}>
         <p>Wizard Name: {newWizard.name}</p>
         <p>School: {schoolName === 'All' ? '' : schoolName}</p>
       </Paper>
 
       <Typography variant="h5">Spells</Typography>
-      <Paper>
+      <Paper elevation={5} sx={{ p: 2, w: '100%', textAlign: 'left' }}>
         <p>Primary Spells:</p>
         <ol>
-          {newWizard.primarySpellIds.map(spellId => <li>{getSpellFromId(spellId, refData).name}</li>)}
+          {newWizard.primarySpellIds.map(spellId => <li key={spellId}>{getSpellFromId(spellId, refData).name}</li>)}
         </ol>
         <p>Secondary Spells:</p>
         <ol>
-          {newWizard.alignedSpellIds.map(spellId => <li>{getSpellFromId(spellId, refData).name}</li>)}
+          {newWizard.alignedSpellIds.map(spellId => <li key={spellId}>{getSpellFromId(spellId, refData).name}</li>)}
         </ol>
         <p>Neutral Spells:</p>
         <ol>
-          {newWizard.neutralSpellIds.map(spellId => <li>{getSpellFromId(spellId, refData).name}</li>)}
+          {newWizard.neutralSpellIds.map(spellId => <li key={spellId}>{getSpellFromId(spellId, refData).name}</li>)}
         </ol> 
       </Paper>
     </>
@@ -92,6 +92,11 @@ export function CreateNewWizard() {
     if (newWizard.neutralSpellIds.length !== 2) {
       newErrors.neutralSpells = 'You must select 2 neutral spells';
     }
+
+    if (getSchoolFromSpellId(newWizard.neutralSpellIds[0], refData) === getSchoolFromSpellId(newWizard.neutralSpellIds[1], refData)) {
+      newErrors.neutralSpells = 'Neutral spells must be from different schools';
+    }
+
     return newErrors
   }
 
@@ -171,17 +176,15 @@ function NewWizardEdit({refData, newWizard, setNewWizard}) {
   const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
   const handleClassChange = (event) => {
+    console.log(event.target)
     const selectedClassId = parseInt(event.target.value);
     const updatedWizard = { ...newWizard };
-    console.log(updatedWizard)
 
     updatedWizard.classId = selectedClassId;
 
     updatedWizard.primarySpellIds = [];
     updatedWizard.alignedSpellIds = [];
     updatedWizard.neutralSpellIds = [];
-    
-    //add wizard title here
 
     setNewWizard(updatedWizard);
   }
@@ -208,6 +211,7 @@ function NewWizardEdit({refData, newWizard, setNewWizard}) {
             onChange={(e) => setNewWizard({ ...newWizard, name: e.target.value })}
             size= "small"
             required
+            fullWidth
           />
           <FormControl fullWidth sx={{ gap: 2, minWidth: 120}}>
             <InputLabel id="class-label" >Class</InputLabel>
@@ -282,17 +286,20 @@ function SpellSelection({category, newWizard, setNewWizard}) {
 
     const spellConflict = newWizard.neutralSpellIds
 
-    const spellOptions = spellList.map((spell, index) => (
-      <MenuItem 
-        key={spell.id} 
-        value={spell.id} 
-        disabled={selectedSpells.includes(spell.id)}
-        // will have to figure a way to disable when a school spell is selected to gray out other school spells
-        id={`spell-${category}`}
-      >
-        {spell.name}
-      </MenuItem>
-    ))
+    const spellOptions = spellList.map((spell, index) => {
+      return (
+        <MenuItem 
+          key={spell.id} 
+          value={spell.id} 
+          disabled={selectedSpells.includes(spell.id)}
+          // will have to figure a way to disable when a school spell is selected to gray out other school spells
+          id={`spell-${category}`}
+        >
+          {spell.name}
+        </MenuItem>
+      )
+    }
+  )
 
     return spellOptions
   }
@@ -302,14 +309,14 @@ function SpellSelection({category, newWizard, setNewWizard}) {
   return (
     <section>
       {!isPortrait &&
-        <Box className='center' sx={{ mt: 2 }}>
+        <Box sx={{ mt: 2, textAlign: 'center' }}>
           {category==='primary' && <h3>Choose 3 Spells from the {getSchoolFromId(wizardClassId, refData).name} School of Magic</h3>}
           {category==='aligned' && <h3>Choose 3 Spells from Aligned Schools of Magic</h3>}
-          {category==='neutral' && <h3>Choose 2 Spells from Neutral Schools of Magic</h3>}
+          {category==='neutral' && <h3>Choose 2 Spells from Different Neutral Schools of Magic</h3>}
         </Box>
       }
       {isPortrait && 
-        <Box className='center' sx={{ mt: 2 }}>
+        <Box sx={{ mt: 2, textAlign: 'center' }}>
           {category==='primary' && <h3>Choose 3 {getSchoolFromId(wizardClassId, refData).name} Spells</h3>}
           {category==='aligned' && <h3>Choose 3 Aligned Spells</h3>}
           {category==='neutral' && <h3>Choose 2 Neutral Spells</h3>}

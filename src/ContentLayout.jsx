@@ -17,20 +17,21 @@ import Divider from '@mui/material/Divider';
 import { useNavigate } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import { Button, SwipeableDrawer } from '@mui/material';
-import { useAppContext } from './AppContext.jsx';
+import { useAppContext } from './contexts/AppContext.jsx';
 import { HomePage, HomeSideDrawer } from './HomePage.jsx';
-import { ReferenceView, ReferenceSideDrawer } from './References.jsx';
-import { SpellView, SpellSideDrawer } from './Spells.jsx';
-import { WarbandView, WarbandSideDrawer } from './Warbands.jsx';
-import { CampaignView, CampaignSideDrawer } from './Campaigns.jsx';
-import { BattleView } from './BattleView.jsx';
-import { CreateNewWizard, NewWizardSideDrawer } from './CreateNewWizard.jsx';
-import { getSchoolFromId } from './HelperFunctions.js';
+import { ReferenceView, ReferenceSideDrawer } from './references/References.jsx';
+import { SpellView, SpellSideDrawer } from './spells/Spells.jsx';
+import { WarbandView, WarbandSideDrawer } from './warbands/Warbands.jsx';
+import { CampaignView, CampaignSideDrawer } from './campaigns/Campaigns.jsx';
+import { BattleView } from './campaigns/BattleView.jsx';
+import { CreateNewWizard, NewWizardSideDrawer } from './warbands/CreateNewWizard.jsx';
+import { getSchoolFromId } from './helperFuncs/HelperFunctions.js';
 import { Login, LoginSideDrawer } from './Login.jsx';
 import { BottomNavigation, BottomNavigationAction, Drawer, useMediaQuery, Paper } from '@mui/material';
 import { useTheme, makeStyles } from '@mui/material/styles';
 import { ref, set } from 'firebase/database';
-import { useThemeContext } from './ThemeContext.jsx';
+import { useThemeContext } from './contexts/ThemeContext.jsx';
+import { TransitionAlert } from './alerts/Alerts.jsx';
 
 export function MenuBar() {
   const [auth, setAuth] = React.useState(true);
@@ -291,6 +292,7 @@ export function ContentArea() {
             </Routes>
           </Box>
         </Box>
+        <TransitionAlert />
       </Box>
     );
 } 
