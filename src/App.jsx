@@ -3,24 +3,26 @@ import { AuthProvider } from './contexts/AuthContext.jsx';
 import { ContextProvider } from './contexts/AppContext.jsx';
 import { ThemeContextProvider } from './contexts/ThemeContext.jsx';
 import { AlertProvider } from './contexts/AlertContext.jsx';
-import { MenuBar, ContentArea, SideBar, MobileBottomNav } from './ContentLayout.jsx';
+import { MenuBar, ContentArea, MobileBottomNav } from './ContentLayout.jsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './styles/App.css';
-import { AlertDialog, TransitionAlert } from './alerts/Alerts.jsx';
+import { DialogAlert, TransitionAlert } from './alerts/Alerts.jsx';
 
+const dataUrl = import.meta.env.VITE_API_DATA_URL;
+// const userDataUrl = process.env.REACT_APPUSER_API_DATA_URL;
 
 function App() {
   return (
       
       <Router>
         <AuthProvider>
-          <ContextProvider>
+          <ContextProvider dataUrl={dataUrl}>
             <ThemeContextProvider>
               <AlertProvider>
                 <MenuBar />
                 <ContentArea />
                 <MobileBottomNav />
-                {/* <AlertDialog /> */}
+                <DialogAlert />
               </AlertProvider>
             </ThemeContextProvider>
           </ContextProvider>

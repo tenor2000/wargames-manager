@@ -1,11 +1,9 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import { set } from 'firebase/database';
 
-const dataSourceUrl = 'http://localhost:8000/frostgrave2e/refData.json';
-
 const AppContext = createContext();
 
-export function ContextProvider({ children }) {
+export function ContextProvider({ children, dataUrl }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [schoolFilterId, setSchoolFilterId] = useState(0);
     const [spellViewList, setSpellViewList] = useState(null);
@@ -46,7 +44,7 @@ export function ContextProvider({ children }) {
 
     // Fetch data
     useEffect(() => {
-        const url = dataSourceUrl;
+        const url = dataUrl;
         const fetchData = async () => {
             try {
             const response = await fetch(url, {method: 'GET', mode: 'cors'});
