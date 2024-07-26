@@ -17,6 +17,14 @@ export const formSoldierStats = (mySoldierArray, refData) => {
 
         if (soldierObj) {
             soldierObj.status = soldier.status;
+            soldierObj.statMods = {
+                move: 0,
+                fight: 0,
+                shoot: 0,
+                armor: 0,
+                will: 0,
+                health: 0
+            }
             if (soldier.itemSlots) { 
                 soldierObj.itemSlots = [...soldierObj.permItemSlots, ...soldier.itemSlots] 
             } else {
@@ -31,7 +39,6 @@ export const formSoldierStats = (mySoldierArray, refData) => {
 
 export function SoldierRosterView({handleButton}) {
     const { currentWizard, editMode, refData } = useAppContext();
-    const { alert, showAlert, hideAlert } = useAlert();
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
     if (currentWizard.soldiers.length === 0 && !editMode.soldiers) {
@@ -76,7 +83,7 @@ export function SoldierRosterView({handleButton}) {
 export function EditSoldiersView({alertObj, setAlertObj}) {
     const { currentWizard, setCurrentWizard, editMode, setEditMode, refData} = useAppContext();
     const { userData, setUserData } = useAuth();
-    const { alert, showAlert, hideAlert } = useAlert();
+    const { showAlertDialog, showAlert, hideAlert } = useAlert();
     const [ totalEditedCost, setTotalEditedCost ] = useState(0);
     const [ editedWizard, setEditedWizard ] = useState({...currentWizard});
 
@@ -150,23 +157,46 @@ export function EditSoldiersView({alertObj, setAlertObj}) {
 
     }
 
-    const handleRemove = (removedSoldier) => {
-        const goodbyeText = removedSoldier.status === 0 ? `You have dumped ${removedSoldier.name} in a ditch somewhere.` : `${removedSoldier.name} walks away in disbelief as tears runs down their face.`;
-        const confirmText = `Are you sure you want to remove ${removedSoldier.name}?`;
-
-        if (window.confirm(confirmText)) {
-            console.log(goodbyeText);
-            if (removedSoldier.status === 7) { // 7 = 'Hired'
+    const handleRemove = async (removedSoldier) => {
+        const goodbyeText = removedSoldier.status === 0 
+                            ? `You have dumped ${removedSoldier.name}'s body in a ditch somewhere cold.` 
+                            : `Shocked, ${removedSoldier.name} ${removedSoldier.status === 2 ? 'hobbles' :'walks'} away sobbing.`;
+        const confirmText = removedSoldier.status === 0 
+                            ? `Deposit ${removedSoldier.name}'s body in a ditch somewhere?` 
+                            : `Do you want to fire ${removedSoldier.name} from the team?`;
+        const cancelText = removedSoldier.status === 0 
+                            ? `${removedSoldier.name}'s body begins to exude an awful smell...` 
+                            : `${removedSoldier.name} breathes a sigh of relief...`;
+        
+        const confirmed = await showAlertDialog('', confirmText);
+        if (confirmed) {
+            showAlert(goodbyeText, 'success');
+            if (removedSoldier.status === 7) {
+                // 7 = 'Hired'
                 const newBalanceAmount = totalEditedCost - removedSoldier.cost;
                 setTotalEditedCost(newBalanceAmount);
             }
-            // const updateWizard = {...editedWizard};
-            // updateWizard.soldiers = updateWizard.soldiers.filter((soldier) => soldier.name !== removedSoldier.name);
-            // setEditedWizard(updateWizard)
 
             const updatedSoldiers = editedWizard.soldiers.filter((soldier) => soldier.name !== removedSoldier.name);
             setEditedWizard({ ...editedWizard, soldiers: updatedSoldiers });
+
+        } else {
+            showAlert(cancelText, 'info');
         }
+
+        // if (window.confirm(confirmText)) {
+        //     console.log(goodbyeText);
+        //     if (removedSoldier.status === 7) { // 7 = 'Hired'
+        //         const newBalanceAmount = totalEditedCost - removedSoldier.cost;
+        //         setTotalEditedCost(newBalanceAmount);
+        //     }
+        //     // const updateWizard = {...editedWizard};
+        //     // updateWizard.soldiers = updateWizard.soldiers.filter((soldier) => soldier.name !== removedSoldier.name);
+        //     // setEditedWizard(updateWizard)
+
+        //     const updatedSoldiers = editedWizard.soldiers.filter((soldier) => soldier.name !== removedSoldier.name);
+        //     setEditedWizard({ ...editedWizard, soldiers: updatedSoldiers });
+        // }
     }
 
     const handleHire = (hiredSoldier) => {

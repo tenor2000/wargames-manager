@@ -4,17 +4,17 @@ import { useAlert } from "../contexts/AlertContext";
 import CloseIcon from '@mui/icons-material/Close';
 
 
-export function AlertDialog() {
+export function DialogAlert() {
     const { alertDialog, hideAlert } = useAlert();
 
     const handleCancel = () => {
-        hideAlert();
-        return false
+      alertDialog.resolve(false)
+      hideAlert();
     }
 
     const handleOk = () => {
-        hideAlert();
-        return true
+      alertDialog.resolve(true)
+      hideAlert();
     }
     
     return (
@@ -32,7 +32,7 @@ export function AlertDialog() {
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleCancel}>cancel</Button>
-                <Button onClick={handleOk}>ok</Button>
+                <Button onClick={handleOk} autoFocus>ok</Button>
             </DialogActions>
         </Dialog>
     );
@@ -44,7 +44,7 @@ export function TransitionAlert() {
   return (
     <Snackbar
       open={alert.open}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       onClose={() => hideAlert()}
       TransitionComponent={Collapse}
       autoHideDuration={6000}

@@ -15,7 +15,9 @@ export const AlertProvider = ({ children }) => {
     };
 
     const showAlertDialog = (title, message) => {
-        setAlertDialog({open: true, title: title, message: message});
+        return new Promise((resolve) => {
+            setAlertDialog({open: true, title, message, resolve });
+        })
     };
 
     const hideAlert = () => {
@@ -23,9 +25,17 @@ export const AlertProvider = ({ children }) => {
         setAlertDialog({open: false, title: '', message: ''});
     };
 
+    const value = {
+        alert,
+        showAlert,
+        showAlertDialog,
+        alertDialog,
+        hideAlert
+    }
+
 
     return (
-        <AlertContext.Provider value={{ alert, showAlert, showAlertDialog, alertDialog, hideAlert }}>
+        <AlertContext.Provider value={ value }>
             {children}
         </AlertContext.Provider>
     );
