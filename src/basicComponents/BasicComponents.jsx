@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState, Fragment } from 'react';
 import { useAppContext } from '../contexts/AppContext.jsx';
-import { useState, Fragment } from 'react';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import { getStatusFromId, getSpellFromId, getItemFromId, modSign } from '../helperFuncs/HelperFunctions.js';
 import { Accordion, AccordionDetails, AccordionSummary, Box, TextField, InputAdornment, Button, useMediaQuery } from "@mui/material";
@@ -11,7 +10,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 
 export function BasicStatCard({ 
@@ -86,7 +84,7 @@ export function BasicStatCard({
   }
 
   function handleChange(type) {
-    const max = statsObj.statMods.health ? statsObj.statMods.health + statsObj.health : statsObj.health
+    const max = ((statsObj.statMods && statsObj.statMods.health) || 0) + statsObj.health;
 
     if (type === '-') {
       if (currentHealth > 0) {
