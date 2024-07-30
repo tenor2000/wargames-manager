@@ -11,7 +11,7 @@ import { useMediaQuery } from '@mui/material';
 export function WizardView({handleButton}) {
     const { currentWizard, setCurrentWizard, editMode, setEditMode, refData } = useAppContext();
     const { userData, setUserData } = useAuth();
-    const { alert, showAlert, hideAlert } = useAlert();
+    const { showAlert } = useAlert();
     const [ editedWizard, setEditedWizard ] = useState({...currentWizard});
 
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
@@ -115,7 +115,7 @@ function WizardEdit({handleWizardButtons, editedWizard, setEditedWizard, refData
 export function ApprenticeView({handleButton}) {
     const { currentWizard, setCurrentWizard, editMode, setEditMode, refData } = useAppContext();
     const { userData, setUserData } = useAuth();
-    const { alert, showAlert, hideAlert } = useAlert();
+    const { showAlert, showAlertDialog } = useAlert();
     const [ editedWizard, setEditedWizard ] = useState({...currentWizard});
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
     
@@ -129,25 +129,36 @@ export function ApprenticeView({handleButton}) {
     const handleApprenticeButtons = (type) => {
         switch (type) {
             case 'remove':
-                //Need to replace with actual AlertDialog
+                const confirmText = currentWizard.apprentice.status === 0 
+                    ? `Deposit ${currentWizard.apprentice.name}'s body in a ditch somewhere?` 
+                    : `Do you want to fire ${currentWizard.apprentice.name} as your apprentice?`;
+                const cancelText = currentWizard.apprentice.status === 0 
+                    ? `${currentWizard.apprentice.name}'s body begins to exude an awful smell...` 
+                    : `${currentWizard.apprentice.name} breathes a sigh of relief...`;
                 const goodbyeText = currentWizard.apprentice.status === 0 
-                    ? `dump ${currentWizard.apprentice.name}'s body in a ditch somewhere` 
-                    : `fire your apprentice, ${currentWizard.apprentice.name}`;
+                    ? `You have dumped ${currentWizard.apprentice.name}'s body in a ditch somewhere cold.` 
+                    : `Shocked and in disbelief, ${currentWizard.apprentice.name} ${currentWizard.apprentice.status === 2 ? 'hobbles' :'walks'} away sobbing.`;
+        
+                showAlertDialog('', confirmText).then((confirmed) => {
+                    if (confirmed) {
+                        showAlert(goodbyeText, 'success');
+                        const newUserData = {...userData}
+                        newUserData.myWizards = userData.myWizards.map(wizard => 
+                            wizard.id === currentWizard.id 
+                                ? {...wizard, apprentice: { ...wizard.apprentice, name: '', status: 9, itemSlots: [0,0,0,0] }} 
+                                : wizard
+                        );
 
-                if (window.confirm(`Are you sure you want to ${goodbyeText}?`)) {
-                    const newUserData = {...userData}
-                    newUserData.myWizards = userData.myWizards.map(wizard => 
-                        wizard.id === currentWizard.id 
-                            ? {...wizard, apprentice: { ...wizard.apprentice, name: '', status: 9, itemSlots: [0,0,0,0] }} 
-                            : wizard
-                    );
+                        const updatedWizard = newUserData.myWizards.find(wizard => wizard.id === currentWizard.id);
+                
+                        setCurrentWizard(updatedWizard);
+                        setUserData(newUserData);
+                        showAlert(goodbyeText, 'success');
 
-                    const updatedWizard = newUserData.myWizards.find(wizard => wizard.id === currentWizard.id);
-            
-                    setCurrentWizard(updatedWizard);
-                    setUserData(newUserData);
-                    showAlert(`You ${goodbyeText}, successfully.`, 'success');
-                }
+                    } else {
+                        showAlert(cancelText, 'info');
+                    }
+                });
                 break;
             case 'save-edit':
                 //Need to adjust for apprentice
@@ -206,7 +217,6 @@ export function ApprenticeView({handleButton}) {
 }
 
 function ApprenticeEdit({apprenticeStats, handleApprenticeButtons, editedWizard, setEditedWizard, refData}) {
-    const { currentWizard, setCurrentWizard, editMode, setEditMode } = useAppContext();
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
     return (

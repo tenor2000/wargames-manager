@@ -6,7 +6,7 @@ import { Button } from "@mui/material";
 export function BaseView({handleButton}) {
     const { currentWizard, refData } = useAppContext();
     const baseObj = getBaseFromId(currentWizard.base, refData);
-    console.log(baseObj)
+
     return (
         <div>
             <p>Base of Operations: {baseObj.name}</p>

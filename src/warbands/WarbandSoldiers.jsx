@@ -83,7 +83,7 @@ export function SoldierRosterView({handleButton}) {
 export function EditSoldiersView({alertObj, setAlertObj}) {
     const { currentWizard, setCurrentWizard, editMode, setEditMode, refData} = useAppContext();
     const { userData, setUserData } = useAuth();
-    const { showAlertDialog, showAlert, hideAlert } = useAlert();
+    const { showAlertDialog, showAlert } = useAlert();
     const [ totalEditedCost, setTotalEditedCost ] = useState(0);
     const [ editedWizard, setEditedWizard ] = useState({...currentWizard});
 
@@ -102,12 +102,12 @@ export function EditSoldiersView({alertObj, setAlertObj}) {
     const handleSave = () => {
         const updateWizard = {...editedWizard};
         if (updateWizard.gold - totalEditedCost < 0) {
-            showAlert('You do not have enough gold')
+            showAlert('You do not have enough gold to pay for this roster', 'error')
             return
         }
         const totalSpecialists = editedWizard.soldiers.filter(soldier => getSoldierFromId(soldier.classId, refData).type === 'Specialist' && soldier.status !== 8);
         if (totalSpecialists.length > 4) {
-            showAlert('Too many specialists')
+            showAlert('You have recruited too many specialists', 'error')
             return
         }
 
@@ -158,15 +158,15 @@ export function EditSoldiersView({alertObj, setAlertObj}) {
     }
 
     const handleRemove = async (removedSoldier) => {
-        const goodbyeText = removedSoldier.status === 0 
-                            ? `You have dumped ${removedSoldier.name}'s body in a ditch somewhere cold.` 
-                            : `Shocked, ${removedSoldier.name} ${removedSoldier.status === 2 ? 'hobbles' :'walks'} away sobbing.`;
         const confirmText = removedSoldier.status === 0 
-                            ? `Deposit ${removedSoldier.name}'s body in a ditch somewhere?` 
-                            : `Do you want to fire ${removedSoldier.name} from the team?`;
+            ? `Deposit ${removedSoldier.name}'s body in a ditch somewhere?` 
+            : `Do you want to fire ${removedSoldier.name} from the team?`;
         const cancelText = removedSoldier.status === 0 
-                            ? `${removedSoldier.name}'s body begins to exude an awful smell...` 
-                            : `${removedSoldier.name} breathes a sigh of relief...`;
+            ? `${removedSoldier.name}'s body begins to exude an awful smell...` 
+            : `${removedSoldier.name} breathes a sigh of relief...`;
+        const goodbyeText = removedSoldier.status === 0 
+            ? `You have dumped ${removedSoldier.name}'s body in a ditch somewhere cold.` 
+            : `Shocked and in disbelief, ${removedSoldier.name} ${removedSoldier.status === 2 ? 'hobbles' :'runs'} away sobbing.`;
         
         const confirmed = await showAlertDialog('', confirmText);
         if (confirmed) {
@@ -183,20 +183,6 @@ export function EditSoldiersView({alertObj, setAlertObj}) {
         } else {
             showAlert(cancelText, 'info');
         }
-
-        // if (window.confirm(confirmText)) {
-        //     console.log(goodbyeText);
-        //     if (removedSoldier.status === 7) { // 7 = 'Hired'
-        //         const newBalanceAmount = totalEditedCost - removedSoldier.cost;
-        //         setTotalEditedCost(newBalanceAmount);
-        //     }
-        //     // const updateWizard = {...editedWizard};
-        //     // updateWizard.soldiers = updateWizard.soldiers.filter((soldier) => soldier.name !== removedSoldier.name);
-        //     // setEditedWizard(updateWizard)
-
-        //     const updatedSoldiers = editedWizard.soldiers.filter((soldier) => soldier.name !== removedSoldier.name);
-        //     setEditedWizard({ ...editedWizard, soldiers: updatedSoldiers });
-        // }
     }
 
     const handleHire = (hiredSoldier) => {
