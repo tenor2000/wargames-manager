@@ -5,16 +5,16 @@ import CloseIcon from '@mui/icons-material/Close';
 
 
 export function DialogAlert() {
-    const { alertDialog, hideAlert } = useAlert();
+    const { alertDialog, hideDialogAlert } = useAlert();
 
     const handleCancel = () => {
       alertDialog.resolve(false)
-      hideAlert();
+      hideDialogAlert();
     }
 
     const handleOk = () => {
       alertDialog.resolve(true)
-      hideAlert();
+      hideDialogAlert();
     }
     
     return (
@@ -39,34 +39,40 @@ export function DialogAlert() {
 }
 
 export function TransitionAlert() {
-  const { alert, showAlert, hideAlert } = useAlert();
+  const { alerts, showAlerts, hideAlert } = useAlert();
 
   return (
-    <Snackbar
-      open={alert.open}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      onClose={() => hideAlert()}
-      TransitionComponent={Collapse}
-      autoHideDuration={6000}
-    >
-      <Alert
-        action={
-          <IconButton
-            aria-label="close"
-            color="inherit"
-            size="small"
-            onClick={() => {
-              hideAlert();
-            }}
+    <Box>
+      {alerts.map((alert, index) => (
+        <Snackbar
+          key={alert.id}
+          open={true}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          onClose={() => hideAlert(alert.id)}
+          TransitionComponent={Collapse}
+          autoHideDuration={6000}
+          sx={{ mt: index * 8 }}
+        >
+          <Alert
+            action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => {
+                  hideAlert(alert.id);
+                }}
+              >
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
+            }
+            severity={alert.severity}
+            sx={{ mb: 2 }}
           >
-            <CloseIcon fontSize="inherit" />
-          </IconButton>
-        }
-        severity={alert.severity}
-        sx={{ mb: 2 }}
-      >
-        {alert.message}
-      </Alert>
-    </Snackbar>
-  );
+            {alert.message}
+          </Alert>
+        </Snackbar>
+      ))}
+    </ Box>
+    );
 }

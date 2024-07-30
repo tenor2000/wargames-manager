@@ -8,10 +8,11 @@ export const useAlert = () => {
 
 export const AlertProvider = ({ children }) => {
     const [alertDialog, setAlertDialog] = useState({open: false, title: '', message: ''});
-    const [ alert, setAlert ] = useState({open: false, message: '' });
+    const [ alerts, setAlerts ] = useState([]);
 
     const showAlert = (message, severity='info') => {
-        setAlert({open: true, message: message, severity: severity});
+        const id = new Date().getTime();
+        setAlerts([...alerts, {id, message, severity}]);
     };
 
     const showAlertDialog = (title, message) => {
@@ -20,17 +21,22 @@ export const AlertProvider = ({ children }) => {
         })
     };
 
-    const hideAlert = () => {
-        setAlert({open: false, message: '' });
+    const hideAlert = (id) => {
+        setAlerts(alerts.filter(alert => alert.id !== id)) 
+        // setAlerts({open: false, message: '' });
+    };
+
+    const hideDialogAlert = () => {
         setAlertDialog({open: false, title: '', message: ''});
     };
 
     const value = {
-        alert,
+        alerts,
         showAlert,
         showAlertDialog,
         alertDialog,
-        hideAlert
+        hideAlert,
+        hideDialogAlert
     }
 
 
