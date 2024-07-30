@@ -10,3 +10,26 @@ Currently, two official plugins are available:
 
 npm install @mui/material @emotion/react @emotion/styled
 npm install @mui/icons-material @mui/material @emotion/styled @emotion/react
+
+
+
+
+
+# My Fullstack App
+
+A brief description of what your project does.
+
+## Table of Contents
+- [Installation](#installation)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+
+## Installation
+
+### Clone the repository
+```bash
+git clone https://github.com/your-username/my-fullstack-app.git
+cd my-fullstack-app

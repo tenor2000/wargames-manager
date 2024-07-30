@@ -218,7 +218,7 @@ export const userInfoData = {
                     id: 3, 
                     scenarioId: 103, 
                     opponents: [{ playerId: 1 }],
-                    completionStatus: 'complete',
+                    completionStatus: 'incomplete',
                     createDate: '2023-04-01T00:00:00.000Z',
                     completeDate: '2023-04-08T00:00:00.000Z'
                 },
@@ -227,7 +227,7 @@ export const userInfoData = {
         {
             id: 2,
             name: 'Frozen Throne',
-            wizardId: 3,
+            wizardId: 2,
             scenarios: [
                 { 
                     id: 1,
