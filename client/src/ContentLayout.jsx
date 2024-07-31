@@ -7,8 +7,6 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Switch from '@mui/material/Switch';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -26,12 +24,11 @@ import { CampaignView, CampaignSideDrawer } from './campaigns/Campaigns.jsx';
 import { BattleView } from './campaigns/BattleView.jsx';
 import { CreateNewWizard, NewWizardSideDrawer } from './warbands/CreateNewWizard.jsx';
 import { getSchoolFromId } from './helperFuncs/HelperFunctions.js';
-import { Login, LoginSideDrawer } from './Login.jsx';
+import { LoginForm, LoginSideDrawer } from './Login.jsx';
 import { BottomNavigation, BottomNavigationAction, Drawer, useMediaQuery, Paper } from '@mui/material';
 import { useTheme, makeStyles } from '@mui/material/styles';
-import { ref, set } from 'firebase/database';
 import { useThemeContext } from './contexts/ThemeContext.jsx';
-import { TransitionAlert } from './alerts/Alerts.jsx';
+import { TransitionAlert } from './alerts/TransitionAlert.jsx';
 
 export function MenuBar() {
   const [auth, setAuth] = React.useState(true);
@@ -287,12 +284,12 @@ export function ContentArea() {
               <Route path="/warbands" element={<WarbandView />} />
               <Route path="/campaigns" element={<CampaignView />} />
               <Route path="/new-wizard" element={<CreateNewWizard />} />
-              <Route path="/login" element={<Login />} />
+              <Route path="/login" element={<LoginForm />} />
               {/* Add routes for other pages */}
             </Routes>
           </Box>
         </Box>
-        <TransitionAlert />
+        {/* <TransitionAlert /> */}
       </Box>
     );
 } 
