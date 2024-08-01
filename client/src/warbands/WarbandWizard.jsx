@@ -249,26 +249,32 @@ function ApprenticeEdit({apprenticeStats, handleApprenticeButtons, editedWizard,
 function ShowPotentialApprentices() {
     const { refData, currentWizard, setCurrentWizard } = useAppContext();
     const { userData, setUserData } = useAuth();
-    const { alert, showAlert, hideAlert } = useAlert();
+    const { showAlert, showAlertDialog } = useAlert();
 
     const hireApprentice = (apprenticeName, cost) => {
         if (currentWizard.gold < cost) {
             showAlert(`You cannot afford to acquire ${apprenticeName}'s services!`);
             return
         }
-        // POST request to hire the apprentice
-        const newUserData = {...userData}
 
-        newUserData.myWizards = userData.myWizards.map(wizard => 
-            wizard.id === currentWizard.id ? 
-            {...wizard, apprentice: { ...wizard.apprentice, name: apprenticeName, status: 1 }, gold: wizard.gold - cost} : 
-            wizard
-        );
-        
-        const updatedWizard = newUserData.myWizards.find(wizard => wizard.id === currentWizard.id);
+        const confirmText = `Are you sure you want to hire ${apprenticeName} for ${cost} gc?`
 
-        setCurrentWizard(updatedWizard);
-        setUserData(newUserData);
+        showAlertDialog('Hiring Apprentice', confirmText).then((confirmed) => {
+            if (confirmed) {
+                // POST request to hire the apprentice
+                const newUserData = {...userData}
+                newUserData.myWizards = userData.myWizards.map(wizard => 
+                    wizard.id === currentWizard.id ? 
+                    {...wizard, apprentice: { ...wizard.apprentice, name: apprenticeName, status: 1 }, gold: wizard.gold - cost} : 
+                    wizard
+                );
+                
+                const updatedWizard = newUserData.myWizards.find(wizard => wizard.id === currentWizard.id);
+
+                setCurrentWizard(updatedWizard);
+                setUserData(newUserData);
+            }
+        })
     }
 
     const apprenticeList = (nameList) => {
