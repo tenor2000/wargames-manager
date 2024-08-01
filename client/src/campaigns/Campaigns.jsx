@@ -7,6 +7,7 @@ import { getCreatureFromId, rollD20, getRandomSpell, getScenarioFromId, getSchoo
 import { useAppContext } from '../contexts/AppContext.jsx';
 import { BattleView } from './BattleView.jsx';
 import { CreateNewCampaign } from './CreateNewCampaign.jsx';
+import ScenarioCard from '../basicComponents/ScenarioCard.jsx';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 
@@ -200,85 +201,16 @@ function CampaignDetailsView({handleButton, handleView, campaignView}) {
           <p>Current Campaign: {currentCampaign.name}</p>
           <p>Wizard: {getMyWizardFromId(currentCampaign.wizardId, userData).name}</p>
       </Box >
-      <ScenarioCards currentCampaign={currentCampaign} handleView={handleView}/>
+
+      <Box sx={{display: 'flex', width: '100%', justifyContent: 'center', flexWrap: 'wrap' }}>
+        {currentCampaign.scenarios.map(scenario => <ScenarioCard key={scenario.id} scenario={scenario} handleView={handleView} refData={refData}/>)}
+      </Box>
 
       <Box sx={{width: '100%', textAlign: 'center' }}>
         <Button onClick={() => handleButton(null)}>Back</Button>
         <Button disabled={!isAllComplete} onClick={() => handleView('addScenario')}>Add Scenario</Button>
       </Box>
 
-    </>
-  );
-}
-
-function ScenarioCards({currentCampaign, handleView}) {
-  const { refData } = useAppContext();
-
-  const showCompletionStatus = (scenario) => {
-    switch (scenario.completionStatus) {
-      case ('complete'):
-        return <b style={{color: 'green'}}>Complete</b>
-      case ('in progress'):
-        return <b style={{color: 'gray'}}>In Progress</b>
-      case ('incomplete'):
-        return <b style={{color: 'red'}}>Incomplete</b>
-      default:
-        return <b style={{color: 'darkred'}}>Unknown Error</b>
-    }
-  }
-
-  const showButtonChoices = (scenario) => {
-    switch (scenario.completionStatus) {
-      case ('complete'):
-        return <Button onClick={() => handleView('report')}>View Report</Button>
-      case ('in progress'):
-        return (
-          <>
-            <Button onClick={() => handleView(null)}>Delete</Button>
-            <Button onClick={() => handleView('battle')}>Continue</Button>
-          </>
-        )
-      case ('incomplete'):
-        return (
-          <>
-            <Button onClick={() => handleView(null)}>Delete</Button>
-            <Button onClick={() => handleView('battle')}>Start</Button>
-          </>
-        )
-      default:
-        return <b style={{color: 'darkred'}}>Unknown Error</b>
-    }
-  }
-    
-  function ScenarioCard({scenario}) {
-    const scenarioInfoObj = getScenarioFromId(scenario.scenarioId, refData)
-
-    return (
-      <Paper sx={{display: 'flex', flexDirection: 'column', width: '250px', height : '350px', textAlign: 'center', border: '2px solid black', margin: '10px', padding: '10px'}}>
-        <Box sx={{display: 'flex', flexDirection: 'column', width: '100%', textAlign: 'center', justifyContent: 'center', borderBottom: '2px solid black', flex: 1 }}>
-          <h3>{scenarioInfoObj.name}</h3>
-          <p>Image goes here</p>
-        </Box>
-        <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%', textAlign: 'center', flex: 1}}>
-          <Box>
-            <p>Status: {showCompletionStatus(scenario)}</p>
-            <p>Setup Requirements: {scenarioInfoObj.requirements}</p>
-          </Box>
-          <Box sx={{width: '100%', textAlign: 'center' }}>
-            {showButtonChoices(scenario)}
-          </Box>
-        </Box>
-      </Paper >
-    )
-  }
-
-  
-
-  return (
-    <>
-      <Box sx={{display: 'flex', width: '100%', justifyContent: 'center', flexWrap: 'wrap' }}>
-        {currentCampaign.scenarios.map(scenario => <ScenarioCard key={scenario.id} scenario={scenario}/>)}
-      </Box>
     </>
   );
 }
