@@ -1,11 +1,9 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import { set } from 'firebase/database';
 
 const AppContext = createContext();
 
 export function ContextProvider({ children, dataUrl }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [schoolFilterId, setSchoolFilterId] = useState(0);
     const [spellViewList, setSpellViewList] = useState(null);
     const [currentWizard, setCurrentWizard] = useState(null);
     const [currentCampaign, setCurrentCampaign] = useState(null);
@@ -20,14 +18,11 @@ export function ContextProvider({ children, dataUrl }) {
                                                 'vault': false,
                                                 'base': false
                                                 });
-    const [ currRefTable, setCurrRefTable ] = useState('all');
-    const [ sourceFilter, setSourceFilter ] = useState(['all']);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const value = {
         isLoggedIn, setIsLoggedIn,
-        schoolFilterId, setSchoolFilterId,
         spellViewList, setSpellViewList,
         currentWizard, setCurrentWizard,
         currentCampaign, setCurrentCampaign,
@@ -36,8 +31,6 @@ export function ContextProvider({ children, dataUrl }) {
         refData, setRefData,
         isSidebarVisible, setIsSidebarVisible,
         editMode, setEditMode,
-        currRefTable, setCurrRefTable,
-        sourceFilter, setSourceFilter,
         loading, setLoading,
         error, setError,
     };

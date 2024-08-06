@@ -1,5 +1,6 @@
 import { useAppContext } from '../contexts/AppContext.jsx';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { BasicAccordian, BasicSpellCard, SearchBar } from '../basicComponents/BasicComponents.jsx';
 import { getSchoolFromId } from '../helperFuncs/HelperFunctions.js';
 import { Avatar, List, ListItem, ListItemButton, ListItemText, ListItemAvatar, IconButton, Paper, Button, Box, Typography } from '@mui/material';
@@ -7,10 +8,21 @@ import { useMediaQuery } from '@mui/material';
 import '../styles/Spells.css';
 
 export function SpellView() {
-    const { schoolFilterId, setSchoolFilterId, spellViewList, setSpellViewList, refData} = useAppContext();
+    const { spellViewList, setSpellViewList, refData} = useAppContext();
     const { loading, error } = useAppContext();
     const [ searchText, setSearchText ] = useState('');
+    const [searchParams, setSearchParams] = useSearchParams();
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
+
+    useEffect(() => {
+        if (!loading && !error && refData) {
+            const schoolFilterId = searchParams.get('schoolFilterId') || '0';
+            const filteredSpells = schoolFilterId === '0'
+                ? refData.spells
+                : refData.spells.filter(spell => spell.school === getSchoolFromId(schoolFilterId, refData).name);
+            setSpellViewList(filteredSpells);
+        }
+    }, [searchParams, refData, setSpellViewList, error, loading]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -20,6 +32,9 @@ export function SpellView() {
         return <div>Error loading data</div>;
     }
 
+    const schoolFilterId = parseInt(searchParams.get('schoolFilterId')) || 0;
+    const schoolname = getSchoolFromId(schoolFilterId, refData).name;
+
     const spellsBySchool = () => {
         let sortedSpells = spellViewList;
 
@@ -27,31 +42,31 @@ export function SpellView() {
             sortedSpells = spellViewList.slice().sort((a,b) => a.name.localeCompare(b.name));
         }
 
+
         return sortedSpells.map(spell => (
             <BasicAccordian key={spell.id} title={spell.name} >
                 <BasicSpellCard spellId={spell.id} titlebar={false} refData={refData} />
             </BasicAccordian>
         ))
     }
+
     function handleSearchFilter(text) {
         const spellList = refData.spells;
         const filteredSpells = spellList.filter(spell => spell.name.toLowerCase().includes(text.toLowerCase()));
-        setSchoolFilterId(0);
+        setSearchParams({schoolFilterId: 0});
         setSpellViewList(filteredSpells);
     }
 
     function clearSearch() {
         handleSearchFilter('');
-        setSchoolFilterId(0);
+        setSearchParams({schoolFilterId: 0});
         setSearchText('');
     }
-
-    const schoolname = getSchoolFromId(schoolFilterId, refData).name;
  
     return (
         <Box>
             {!isPortrait && 
-                <Box sx={{ textAlign: 'center'}}>
+                <Box sx={{ textAlign: 'center', marginBottom: '10px'}}>
                     <h2>{schoolname} {schoolname === 'All' ? 'Spells' : 'Spellbook'}</h2>
                     <SearchBar 
                         searchText={searchText}
@@ -79,8 +94,9 @@ export function SpellView() {
 }
 
 export function SpellSideDrawer() {
-    const { refData, spellViewList, setSpellViewList, setSchoolFilterId } = useAppContext();
+    const { refData, setSpellViewList } = useAppContext();
     const { loading, error } = useAppContext();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     if (loading) {
         return <div>Loading...</div>;
@@ -97,7 +113,7 @@ export function SpellSideDrawer() {
         const filteredSpells = spellList.filter(spell => spell.school === selectedSchoolName);
         const newSchoolId = magicSchools.find(school => school.name === selectedSchoolName).id;
         const newSpellList = selectedSchoolName === 'All' ? spellList : filteredSpells;
-        setSchoolFilterId(newSchoolId);
+        setSearchParams({schoolFilterId: newSchoolId});
         setSpellViewList(newSpellList);
     }
 
