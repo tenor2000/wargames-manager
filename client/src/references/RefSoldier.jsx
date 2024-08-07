@@ -33,9 +33,9 @@ function SoldierReference({sourceFilter}) {
     }
 
     function RenderSoldierCards({soldierList}) {
-        const filteredList = filter === 'All'
+        const filteredList = sourceFilter === 'All'
             ? soldierList
-            : soldierList.filter(soldier => filter.split(',').includes(soldier.source))
+            : soldierList.filter(soldier => sourceFilter.split(',').includes(soldier.source))
 
         return filteredList.map(soldier => (
             <BasicStatCard 

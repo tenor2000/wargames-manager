@@ -224,5 +224,20 @@
         "cost": 125,
         "permItemSlots": [106,108,102,203],
         "notes": null
+    },
+    {
+        "id": 16,
+        "type": "Specialist",
+        "source": "Test Filter Source",
+        "class": "Test Filter Soldier",
+        "move": 7,
+        "fight": 2,
+        "shoot": 2,
+        "armor": 12,
+        "will": 1,
+        "health": 12,
+        "cost": 125,
+        "permItemSlots": [],
+        "notes": "This is just a test soldier for testing the filter."
     }
 ]

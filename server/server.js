@@ -4,19 +4,23 @@ import cors from 'cors';
 import express from 'express';
 import path from 'path';
 
-import { checkGameName, combineReferenceData, getObjectById } from './helperFuncs.js';
+import authRouter from './routes/auth.js';
+
+import { combineReferenceData } from './helperFunctions/combineReferenceData.js';
+import { checkGameName } from './helperFunctions/checkGameName.js';
+import getObjectById from './helperFunctions/getObjectById.js';
 
 const app = express();
 
-// Enable for all CORS origins
+// Enable for all CORS origins WILL need to adjust for production
 app.use(cors());
 
 const PORT = process.env.PORT || 3000;
 
-// Middleware to serve static files from the 'public' directory
 app.use(express.static(path.resolve('./public')));
 
-// Route to serve the main page
+app.use('/auth', authRouter);
+
 app.get('/', (req, res) => {
   res.sendFile(path.resolve('./public/index.html'));
 });
@@ -41,7 +45,14 @@ app.get("/:gameName/refData.json", async (req, res) => {
   }
 });
 
-// Catch-all route for serving a 404 page
+app.get("/getRandomId/:type", async (req, res) => {
+  const { listName } = req.query;
+  const randomId = Math.floor(Math.random() * listName.length) + 1;
+  const obj = getObjectById(listName, randomId);
+  res.json(obj);
+});
+
+// Catch-all route for serving a 404 page, keep toward bottom
 app.get('*', (req, res) => {
   res.status(404).sendFile(path.resolve('./public/404.html'));
 });

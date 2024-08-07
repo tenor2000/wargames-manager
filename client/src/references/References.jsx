@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import { useAppContext } from '../contexts/AppContext.jsx';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { Typography, useMediaQuery } from '@mui/material';
 import { Checkbox, FormGroup, FormControlLabel } from '@mui/material';
 import { List, ListItem, ListItemButton, ListItemText, Paper } from '@mui/material';
@@ -26,7 +26,7 @@ export function ReferenceView() {
         if (!searchParams.has('referenceType') || !searchParams.has('filter')) {
           setSearchParams({ referenceType, filter });
         }
-      }, [searchParams, setSearchParams]);
+    }, [searchParams, setSearchParams]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -112,7 +112,8 @@ function SourceFilter() {
     const [searchParams, setSearchParams] = useSearchParams();
     const currentFilters = searchParams.get('filter') ? searchParams.get('filter').split(',') : [];
 
-    const filters = ['All', 'Core Rulebook', 'Test Source'];
+    //make this filter more dynamic
+    const filters = ['All', 'Core Rulebook', 'Test Filter Source'];
     const isAllSelected = currentFilters.includes('All');
 
     useEffect(() => {
