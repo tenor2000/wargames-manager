@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Button, Typography } from '@mui/material';
 import { Card, CardActions, CardHeader, CardContent, CardMedia } from '@mui/material';
-import { getScenarioFromId } from '../helperFuncs/HelperFunctions.js';
+import { getScenarioFromId } from '../helperFuncs/helperFunctions.js';
     
 function ScenarioCard({scenario, handleView, refData}) {
   const scenarioInfoObj = getScenarioFromId(scenario.scenarioId, refData)

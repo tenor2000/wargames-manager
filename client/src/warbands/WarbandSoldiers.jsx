@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import DisplayStatus from "../basicComponents/DisplayStatus.jsx";
 import { BasicStatTableHeader, BasicStatTableRow } from "../basicComponents/BasicStatTable.jsx";
 import BasicStatCard from "../basicComponents/BasicStatCard.jsx";
-import { getSoldierFromId, getRandomSoldier, getItemFromId } from "../helperFuncs/HelperFunctions.js";
+import { getSoldierFromId, getRandomSoldier, getItemFromId } from "../helperFuncs/helperFunctions.js";
 import modSign from "../helperFuncs/modSign.js";
 import { TableCell, TableRow } from '@mui/material';
 import { useMediaQuery } from '@mui/material';

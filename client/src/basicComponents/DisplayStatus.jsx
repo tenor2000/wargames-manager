@@ -1,5 +1,5 @@
 import React from 'react';
-import { getStatusFromId } from '../helperFuncs/HelperFunctions';
+import { getStatusFromId } from '../helperFuncs/helperFunctions';
 
 function DisplayStatus({ statsObj, refData }) {
   if (statsObj.status === 0) {

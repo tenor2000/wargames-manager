@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import SearchBar from '../basicComponents/SearchBar.jsx';
 import BasicSpellCard from '../basicComponents/BasicSpellCard.jsx';
 import BasicAccordian from '../basicComponents/BasicAccordian.jsx';
-import { getSchoolFromId } from '../helperFuncs/HelperFunctions.js';
+import { getSchoolFromId } from '../helperFuncs/helperFunctions.js';
 import { Avatar, List, ListItem, ListItemButton, ListItemText, ListItemAvatar, IconButton, Paper, Button, Box, Typography } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import '../styles/Spells.css';

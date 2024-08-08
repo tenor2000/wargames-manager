@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../contexts/AppContext.jsx';
 import { useAuth } from '../contexts/AuthContext.jsx';
-import { deriveApprenticeStats, getCreatureFromId, rollD20, getRandomSpell, getScenarioFromId, getSchoolFromId  } from '../helperFuncs/HelperFunctions.js';
+import { deriveApprenticeStats, getCreatureFromId, rollD20, getRandomSpell, getScenarioFromId, getSchoolFromId  } from '../helperFuncs/helperFunctions.js';
 import { formSoldierStats } from '../warbands/WarbandSoldiers.jsx';
 import { BasicStatTableHeader, BasicStatTableRow } from '../basicComponents/BasicStatTable.jsx';
 import BasicAccordian from '../basicComponents/BasicAccordian.jsx';

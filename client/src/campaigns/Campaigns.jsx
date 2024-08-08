@@ -4,7 +4,7 @@ import { useAlert } from '../contexts/AlertContext.jsx';
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { AfterActionView } from './AfterActionReport.jsx';
 import { useState, useEffect } from 'react';
-import { getMyWizardFromId, getCampaignFromId } from '../helperFuncs/HelperFunctions.js';
+import { getMyWizardFromId, getCampaignFromId } from '../helperFuncs/helperFunctions.js';
 import { useAppContext } from '../contexts/AppContext.jsx';
 import { BattleView } from './BattleView.jsx';
 import { CreateNewCampaign } from './CreateNewCampaign.jsx';

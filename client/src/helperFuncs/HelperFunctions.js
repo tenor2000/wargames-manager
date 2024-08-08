@@ -1,5 +1,4 @@
-import { useAppContext } from '../contexts/AppContext';
-import { useAuth } from '../contexts/AuthContext';
+
 
 export function getSpellFromId(spellId, refData) {
   if (!refData || !refData.schoolsOfMagic) {

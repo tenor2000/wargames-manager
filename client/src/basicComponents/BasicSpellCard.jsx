@@ -1,5 +1,5 @@
 import React from 'react';
-import { getSpellFromId } from '../helperFuncs/HelperFunctions.js';
+import { getSpellFromId } from '../helperFuncs/helperFunctions.js';
 import { useMediaQuery } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';

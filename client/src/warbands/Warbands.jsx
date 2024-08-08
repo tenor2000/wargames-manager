@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import BasicAccordian from '../basicComponents/BasicAccordian.jsx';
-import { getSchoolFromId, getRandomName, getMyWizardFromId } from '../helperFuncs/HelperFunctions.js';
+import { getSchoolFromId, getRandomName, getMyWizardFromId } from '../helperFuncs/helperFunctions.js';
 import { useAuth } from '../contexts/AuthContext.jsx';
 import { useAlert } from '../contexts/AlertContext.jsx';
 import { useAppContext } from '../contexts/AppContext.jsx';

@@ -4,7 +4,9 @@ import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 import { useAppContext } from '../contexts/AppContext.jsx';
 import { useMediaQuery } from '@mui/material';
 import calcEquipmentMods from '../helperFuncs/calcEquipmentMods.js';
-import { getStatusFromId, getItemFromId } from '../helperFuncs/HelperFunctions.js';
+import { getItemFromId } from '../helperFuncs/helperFunctions.js';
+import DisplayStatus from './DisplayStatus.jsx';
+import { HealthCounter } from './HealthCounter.jsx';
 
 export function BasicStatTableHeader({children, showName=false, showClass = false, showCosts=false, showStatus=false, showItemSlots=false, showLevel=false, showSource=false, showDamage=false, editMode=false, cloning=true }) {
     // const [order, setOrder] = useState('asc');

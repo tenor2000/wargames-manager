@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppContext } from '../contexts/AppContext.jsx';
 import { useMediaQuery } from '@mui/material';
-import { BasicAccordian } from '../basicComponents/BasicComponents.jsx';
+import BasicAccordian from '../basicComponents/BasicAccordian.jsx';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import '../styles/Reference.css';
 

@@ -1,4 +1,4 @@
-import { getBaseFromId } from "../helperFuncs/HelperFunctions";
+import { getBaseFromId } from "../helperFuncs/helperFunctions";
 import { useAppContext } from "../contexts/AppContext";
 import { Button } from "@mui/material";
 

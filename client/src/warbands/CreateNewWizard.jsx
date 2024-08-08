@@ -2,7 +2,7 @@ import { useAppContext } from '../contexts/AppContext.jsx';
 import { useAuth } from '../contexts/AuthContext.jsx';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getSchoolFromId, getSchoolFromSpellId, getRandomName, getSpellFromId } from '../helperFuncs/HelperFunctions.js';
+import { getSchoolFromId, getSchoolFromSpellId, getRandomName, getSpellFromId } from '../helperFuncs/helperFunctions.js';
 import '../styles/NewWizard.css';
 import { update } from 'firebase/database';
 import { Paper, Typography, useMediaQuery } from '@mui/material';

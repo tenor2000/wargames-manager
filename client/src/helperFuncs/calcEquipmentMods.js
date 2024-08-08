@@ -1,3 +1,5 @@
+import { getItemFromId } from './helperFunctions.js';
+
 function calcEquipmentMods(statsObj, refData) {
     if (statsObj.statMods) {
       // reset to 0s
