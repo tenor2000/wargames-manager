@@ -1,5 +1,5 @@
 import { useAppContext } from '../contexts/AppContext.jsx';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { BasicAccordian, BasicSpellCard, SearchBar } from '../basicComponents/BasicComponents.jsx';
 import { getSchoolFromId } from '../helperFuncs/HelperFunctions.js';
@@ -11,18 +11,26 @@ export function SpellView() {
     const { spellViewList, setSpellViewList, refData} = useAppContext();
     const { loading, error } = useAppContext();
     const [ searchText, setSearchText ] = useState('');
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [ searchParams, setSearchParams ] = useSearchParams();
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
-    useEffect(() => {
-        if (!loading && !error && refData) {
-            const schoolFilterId = searchParams.get('schoolFilterId') || '0';
-            const filteredSpells = schoolFilterId === '0'
-                ? refData.spells
-                : refData.spells.filter(spell => spell.school === getSchoolFromId(schoolFilterId, refData).name);
-            setSpellViewList(filteredSpells);
+    const schoolFilterId = searchParams.get('schoolFilterId') || '0';
+
+    const filteredSpells = useMemo(() => {
+        if (loading || error || !refData) return [];
+
+        if (schoolFilterId === '0') {
+            return refData.spells.slice().sort((a, b) => a.name.localeCompare(b.name));
+        } else {
+            return refData.spells
+                .filter(spell => spell.school === getSchoolFromId(schoolFilterId, refData).name)
+                .slice().sort((a, b) => a.name.localeCompare(b.name));
         }
-    }, [searchParams, refData, setSpellViewList, error, loading]);
+    }, [schoolFilterId, refData, loading, error]);
+
+    useEffect(() => {
+        setSpellViewList(filteredSpells);
+    }, [filteredSpells, setSpellViewList]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -32,23 +40,7 @@ export function SpellView() {
         return <div>Error loading data</div>;
     }
 
-    const schoolFilterId = parseInt(searchParams.get('schoolFilterId')) || 0;
     const schoolname = getSchoolFromId(schoolFilterId, refData).name;
-
-    const spellsBySchool = () => {
-        let sortedSpells = spellViewList;
-
-        if (schoolFilterId === 0) {
-            sortedSpells = spellViewList.slice().sort((a,b) => a.name.localeCompare(b.name));
-        }
-
-
-        return sortedSpells.map(spell => (
-            <BasicAccordian key={spell.id} title={spell.name} >
-                <BasicSpellCard spellId={spell.id} titlebar={false} refData={refData} />
-            </BasicAccordian>
-        ))
-    }
 
     function handleSearchFilter(text) {
         const spellList = refData.spells;
@@ -87,7 +79,11 @@ export function SpellView() {
                 </Box>
             }
             <Box>
-                {spellsBySchool()}
+                {filteredSpells.map(spell => (
+                    <BasicAccordian key={spell.id} title={spell.name} >
+                        <BasicSpellCard spellId={spell.id} titlebar={false} refData={refData} />
+                    </BasicAccordian>
+                ))}
             </Box>
         </Box>
     );
@@ -110,11 +106,15 @@ export function SpellSideDrawer() {
     const magicSchools = refData.schoolsOfMagic;
 
     function handleSchoolClick(selectedSchoolName) {
-        const filteredSpells = spellList.filter(spell => spell.school === selectedSchoolName);
-        const newSchoolId = magicSchools.find(school => school.name === selectedSchoolName).id;
-        const newSpellList = selectedSchoolName === 'All' ? spellList : filteredSpells;
-        setSearchParams({schoolFilterId: newSchoolId});
-        setSpellViewList(newSpellList);
+        const newSchoolId = selectedSchoolName === 'All' 
+            ? 0 
+            : magicSchools.find(school => school.name === selectedSchoolName).id;
+        const filteredSpells = selectedSchoolName === 'All' 
+            ? refData.spells 
+            : refData.spells.filter(spell => spell.school === selectedSchoolName);
+        
+        setSearchParams({ schoolFilterId: newSchoolId });
+        setSpellViewList(filteredSpells);
     }
 
 
