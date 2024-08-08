@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { BasicStatCard, BasicAccordian } from '../basicComponents/BasicComponents.jsx';
-import { getSchoolFromId, getRandomName } from '../helperFuncs/HelperFunctions.js';
+import { useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { BasicAccordian } from '../basicComponents/BasicComponents.jsx';
+import { getSchoolFromId, getRandomName, getMyWizardFromId } from '../helperFuncs/HelperFunctions.js';
 import { useAuth } from '../contexts/AuthContext.jsx';
+import { useAlert } from '../contexts/AlertContext.jsx';
 import { useAppContext } from '../contexts/AppContext.jsx';
 import { CareerHistoryView } from './WarbandHistory.jsx';
 import { SpellBookView } from './WarbandSpellbook.jsx';
@@ -12,17 +13,27 @@ import { BaseView } from './WarbandBase.jsx';
 import { VaultView } from './WarbandVault.jsx';
 import { Avatar, List, ListItem, ListItemButton, ListItemText, ListItemAvatar, IconButton, Paper, Button, Box, Typography } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
-import Divider from '@mui/material/Divider';
 import AddIcon from '@mui/icons-material/Add';
 import '../styles/Warbands.css';
 
 
 export function WarbandView() {
     const { userData } = useAuth();
-    const { currentWizard, setNewWizard } = useAppContext();
+    const { currentWizard, setCurrentWizard, setNewWizard } = useAppContext();
     const { loading, error, refData } = useAppContext();
+    const [ searchParams, setSearchParams ] = useSearchParams();
     const navigate = useNavigate();
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
+
+    const searchParamWizardId = searchParams.get('wizardId') || '';
+
+    useEffect(() => {
+        if (searchParamWizardId) {
+            setCurrentWizard(getMyWizardFromId(searchParamWizardId, userData));
+        } else {
+            setCurrentWizard(null);
+        }
+    }, [searchParams, userData, setCurrentWizard]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -36,10 +47,9 @@ export function WarbandView() {
 
     function handleNewWizardClick() {
         const newName = getRandomName(refData.nameGenerator.wizard);
-        console.log(newName)
         const updatedWizards = { ...refData.templates.wizard, name: newName };
         setNewWizard(updatedWizards);
-        navigate('/new-wizard');
+        navigate('/warbands/new-wizard');
     }
 
     return (
@@ -68,9 +78,12 @@ export function WarbandView() {
 }
 
 export function WarbandSideDrawer() {
-    const { userData, setUserData } = useAuth();
-    const navigate = useNavigate();
+    const { userData } = useAuth();
     const { loading, error, currentWizard, setCurrentWizard, setNewWizard, refData, setEditMode } = useAppContext();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
+    
+    
     
     if (loading) {
         return <div>Loading...</div>;
@@ -84,17 +97,18 @@ export function WarbandSideDrawer() {
         switch (type) {
             case 'wizard':
                 setEditMode({wizards: false, apprentice: false, spellbook: false, soldier: false, vault: false, base: false});
-                
-                setCurrentWizard(target)
+                setSearchParams({wizardId: target.id});
+                //setCurrentWizard(target)
                 break;
             case 'new-wizard':
                 const newName = getRandomName(refData.nameGenerator.wizard);
                 const updatedWizards = { ...refData.templates.wizard, name: newName };
                 setNewWizard(updatedWizards);
-                navigate('/new-wizard');
+                navigate('/warbands/new-wizard');
                 break
             default:
-                setCurrentWizard(null)
+                setSearchParams({wizardId: null});
+                //setCurrentWizard(null)
                 break;
         }
     }
@@ -158,8 +172,10 @@ export function WarbandSideDrawer() {
 }
 
 function WarbandDetails() {
-    const { currentWizard, editMode, setEditMode, setCurrentWizard, refData } = useAppContext();
+    const { currentWizard, editMode, setEditMode, refData } = useAppContext();
     const { userData, setUserData } = useAuth();
+    const { showAlertDialog, showAlert } = useAlert();
+    const [ searchParams, setSearchParams ] = useSearchParams();
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
     const handleButton = (type, target=null) => {
@@ -170,12 +186,18 @@ function WarbandDetails() {
                 setEditMode(newEditMode);;
                 break;
             case 'retire':
-                if (window.confirm('Are you sure you want to \'retire\' this wizard?')) {
-                    const newUserData = {...userData};
-                    newUserData.myWizards = newUserData.myWizards.filter(wizard => wizard.id !== currentWizard.id);
-                    setUserData(newUserData);
-                    setCurrentWizard(null)
-                };
+                const confirmText = `Send ${currentWizard.name} into 'early retirement'?`;
+                const retireText = `${currentWizard.name} has been successfully sent to a farm upstate somewhere, never to be spoken about ever again.`;
+
+                showAlertDialog(confirmText, 'This is a permanent action.').then((confirmed) => {
+                    if (confirmed) {
+                        showAlert(retireText, 'success');
+                        const newUserData = {...userData};
+                        newUserData.myWizards = newUserData.myWizards.filter(wizard => wizard.id !== currentWizard.id);
+                        setUserData(newUserData);
+                        setSearchParams({wizardId: null});
+                    };
+                });
                 break;
             default:
                 break;

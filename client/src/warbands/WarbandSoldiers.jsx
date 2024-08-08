@@ -3,10 +3,10 @@ import { useAuth } from "../contexts/AuthContext.jsx";
 import { useAlert } from "../contexts/AlertContext.jsx";
 import { useState, useEffect } from "react";
 import { BasicStatCard, BasicStatTableHeader, BasicStatTableRow, DisplayStatus } from "../basicComponents/BasicComponents.jsx";
-import { getSoldierFromId, getRandomSoldier, getStatusFromId, modSign, getItemFromId } from "../helperFuncs/HelperFunctions.js";
-import { Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from '@mui/material';
+import { getSoldierFromId, getRandomSoldier, modSign, getItemFromId } from "../helperFuncs/HelperFunctions.js";
+import { TableCell, TableRow } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
-import { Box, Tooltip, TextField, Button, Snackbar } from "@mui/material";
+import { Box, Tooltip, TextField, Button } from "@mui/material";
 
 
 export const formSoldierStats = (mySoldierArray, refData) => {
