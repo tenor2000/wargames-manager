@@ -2,8 +2,9 @@ import { useAppContext } from '../contexts/AppContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useAlert } from '../contexts/AlertContext';
 import { useState, useEffect } from 'react';
-import { getRandomName, deriveApprenticeStats, getSchoolFromId, modSign, getItemFromId } from '../helperFuncs/HelperFunctions';
-import { BasicStatCard, BasicStatTableHeader, BasicStatTableRow } from '../basicComponents/BasicComponents';
+import { getRandomName, deriveApprenticeStats, getSchoolFromId, getItemFromId } from '../helperFuncs/HelperFunctions';
+import { BasicStatTableHeader, BasicStatTableRow } from '../basicComponents/BasicStatTable';
+import BasicStatCard from '../basicComponents/BasicStatCard';
 import { Button, Box, FormControl, InputLabel, Select, MenuItem, Typography } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 

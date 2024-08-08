@@ -1,7 +1,9 @@
 import React from 'react';
 import { useAppContext } from '../contexts/AppContext.jsx';
 import { useMediaQuery } from '@mui/material';
-import { BasicAccordian, BasicStatCard, BasicStatTableHeader, BasicStatTableRow } from '../basicComponents/BasicComponents.jsx';
+import { BasicStatTableHeader, BasicStatTableRow } from '../basicComponents/BasicStatTable.jsx';
+import BasicAccordian from '../basicComponents/BasicAccordian.jsx';
+import BasicStatCard from '../basicComponents/BasicStatCard.jsx';
 
 function SoldierReference({sourceFilter}) {
     const { refData } = useAppContext();

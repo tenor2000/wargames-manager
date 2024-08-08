@@ -1,19 +1,20 @@
 import calcEquipmentMods from '../helperFuncs/calcEquipmentMods.js';
-import { getStatusFromId, getItemFromId, modSign } from '../helperFuncs/HelperFunctions.js';
+import { getStatusFromId, getItemFromId } from '../helperFuncs/HelperFunctions.js';
 import modSign from '../helperFuncs/modSign.js';
 import { Box, Button } from "@mui/material";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { useState } from 'react';
-import { useAppContext } from '../context/AppContext.js';
+import { useAppContext } from '../contexts/AppContext.jsx';
 
 function BasicStatCard({ 
-                        statsObj,  
-                        showCosts=false, 
-                        showStatus=false, 
-                        showItemSlots=false, 
-                        showLevel=false, 
-                        battleMode=false, 
-                        editMode=false }) {
+            statsObj,  
+            showCosts=false, 
+            showStatus=false, 
+            showItemSlots=false, 
+            showLevel=false, 
+            battleMode=false, 
+            editMode=false 
+          }) {
 
   const { refData } = useAppContext();
   const [ fullCard, setFullCard ] = useState(!battleMode);

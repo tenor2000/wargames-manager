@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { BasicAccordian } from '../basicComponents/BasicComponents.jsx';
+import BasicAccordian from '../basicComponents/BasicAccordian.jsx';
 import { getSchoolFromId, getRandomName, getMyWizardFromId } from '../helperFuncs/HelperFunctions.js';
 import { useAuth } from '../contexts/AuthContext.jsx';
 import { useAlert } from '../contexts/AlertContext.jsx';
@@ -204,11 +204,11 @@ function WarbandDetails() {
         }
     }
 
-    const getWizardNickname = () => {
-        const school = getSchoolFromId(currentWizard.classId, refData);
-        const honorific = school.nicknames[Math.floor(Math.random() * school.nicknames.length)];
-        return `the ${honorific}`;
-    }
+    // const getWizardNickname = () => {
+    //     const school = getSchoolFromId(currentWizard.classId, refData);
+    //     const honorific = school.nicknames[Math.floor(Math.random() * school.nicknames.length)];
+    //     return `the ${honorific}`;
+    // }
 
     const categories = {
         'Wizard': <WizardView handleButton={handleButton}/>,
@@ -220,11 +220,13 @@ function WarbandDetails() {
         'Career History': <CareerHistoryView userData={userData}/>
     }
 
+    //{getWizardNickname()}
+
     return (
         <>
             {!isPortrait && 
                 <Box sx={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
-                    <Typography variant="h4">{currentWizard.name} {getWizardNickname()}</Typography>
+                    <Typography variant="h4">{currentWizard.name}</Typography>
                 </Box>
             }
 

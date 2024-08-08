@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import { useAppContext } from '../contexts/AppContext.jsx';
-import { modSign } from '../helperFuncs/HelperFunctions.js';
+import modSign from '../helperFuncs/modSign.js';
 import { useMediaQuery } from '@mui/material';
 import { BasicAccordian } from '../basicComponents/BasicComponents.jsx';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';

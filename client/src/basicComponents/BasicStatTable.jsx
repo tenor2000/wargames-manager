@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import modSign from '../helperFuncs/modSign';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel } from '@mui/material';
-import { useAppContext } from '../context/AppContext.js';
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material';
+import { useAppContext } from '../contexts/AppContext.jsx';
 import { useMediaQuery } from '@mui/material';
+import calcEquipmentMods from '../helperFuncs/calcEquipmentMods.js';
+import { getStatusFromId, getItemFromId } from '../helperFuncs/HelperFunctions.js';
 
 export function BasicStatTableHeader({children, showName=false, showClass = false, showCosts=false, showStatus=false, showItemSlots=false, showLevel=false, showSource=false, showDamage=false, editMode=false, cloning=true }) {
     // const [order, setOrder] = useState('asc');

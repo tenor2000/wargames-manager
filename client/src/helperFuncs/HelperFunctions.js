@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 export function getSpellFromId(spellId, refData) {
   if (!refData || !refData.schoolsOfMagic) {
-    return { name: 'Unknown' }; // Default or fallback value
+    return { name: 'Unknown' };
   }
    
   return refData.spells.find(spell => spell.id === spellId)
@@ -11,12 +11,12 @@ export function getSpellFromId(spellId, refData) {
   
 export function getSoldierFromId(soldierId, refData) {
   if (!refData || !refData.soldiers) {
-    return { name: 'Unknown' }; // Default or fallback value
+    return { name: 'Unknown' };
   }
   const soldier = refData.soldiers.find(soldier => soldier.id === soldierId);
 
   if (!soldier) {
-    return { name: 'Unknown' }; // Default or fallback value
+    return { name: 'Unknown' };
   }
   
   return { ...soldier };
@@ -95,10 +95,6 @@ export function getStatusFromId(statusId, refData) {
   return refData.statuses[statusId]
 }
 
-export const modSign = (stat) => {
-  return stat >= 0 ? `+${stat}` : stat;
-}
-
 export function getItemFromId(itemId, refData) {
   if (!refData || !refData.arms && !refData.armor) {
     // console.log(refData)
@@ -154,4 +150,12 @@ export function getBaseFromId(baseId, refData) {
   }
   
   return refData.baseLocations.find(base => base.id === baseId)
+}
+
+export function getCampaignFromId(campaignId, userData) {
+  if (!userData || !userData.campaigns) {
+    return { name: 'Unknown' };
+  }
+
+  return userData.campaigns.find(campaign => campaign.id === campaignId)
 }

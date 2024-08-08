@@ -4,7 +4,7 @@
 export const userInfoData = {
     myWizards: [
         {
-            id: 1,
+            id: "Be93523XM",
             name: 'Tim',
             classId: 4,
             level: 0,
@@ -69,7 +69,7 @@ export const userInfoData = {
             careerHistory: []
         },
         {
-            id: 2,
+            id: "CR9GoS59M",
             name: 'Dave',
             classId: 3,
             level: 4,
@@ -134,7 +134,7 @@ export const userInfoData = {
             careerHistory: []
         },
         {
-            id: 3,
+            id: "NJ4Go52QS",
             name: 'Homer',
             classId: 10,
             level: 0,
@@ -196,7 +196,7 @@ export const userInfoData = {
         {
             id: 1,
             name: 'Return of the Wizard',
-            wizardId: 1,
+            wizardId: "Be93523XM",
             scenarios: [
                 { 
                     id: 1, 
@@ -227,7 +227,7 @@ export const userInfoData = {
         {
             id: 2,
             name: 'Frozen Throne',
-            wizardId: 2,
+            wizardId: "CR9GoS59M",
             scenarios: [
                 { 
                     id: 1,

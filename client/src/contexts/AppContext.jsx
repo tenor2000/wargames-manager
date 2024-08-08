@@ -6,7 +6,7 @@ export function ContextProvider({ children, dataUrl }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [spellViewList, setSpellViewList] = useState(null);
     const [currentWizard, setCurrentWizard] = useState(null);
-    const [currentCampaign, setCurrentCampaign] = useState(null);
+    const [currentCampaignData, setCurrentCampaignData] = useState({campaign: null, wizard: null});
     const [newWizard, setNewWizard] = useState(null);
     const [newCampaign, setNewCampaign] = useState(null);
     const [refData, setRefData] = useState(null);
@@ -25,7 +25,7 @@ export function ContextProvider({ children, dataUrl }) {
         isLoggedIn, setIsLoggedIn,
         spellViewList, setSpellViewList,
         currentWizard, setCurrentWizard,
-        currentCampaign, setCurrentCampaign,
+        currentCampaignData, setCurrentCampaignData,
         newWizard, setNewWizard,
         newCampaign, setNewCampaign,
         refData, setRefData,

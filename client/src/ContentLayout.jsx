@@ -12,30 +12,33 @@ import Menu from '@mui/material/Menu';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Divider from '@mui/material/Divider';
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink, useSearchParams } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
-import { Button, SwipeableDrawer } from '@mui/material';
+import { Button, SwipeableDrawer, Link } from '@mui/material';
 import { useAppContext } from './contexts/AppContext.jsx';
 import { HomePage, HomeSideDrawer } from './HomePage.jsx';
 import { ReferenceView, ReferenceSideDrawer } from './references/References.jsx';
 import { SpellView, SpellSideDrawer } from './spells/Spells.jsx';
 import { WarbandView, WarbandSideDrawer } from './warbands/Warbands.jsx';
 import { CampaignView, CampaignSideDrawer } from './campaigns/Campaigns.jsx';
-import { BattleView } from './campaigns/BattleView.jsx';
 import { CreateNewWizard, NewWizardSideDrawer } from './warbands/CreateNewWizard.jsx';
 import { getSchoolFromId } from './helperFuncs/HelperFunctions.js';
-import { LoginForm, LoginSideDrawer } from './Login.jsx';
+import { LoginForm, LoginSideDrawer } from './user/Login.jsx';
+import RegistrationForm from './user/Registration.jsx';
 import { BottomNavigation, BottomNavigationAction, Drawer, useMediaQuery, Paper } from '@mui/material';
 import { useTheme, makeStyles } from '@mui/material/styles';
 import { useThemeContext } from './contexts/ThemeContext.jsx';
-import { TransitionAlert } from './alerts/TransitionAlert.jsx';
+import { CreateNewCampaign, NewCampaignSideDrawer } from './campaigns/CreateNewCampaign.jsx';
+import { BattleView, BattleViewSideDrawer } from './campaigns/BattleView.jsx';
+
 
 export function MenuBar() {
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const { currentWizard, schoolFilterId, refData, isSidebarVisible, setIsSidebarVisible } = useAppContext();
-  const {themeMode, toggleThemeMode} = useThemeContext();
+  const { currentWizard, refData, isSidebarVisible, setIsSidebarVisible } = useAppContext();
+  const { themeMode, toggleThemeMode } = useThemeContext();
+  const [ searchParams, setSearchParams ] = useSearchParams();
   const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
   const navigate = useNavigate();
 
@@ -73,15 +76,16 @@ export function MenuBar() {
     return (
       <Typography variant="h5" sx={{ flexGrow: 1 }}>
         <Routes>
-            <Route path="/" element='Home' />
-            <Route path="/reference" element='Reference' />
-            <Route path="/spells" element={<MobileNavHelper page = 'spells'/>} />
-            <Route path="/warbands" element={<MobileNavHelper page = 'warbands'/>} />
-            <Route path="/campaigns" element='Campaigns' />
-            <Route path="/new-wizard" element='Create New Wizard' />
-            <Route path="/battleview" element='Campaigns' />
-            <Route path="/login" element='Log In' />
-            {/* Add routes for other sidedrawer items */}
+          <Route path="/" element='Home' />
+          <Route path="/reference" element='Reference' />
+          <Route path="/spells" element={<MobileNavHelper page = 'spells'/>} />
+          <Route path="/warbands/:wizardId?" element={<MobileNavHelper page = 'warbands'/>} />
+          <Route path="/warbands/new-wizard" element='Create New Wizard' />
+          <Route path="/campaigns" element='Campaigns' />
+          <Route path="/campaigns/new-campaign" element='Create New Campaign' />
+          <Route path="/campaigns/battleview/:battleId" element='Campaigns' />
+          <Route path="/login" element='Log In' />
+          {/* Add routes for other sidedrawer items */}
         </Routes>
       </Typography>
       )
@@ -89,6 +93,7 @@ export function MenuBar() {
 
   const MobileNavHelper = ({page}) => {
     if (!isPortrait) return null;
+    const schoolFilterId = searchParams.get('schoolFilterId') || '0';
 
     if (page === 'warbands') {
       return (
@@ -109,16 +114,16 @@ export function MenuBar() {
 
   const MenuNavItems = () => {
     if (isPortrait) return null;
-      
+
     return (
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Button onClick={() => handleNavClick('/')}>Home</Button>
-          <Button onClick={() => handleNavClick('/reference')}>Reference</Button>
-          <Button onClick={() => handleNavClick('/spells')}>Spells</Button>
-          <Button onClick={() => handleNavClick('/warbands')}>Warbands</Button>
-          <Button onClick={() => handleNavClick('/campaigns')}>Campaigns</Button>
+        <Button component={NavLink} to='/' sx={{ mr: 2 }}>Home</Button>
+        <Button component={NavLink} to='/reference' sx={{ mr: 2 }}>Reference</Button>
+        <Button component={NavLink} to='/spells' sx={{ mr: 2 }}>Spells</Button>
+        <Button component={NavLink} to='/warbands' sx={{ mr: 2 }}>Warbands</Button>
+        <Button component={NavLink} to='/campaigns' sx={{ mr: 2 }}>Campaigns</Button>
       </Box>
-      )
+    )
   }
 
   return (
@@ -232,11 +237,10 @@ export function SideDrawer () {
           <Route path="/reference" element={<ReferenceSideDrawer />} />
           <Route path="/spells" element={<SpellSideDrawer />} />
           <Route path="/warbands" element={<WarbandSideDrawer />} />
+          <Route path="/warbands/new-wizard" element={<NewWizardSideDrawer />} />
           <Route path="/campaigns" element={<CampaignSideDrawer />} />
-          <Route path="/reference" element={<ReferenceSideDrawer />} />
-          <Route path="/new-wizard" element={<NewWizardSideDrawer />} />
+          <Route path="/campaigns/battleview" element={<CampaignSideDrawer />} />
           <Route path="/login" element={<LoginSideDrawer />} />
-          <Route path="/battleview" element={<CampaignSideDrawer />} />
           {/* Add routes for other sidebar items */}
       </Routes>
     </Paper>
@@ -254,15 +258,15 @@ export function SideBar () {
       className={'sidebar'}
     >
       <Routes>
-          <Route path="/" element={<HomeSideDrawer />} />
-          <Route path="/reference" element={<ReferenceSideDrawer />} />
-          <Route path="/spells" element={<SpellSideDrawer />} />
-          <Route path="/warbands" element={<WarbandSideDrawer />} />
-          <Route path="/campaigns" element={<CampaignSideDrawer />} />
-          <Route path="/reference" element={<ReferenceSideDrawer />} />
-          <Route path="/new-wizard" element={<NewWizardSideDrawer />} />
-          <Route path="/login" element={<LoginSideDrawer />} />
-          {/* Add routes for other sidebar items */}
+        <Route path="/" element={<HomeSideDrawer />} />
+        <Route path="/reference" element={<ReferenceSideDrawer />} />
+        <Route path="/spells" element={<SpellSideDrawer />} />
+        <Route path="/warbands" element={<WarbandSideDrawer />} />
+        <Route path="/warbands/new-wizard" element={<NewWizardSideDrawer />} />
+        <Route path="/campaigns" element={<CampaignSideDrawer />} />
+        <Route path="/campaigns/battleview" element={<CampaignSideDrawer />} />
+        <Route path="/login" element={<LoginSideDrawer />} />
+        {/* Add routes for other sidebar items */}
       </Routes>
     </Paper>
   )
@@ -270,28 +274,31 @@ export function SideBar () {
 
 export function ContentArea() {
   const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
-  const {isSidebarVisible, setSidebarVisible} = useAppContext();
+  const {isSidebarVisible} = useAppContext();
 
-    return (
-      <Box className='content-container' sx={{ display: 'flex', height: '100vh' }}>
-        {!isPortrait && isSidebarVisible && <SideBar />}
-        <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', overflow: 'auto', height: '100%' }}>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/reference" element={<ReferenceView />} />
-              <Route path="/spells" element={<SpellView />} />
-              <Route path="/warbands" element={<WarbandView />} />
-              <Route path="/campaigns" element={<CampaignView />} />
-              <Route path="/new-wizard" element={<CreateNewWizard />} />
-              <Route path="/login" element={<LoginForm />} />
-              {/* Add routes for other pages */}
-            </Routes>
-          </Box>
+  return (
+    <Box className='content-container' sx={{ display: 'flex', height: '100vh' }}>
+      {!isPortrait && isSidebarVisible && <SideBar />}
+      <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', overflow: 'auto', height: '100%' }}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/reference" element={<ReferenceView />} />
+            <Route path="/spells" element={<SpellView />} />
+            <Route path="/warbands" element={<WarbandView />} />
+            <Route path="/warbands/new-wizard" element={<CreateNewWizard />} />
+            <Route path="/campaigns" element={<CampaignView />} />
+            <Route path="/campaigns/:campaignId" element={<CampaignView />} />
+            <Route path="/campaigns/new-campaign" element={<CreateNewCampaign />} />
+            <Route path="/campaigns/battleview/:matchId" element={<BattleView />} />
+            <Route path="/login" element={<LoginForm />} />
+            <Route path="/register" element={<RegistrationForm />} />
+            {/* Add routes for other pages */}
+          </Routes>
         </Box>
-        {/* <TransitionAlert /> */}
       </Box>
-    );
+    </Box>
+  );
 } 
 
 export function MobileBottomNav() {

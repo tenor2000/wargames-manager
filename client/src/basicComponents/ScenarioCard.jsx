@@ -1,9 +1,7 @@
 import React from 'react'
 import { Box, Button, Typography } from '@mui/material';
 import { Card, CardActions, CardHeader, CardContent, CardMedia } from '@mui/material';
-import { useAppContext } from '../contexts/AppContext.jsx';
 import { getScenarioFromId } from '../helperFuncs/HelperFunctions.js';
-import { useMediaQuery } from '@mui/material';
     
 function ScenarioCard({scenario, handleView, refData}) {
   const scenarioInfoObj = getScenarioFromId(scenario.scenarioId, refData)
@@ -34,7 +32,7 @@ function ScenarioCard({scenario, handleView, refData}) {
           <Box sx={{width: '100%', textAlign: 'center' }}>
             <Button onClick={() => handleView(null)}>Delete</Button>
             <Button onClick={() => handleView('battle')}>Continue</Button>
-          </ Box>
+          </Box>
         )
       case ('incomplete'):
         return (

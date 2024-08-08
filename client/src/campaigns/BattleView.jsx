@@ -4,14 +4,16 @@ import { useAppContext } from '../contexts/AppContext.jsx';
 import { useAuth } from '../contexts/AuthContext.jsx';
 import { deriveApprenticeStats, getCreatureFromId, rollD20, getRandomSpell, getScenarioFromId, getSchoolFromId  } from '../helperFuncs/HelperFunctions.js';
 import { formSoldierStats } from '../warbands/WarbandSoldiers.jsx';
-import { BasicAccordian, BasicStatCard, BasicStatTableHeader, BasicStatTableRow } from '../basicComponents/BasicComponents.jsx';
+import { BasicStatTableHeader, BasicStatTableRow } from '../basicComponents/BasicStatTable.jsx';
+import BasicAccordian from '../basicComponents/BasicAccordian.jsx';
+import BasicStatCard from '../basicComponents/BasicStatCard.jsx';
 import { SpellBookView } from '../warbands/WarbandSpellbook.jsx';
 import { Box, Button } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 
 export function BattleView({handleView}) {
     const { userData, setUserData } = useAuth();
-    const { refData, currentWizard, currentCampaign,loading, error } = useAppContext();
+    const { refData, currentWizard, currentCampaignData,loading, error } = useAppContext();
     
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
@@ -24,7 +26,7 @@ export function BattleView({handleView}) {
     // }
 
     const handleSave = (scenarioId) => {
-        let currentScenario = currentCampaign.scenarios.find(scenario => scenario.id === scenarioId);
+        let currentScenario = currentCampaignData.campaign.scenarios.find(scenario => scenario.id === scenarioId);
         // currentScenario.
 
         // POST goes here
@@ -86,7 +88,7 @@ function RosterTableView({refData, currentWizard}) {
     );
 }
 
-function RosterCardView({refData, currentWizard}) {
+function RosterCardView({refData, currentCampaignData}) {
 
     if (!currentWizard) {
         return null;
@@ -205,3 +207,13 @@ function ToolBox({refData, currentWizard}) {
     );
 }
 
+export function BattleViewSideDrawer() {
+    const { currentWizard, refData } = useAppContext();
+    return (
+        <div>
+            <CreatureRosterBlock />
+            <OpponentRosterBlock />
+            <ToolBox refData={refData} currentWizard={currentWizard} />
+        </div>
+    );
+}
