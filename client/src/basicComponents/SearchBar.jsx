@@ -7,9 +7,8 @@ import CancelIcon from '@mui/icons-material/Cancel';
 
 function SearchBar({ searchText, setSearchText, handleSearchFilter, clearSearch }) {
   const handleChange = (e) => {
-      const text = e.target.value;
-      setSearchText(text);
-      handleSearchFilter(text);
+      setSearchText(e.target.value);
+      handleSearchFilter(e.target.value);
   };
 
   return (
@@ -20,7 +19,10 @@ function SearchBar({ searchText, setSearchText, handleSearchFilter, clearSearch 
         onChange={handleChange}
         variant="outlined"
         InputProps={{
-            startAdornment: <InputAdornment position="start"><SearchIcon sx={{ color: 'white' }}/></InputAdornment>,
+            startAdornment: 
+                <InputAdornment position="start">
+                    <SearchIcon sx={{ color: 'white' }}/>
+                </InputAdornment>,
             endAdornment: (
                 <InputAdornment position="end">
                     <IconButton onClick={clearSearch}>

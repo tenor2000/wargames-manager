@@ -1,17 +1,23 @@
 import { useAppContext } from '../contexts/AppContext.jsx';
-import { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import SearchBar from '../basicComponents/SearchBar.jsx';
-import BasicSpellCard from '../basicComponents/BasicSpellCard.jsx';
-import BasicAccordian from '../basicComponents/BasicAccordian.jsx';
 import { getSchoolFromId } from '../helperFuncs/helperFunctions.js';
 import { Avatar, List, ListItem, ListItemButton, ListItemText, ListItemAvatar, IconButton, Paper, Button, Box, Typography } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import '../styles/Spells.css';
+const BasicAccordian = React.lazy(() => import('../basicComponents/BasicAccordian.jsx'));
+const BasicSpellCard = React.lazy(() => import('../basicComponents/BasicSpellCard.jsx'));
+import { useInView } from 'react-intersection-observer';
+
+
+// TODO: optimize the rendering of the full spells list. Click handler is slow.
+
 
 export function SpellView() {
     const { spellViewList, setSpellViewList, refData} = useAppContext();
     const { loading, error } = useAppContext();
+    const { ref, inView } = useInView({triggerOnce: true, threshold: 0.1});
     const [ searchText, setSearchText ] = useState('');
     const [ searchParams, setSearchParams ] = useSearchParams();
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
@@ -21,14 +27,19 @@ export function SpellView() {
     const filteredSpells = useMemo(() => {
         if (loading || error || !refData) return [];
 
-        if (schoolFilterId === '0') {
-            return refData.spells.slice().sort((a, b) => a.name.localeCompare(b.name));
-        } else {
-            return refData.spells
-                .filter(spell => spell.school === getSchoolFromId(schoolFilterId, refData).name)
-                .slice().sort((a, b) => a.name.localeCompare(b.name));
+        let spells = refData.spells
+
+        if (schoolFilterId !== '0') {
+            const schoolName = getSchoolFromId(schoolFilterId, refData).name;
+            spells = spells.filter(spell => spell.school === schoolName);
         }
-    }, [schoolFilterId, refData, loading, error]);
+
+        if (searchText) {
+            spells = spells.filter(spell => spell.name.toLowerCase().includes(searchText.toLowerCase()));
+        }
+
+        return spells.slice().sort((a, b) => a.name.localeCompare(b.name));
+    }, [schoolFilterId, searchText, refData, loading, error]);
 
     useEffect(() => {
         setSpellViewList(filteredSpells);
@@ -45,10 +56,11 @@ export function SpellView() {
     const schoolname = getSchoolFromId(schoolFilterId, refData).name;
 
     function handleSearchFilter(text) {
-        const spellList = refData.spells;
-        const filteredSpells = spellList.filter(spell => spell.name.toLowerCase().includes(text.toLowerCase()));
+        setSearchText(text);
         setSearchParams({schoolFilterId: 0});
-        setSpellViewList(filteredSpells);
+        const spellList = refData.spells;
+        const searchedSpells = spellList.filter(spell => spell.name.toLowerCase().includes(text.toLowerCase()));
+        setSpellViewList(searchedSpells);
     }
 
     function clearSearch() {
@@ -82,9 +94,15 @@ export function SpellView() {
             }
             <Box>
                 {filteredSpells.map(spell => (
-                    <BasicAccordian key={spell.id} title={spell.name} >
-                        <BasicSpellCard spellId={spell.id} titlebar={false} refData={refData} />
-                    </BasicAccordian>
+                    <Box key={spell.id} ref={ref} >
+                        {inView ? (
+                            <Suspense fallback={<div>Loading...</div>}>
+                                <BasicAccordian title={spell.name} >
+                                    <BasicSpellCard spellId={spell.id} titlebar={false} refData={refData} />
+                                </BasicAccordian>
+                            </Suspense>
+                        ) : null}
+                    </Box>
                 ))}
             </Box>
         </Box>
@@ -104,19 +122,14 @@ export function SpellSideDrawer() {
         return <div>Error loading data</div>;
     }
 
-    const spellList = refData.spells;
     const magicSchools = refData.schoolsOfMagic;
 
     function handleSchoolClick(selectedSchoolName) {
         const newSchoolId = selectedSchoolName === 'All' 
             ? 0 
             : magicSchools.find(school => school.name === selectedSchoolName).id;
-        const filteredSpells = selectedSchoolName === 'All' 
-            ? refData.spells 
-            : refData.spells.filter(spell => spell.school === selectedSchoolName);
         
         setSearchParams({ schoolFilterId: newSchoolId });
-        setSpellViewList(filteredSpells);
     }
 
 
