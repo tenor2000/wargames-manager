@@ -66,24 +66,6 @@ export const getRandomName = (nameList) => {
   return nameList[Math.floor(Math.random() * nameList.length)];
 }
 
-export function deriveApprenticeStats(wizStats, apprentice) {
-  return {
-    name: apprentice.name,
-    class: apprentice.class,
-    level: wizStats.level - 6,
-    move: wizStats.move,
-    fight: wizStats.fight - 2,
-    shoot: wizStats.shoot,
-    armor: apprentice.armor,
-    will: wizStats.will - 2,
-    health: wizStats.health - 2,
-    status: apprentice.status,
-    itemSlots: apprentice.itemSlots,
-    statMods: apprentice.statMods,
-    cost: apprentice.cost,
-  }
-}
-
 export function getStatusFromId(statusId, refData) {
   if (!refData || !refData.statuses) {
     return 'Unknown'; // Default or fallback value

@@ -8,7 +8,8 @@ import { useAppContext } from '../contexts/AppContext.jsx';
 import { CareerHistoryView } from './WarbandHistory.jsx';
 import { SpellBookView } from './WarbandSpellbook.jsx';
 import { SoldierRosterView } from './WarbandSoldiers.jsx';
-import { ApprenticeView, WizardView } from './WarbandWizard.jsx';
+import WizardView from './WarbandWizard.jsx';
+import ApprenticeView from './WarbandApprentice.jsx';
 import { BaseView } from './WarbandBase.jsx';
 import { VaultView } from './WarbandVault.jsx';
 import { Avatar, List, ListItem, ListItemButton, ListItemText, ListItemAvatar, IconButton, Paper, Button, Box, Typography } from '@mui/material';
@@ -37,7 +38,7 @@ export function WarbandView() {
 
     if (loading) {
         return <div>Loading...</div>;
-      }
+    }
     
     if (error) {
         return <div>Error loading data</div>;

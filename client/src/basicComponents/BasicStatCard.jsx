@@ -1,6 +1,7 @@
 import calcEquipmentMods from '../helperFuncs/calcEquipmentMods.js';
 import { getStatusFromId, getItemFromId } from '../helperFuncs/helperFunctions.js';
 import modSign from '../helperFuncs/modSign.js';
+import DisplayStatus from './DisplayStatus.jsx';
 import { Box, Button } from "@mui/material";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { useState } from 'react';
