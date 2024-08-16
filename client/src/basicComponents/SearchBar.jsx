@@ -5,9 +5,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import IconButton from '@mui/material/IconButton';
 import CancelIcon from '@mui/icons-material/Cancel';
 
-function SearchBar({ searchText, setSearchText, handleSearchFilter, clearSearch }) {
+function SearchBar({ searchText, setSearchParams, handleSearchFilter, clearSearch }) {
   const handleChange = (e) => {
-      setSearchText(e.target.value);
+      setSearchParams({search: e.target.value});
       handleSearchFilter(e.target.value);
   };
 

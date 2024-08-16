@@ -18,11 +18,11 @@ export function SpellView() {
     const { spellViewList, setSpellViewList, refData} = useAppContext();
     const { loading, error } = useAppContext();
     const { ref, inView } = useInView({triggerOnce: true, threshold: 0.1});
-    const [ searchText, setSearchText ] = useState('');
     const [ searchParams, setSearchParams ] = useSearchParams();
     const isPortrait = useMediaQuery('(max-width: 768px) and (orientation: portrait)');
 
     const schoolFilterId = searchParams.get('schoolFilterId') || '0';
+    const searchText = searchParams.get('search') || '';
 
     const filteredSpells = useMemo(() => {
         if (loading || error || !refData) return [];
@@ -56,8 +56,7 @@ export function SpellView() {
     const schoolname = getSchoolFromId(schoolFilterId, refData).name;
 
     function handleSearchFilter(text) {
-        setSearchText(text);
-        setSearchParams({schoolFilterId: 0});
+        setSearchParams({schoolFilterId: 0, search: text});
         const spellList = refData.spells;
         const searchedSpells = spellList.filter(spell => spell.name.toLowerCase().includes(text.toLowerCase()));
         setSpellViewList(searchedSpells);
@@ -65,8 +64,7 @@ export function SpellView() {
 
     function clearSearch() {
         handleSearchFilter('');
-        setSearchParams({schoolFilterId: 0});
-        setSearchText('');
+        setSearchParams({schoolFilterId: 0, search: ''});
     }
  
     return (
@@ -76,7 +74,7 @@ export function SpellView() {
                     <h2>{schoolname} {schoolname === 'All' ? 'Spells' : 'Spellbook'}</h2>
                     <SearchBar 
                         searchText={searchText}
-                        setSearchText={setSearchText}
+                        setSearchParams={setSearchParams}
                         handleSearchFilter={handleSearchFilter}
                         clearSearch={clearSearch}
                     />
@@ -86,7 +84,7 @@ export function SpellView() {
                 <Box sx={{ textAlign: 'center'}}>
                     <SearchBar 
                         searchText={searchText}
-                        setSearchText={setSearchText}
+                        setSearchParams={setSearchParams}
                         handleSearchFilter={handleSearchFilter}
                         clearSearch={clearSearch}
                     />
