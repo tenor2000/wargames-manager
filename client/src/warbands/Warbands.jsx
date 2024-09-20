@@ -30,7 +30,16 @@ export function WarbandView() {
 
     useEffect(() => {
         if (searchParamWizardId) {
-            setCurrentWizard(getMyWizardFromId(searchParamWizardId, userData));
+            console.log(searchParamWizardId);
+            const searchParamWizard = getMyWizardFromId(searchParamWizardId, userData);
+            console.log(userData.myWizards);
+            console.log(searchParamWizard)
+            if (searchParamWizard) {
+                setCurrentWizard(searchParamWizard);
+            } else {
+                console.log('Wizard not found');
+                setCurrentWizard(null);
+            }
         } else {
             setCurrentWizard(null);
         }
@@ -84,8 +93,6 @@ export function WarbandSideDrawer() {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     
-    
-    
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -135,8 +142,6 @@ export function WarbandSideDrawer() {
             </ListItem>
         )
     );
-
-    
 
     return (
         <>
