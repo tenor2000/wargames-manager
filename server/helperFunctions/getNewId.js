@@ -16,7 +16,10 @@ function generateRandomString(type) {
       idLength = 9
       break;
     case 'scenario':
-      idLength = 7
+      idLength = 10
+      break;
+    case 'campaign':
+      idLength = 11
       break;
     default:
       idLength = 9

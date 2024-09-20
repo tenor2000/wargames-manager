@@ -46,33 +46,39 @@ function ScenarioCard({scenario, handleView, refData}) {
     }
   }
   return (
-    <Card sx={{display: 'flex', flexDirection: 'column', width: '250px', height : '350px', textAlign: 'center', border: '2px solid black', margin: '10px', padding: '10px'}}>
-      <CardHeader
-        title={
-          <Typography
-            noWrap
-            sx={{
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-          >
-            {scenarioInfoObj.name}
-          </Typography>
-        }
-      />
+    <Card 
+      sx={{
+        display: 'flex', 
+        flexDirection: 'column', 
+        width: '250px', 
+        height : '350px', 
+        textAlign: 'center', 
+        border: '1px solid black',
+        borderRadius: '20px',
+        margin: '10px', 
+      }}
+    >
+      
       <CardMedia
         component="img"
-        height="194"
-        image=""
+        height="175"
+        image={scenarioInfoObj.imgUrl}
         alt="Scenario Image"
       />
       <CardContent sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%', textAlign: 'center', flex: 1}}>
-        <Typography>
-          Status: {showCompletionStatus(scenario)}
+        <Typography
+          variant="h7"
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            maxWidth: '250px',
+          }}
+        >
+            {scenarioInfoObj.name}
         </Typography>
         <Typography>
-          Setup Requirements: {scenarioInfoObj.requirements}
+          Status: {showCompletionStatus(scenario)}
         </Typography>
       </CardContent>
       <CardActions >

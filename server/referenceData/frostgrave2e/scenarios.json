@@ -2,9 +2,11 @@
     {
         "id": 101,
         "name": "The Well of Dreams and Sorrows",
+        "img": "",
         "requirements": "Well",
         "setup": "Place a well in the middle of the table. The rest of the table should be crowded with terrain as per a standard game of Frostgrave. Place the central treasure token 6\" away from the well, but equidistant between the starting table edges. Place the other treasure tokens as normal.",
         "treasure": null,
+        "imgUrl": "https://i.postimg.cc/W3cjNt1T/wellAI.jpg",
         "experience": [
             {
                 "id": 1,
@@ -32,6 +34,7 @@
         "requirements": "Mausoleum, skeletons",
         "setup": "Place a square or rectangular building in the centre of the table to represent the mausoleum. The sides of the mausoleum should be around 6” long. Each side of the mausoleum has a door in the middle of the wall (this doesn't need to be depicted on the terrain). This scenario doesn't use a central treasure token. Instead, place four treasure tokens touching the four exterior corners of the building. Each player should then place one additional treasure token on the table anywhere within 9” of the building. Place one skeleton (page 191) in front of each door of the mausoleum and one adjacent to each additional treasure token placed by the players.",
         "treasure": null,
+        "imgUrl": "https://i.postimg.cc/02Xs6Vyt/mausoleum-AI.jpg",
         "experience": []
     },
     {
@@ -40,6 +43,7 @@
         "requirements": "Tower, two small buildings, walkways that can stretch from one to the other.",
         "setup": "Place a ruined tower, at least 10” and three floors high, in the centre of the table. On either side, place two smaller ruined buildings with walkways running from their tops, to either the first or second floor of the tower. The rest of the table should be set up as per a standard game of Frostgrave. The central treasure token should be placed on the very top of the tower. Four more treasure tokens should be placed on the table as per the normal rules. No treasure token that is on or within 6” of the tower can be the target of any spells.",
         "treasure": null,
+        "imgUrl": "https://i.postimg.cc/xTzkgNN3/silenttower-AI.jpg",
         "experience": [
             {
                 "id": 1,
@@ -66,6 +70,8 @@
         "name": "The Library",
         "requirements": "None",
         "setup": "The whole table represents the underground library and should be a maze of corridors representing the vast shelves. The shelves are all packed with books, so they block line of sight and movement, but it is possible to climb on and over them. There are several patches of rough ground and obstacles where piles of books and loose papers have frozen into heaps on the floor. Each of the four sides of the table should have a doorway. Warbands must start with all their figures within 6” of the doorway on their side. Place treasure tokens as normal.",
+        "treasure": null,
+        "imgUrl": "https://i.postimg.cc/Y0jdTzB9/library-AI.jpg",
         "experience": []
     },
     {
@@ -74,6 +80,7 @@
         "requirements": "Five statues",
         "setup": "In the centre of the table, place four broken walls in a rough 12” square to represent the ruins of the wizard's house. Inside the ruins, place five statues so that they form an 'X' in the centre of the table. Place a treasure token adjacent to each statue, including the central treasure adjacent to the central statue. Fill the rest of the table with terrain as per a standard game.",
         "treasure": null,
+        "imgUrl": "https://i.postimg.cc/267C6vyr/livingmuseum-AI.jpg",
         "experience": [
             {
                 "id": 1,
@@ -92,6 +99,7 @@
         "requirements": "Giant worm.",
         "setup": "Set up the table as per a standard game of Frostgrave.",
         "treasure": null,
+        "imgUrl": "https://i.postimg.cc/SQ5GPqXm/frostworm-AI.jpg",
         "experience": [
             {
                 "id": 1,
@@ -113,6 +121,7 @@
         "requirements": "Five stone huts, ghouls, wraiths.",
         "setup": "Five small stones huts or houses should be placed on the table. One hut should be in the exact centre, the other four should be around 6” away from the centre one. Place the central treasure inside the central hut. Place a normal treasure token in the other four. The rest of the table should be crowded with ruins as per a standard game.",
         "treasure": null,
+        "imgUrl": "https://i.postimg.cc/pdRNnKxc/hauntedhouse-AI.jpg",
         "experience": [
             {
                 "id": 1,
@@ -128,6 +137,7 @@
         "requirements": "Genie",
         "setup": "The table should be filled with ruins as per a standard game. Place treasure tokens as normal, but the central treasure is treated as a normal treasure token in this scenario.",
         "treasure": null,
+        "imgUrl": "https://i.postimg.cc/wjdjxWfS/genielamp-AI.jpg",
         "experience": [
             {
                 "id": 1,
