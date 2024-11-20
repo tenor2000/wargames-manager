@@ -10,6 +10,8 @@ Currently, two official plugins are available:
 
 npm install @mui/material @emotion/react @emotion/styled
 npm install @mui/icons-material @mui/material @emotion/styled @emotion/react
+npm install react-window
+npm install react-intersection-observer
 
 
 
@@ -28,6 +30,17 @@ A brief description of what your project does.
 - [Contact](#contact)
 
 ## Installation
+
+client/.env includes {
+    VITE_MODE=dev
+    VITE_API_KEY=""
+    VITE_API_DATA_URL=""
+    VITE_USER_DATA_URL=""
+}
+
+server/.env includes {
+    PORT=
+}
 
 ### Clone the repository
 ```bash

@@ -22,7 +22,7 @@ import { SpellView, SpellSideDrawer } from './spells/Spells.jsx';
 import { WarbandView, WarbandSideDrawer } from './warbands/Warbands.jsx';
 import { CampaignView, CampaignSideDrawer } from './campaigns/Campaigns.jsx';
 import { CreateNewWizard, NewWizardSideDrawer } from './warbands/CreateNewWizard.jsx';
-import { getSchoolFromId } from './helperFuncs/HelperFunctions.js';
+import { getSchoolFromId } from './helperFuncs/helperFunctions.js';
 import { LoginForm, LoginSideDrawer } from './user/Login.jsx';
 import RegistrationForm from './user/Registration.jsx';
 import { BottomNavigation, BottomNavigationAction, Drawer, useMediaQuery, Paper } from '@mui/material';
@@ -285,7 +285,7 @@ export function ContentArea() {
             <Route path="/" element={<HomePage />} />
             <Route path="/reference" element={<ReferenceView />} />
             <Route path="/spells" element={<SpellView />} />
-            <Route path="/warbands" element={<WarbandView />} />
+            <Route path="/warbands/:wizardId?" element={<WarbandView />} />
             <Route path="/warbands/new-wizard" element={<CreateNewWizard />} />
             <Route path="/campaigns" element={<CampaignView />} />
             <Route path="/campaigns/:campaignId" element={<CampaignView />} />

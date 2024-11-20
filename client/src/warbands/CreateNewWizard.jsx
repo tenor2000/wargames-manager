@@ -130,7 +130,7 @@ export function CreateNewWizard() {
       }
     }
 
-    updatedWizard.id = newId;
+    updatedWizard.id = str(newId);
 
     // Add the updated wizard to the list of wizards, will need to be a POST in future
     currWizList.push(updatedWizard);

@@ -48,6 +48,7 @@ export function getMyWizardFromId(wizardId, userData) {
   if (!userData || !userData.myWizards) {
     return { name: 'Unknown' };
   }
+  console.log(wizardId)
 
   return userData.myWizards.find(wizard => wizard.id === wizardId)
 }

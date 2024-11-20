@@ -231,15 +231,15 @@ export const userInfoData = {
             scenarios: [
                 { 
                     id: 1,
-                    scenarioId: 106, 
+                    scenarioId: 104, 
                     opponents: [{ playerId: 1 }],
-                    completionStatus: 'complete',
+                    completionStatus: 'incomplete',
                     createDate: '2023-04-01T00:00:00.000Z',
                     completeDate: '2023-04-08T00:00:00.000Z'
                 },
                 { 
                     id: 2, 
-                    scenarioId: 107, 
+                    scenarioId: 105, 
                     opponents: [{ playerId: 1 }],
                     completionStatus: 'complete',
                     createDate: '2023-04-01T00:00:00.000Z',
@@ -247,7 +247,7 @@ export const userInfoData = {
                 },
                 { 
                     id: 3, 
-                    scenarioId: 108, 
+                    scenarioId: 106, 
                     opponents: [{ playerId: 1 }],
                     completionStatus: 'in progress',
                     createDate: '2023-04-01T00:00:00.000Z',
@@ -255,7 +255,7 @@ export const userInfoData = {
                 },
                 { 
                     id: 4, 
-                    scenarioId: 109, 
+                    scenarioId: 107, 
                     opponents: [{ playerId: 1 }],
                     completionStatus: 'incomplete',
                     createDate: '2023-04-01T00:00:00.000Z',
